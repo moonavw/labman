@@ -30,3 +30,6 @@ Gemfile.lock
 
 # Ignore redis dump
 dump.rdb
+
+# Ignore application configuration
+/config/application.yml
