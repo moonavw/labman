@@ -66,3 +66,7 @@ gem 'rails_admin'
 gem 'figaro'
 
 
+gem 'gitlab'
+gem 'jenkins_api_client'
+gem 'jira-ruby'
+gem 'platform-api'
