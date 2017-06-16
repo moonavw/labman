@@ -1,0 +1,17 @@
+= panel bs_context(build.status), id: "build-#{build.id.to_s}" do
+  .panel-heading
+    h3.panel-title
+      = build.name
+      - unless build.state.running?
+        .pull-right= link_to icon_w(:trash_o), build, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure?', disable_with: 'deleting...'}
+  .panel-body
+    - if build.state.completed? || build.state.aborted?
+      = button_to 'Rebuild', build_path(build, {build: {state: :pending}}), method: :put, remote: true, class: 'btn btn-primary', data: { confirm: 'Are you sure?', disable_with: 'updating...' }
+
+    = render 'branches/label', branch: build.branch
+    = render 'apps/label', app: build.app
+    - issue = build.issue
+    - if issue
+      = render 'issues/label', issue: issue
+      - if issue.release
+        = render 'releases/label', release: issue.release

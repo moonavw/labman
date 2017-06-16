@@ -1,0 +1,3 @@
+span.label-group title="#{Build.model_name.human} #{build.status.text}" data-toggle="tooltip" data-placement="top"
+  = tag_label icon_w(:gavel), :default
+  = tag_label build.name, bs_context(build.status)

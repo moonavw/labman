@@ -1,0 +1,14 @@
+.row
+  - @apps.each do |app|
+    .col-md-3
+      = render app
+
+- @pipelines.each do |pipeline|
+  .row
+    .page-header
+      h2= pipeline.name
+    - App.stage.options.each do |text, value|
+      .col-md-4
+        .page-header
+          h3= text
+        = render pipeline.apps.with_stage(value)

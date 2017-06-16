@@ -1,0 +1,19 @@
+.label-group {
+  display: inline-block;
+
+  .label {
+    font-weight: normal;
+
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      margin-right: 0;
+    }
+
+    & + .label {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-left: 0;
+    }
+  }
+}

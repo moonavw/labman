@@ -1,0 +1,17 @@
+.panel.panel-default
+  .panel-heading
+    h3.panel-title= branch.name
+  .panel-body
+    = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
+
+  .list-group
+    - branch.builds.each do |build|
+      = link_to build, class: 'list-group-item' do
+        = render 'builds/label', build: build
+        - issue = build.issue
+        - if issue
+          = render 'issues/label', issue: issue
+          - if issue.release
+            = render 'releases/label', release: issue.release
+        - if build.app
+          = render 'apps/label', app: build.app

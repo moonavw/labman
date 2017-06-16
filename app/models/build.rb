@@ -25,4 +25,13 @@ class Build
       app.update(state: :idle)
     end
   end
+
+  def issue_name
+    issue.try(:name)
+  end
+
+  def issue_name=(value)
+    # find_by cause Mongoid::Errors::DocumentNotFound when Mongoid.raise_not_found_error true
+    self.issue = Issue.where(name: value).first
+  end
 end

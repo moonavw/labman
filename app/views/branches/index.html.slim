@@ -1,0 +1,11 @@
+.row
+  - @uncategorized_branches.each do |branch|
+    .col-md-3
+      = render branch
+
+.row
+  - @categorized_branches.each do |category, branches|
+    .col-md-3
+      .page-header
+        h3= category
+      = render branches

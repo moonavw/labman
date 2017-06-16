@@ -1,2 +1,4 @@
-h1 Home#index
-p Find me in app/views/home/index.html.slim
+.jumbotron
+  h1 Labman
+  p The Integrated CI Dashboard, choose your team to Start
+  p= link_to Team.model_name.plural.titlecase, teams_path, class: 'btn btn-primary btn-lg'

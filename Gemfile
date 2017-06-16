@@ -71,3 +71,7 @@ gem 'gitlab'
 gem 'jenkins_api_client'
 gem 'jira-ruby', github: 'sumoheavy/jira-ruby'
 gem 'platform-api'
+
+gem 'font-awesome-sass'
+gem 'twitter-bootstrap-rails'
+gem 'bootstrap_form'

@@ -1,0 +1,6 @@
+.row
+  - Issue.state.options.each do |text, value|
+    .col-md-4
+      .page-header
+        h3= text
+      = render @issues.with_state(value)

@@ -1,0 +1,10 @@
+= nav_bar fixed: :bottom, brand: icon_w(:copyright, '2017'), responsive: true do
+  = menu_group do
+    - chosen_team = @team || @project.try(:team)
+    - if chosen_team
+      = menu_item chosen_team.name, team_path(chosen_team)
+      - chosen_team.projects.each do |project|
+        = menu_item project.name, project_path(project)
+    - else
+      - Team.all.each do |team|
+        = menu_item team.name, team_path(team)

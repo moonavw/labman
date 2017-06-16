@@ -1,0 +1,29 @@
+= nav_bar fixed: :top, brand: 'Labman', responsive: true do
+  = menu_group do
+    = drop_down Team.model_name.plural.titlecase do
+      - Team.all.each do |team|
+        - args = {status: :active} if @project && @project.team == team
+        = menu_item team.name, team_path(team), args
+    - chosen_team = @team || @project.try(:team)
+    - if chosen_team
+      = drop_down Project.model_name.plural.titlecase do
+        - chosen_team.projects.each do |project|
+          = menu_item project.name, project_path(project)
+    - if @project
+      = menu_item App.model_name.plural.titlecase, project_apps_path(@project)
+      = menu_item Branch.model_name.plural.titlecase, project_branches_path(@project)
+      = menu_item Build.model_name.plural.titlecase, project_builds_path(@project)
+      = menu_item Issue.model_name.plural.titlecase, project_issues_path(@project)
+      = menu_item Release.model_name.plural.titlecase, project_releases_path(@project)
+  = menu_group pull: :right do
+    - if signed_in?
+      - if can?(:access, :rails_admin)
+        = menu_item rails_admin_path do
+          = icon_w(:cog)
+      = menu_item edit_user_registration_path, title: current_user.name, data: {toggle: 'tooltip', placement: 'bottom', turbolinks_track: 'reload'} do
+        = icon_w(:user)
+      = menu_item nil, destroy_user_session_path, method: :delete do
+        = icon_w(:sign_out)
+    - else
+      = menu_item new_user_session_path do
+        = icon_w(:sign_in)

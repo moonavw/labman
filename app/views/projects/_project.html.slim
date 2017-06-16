@@ -1,0 +1,19 @@
+.panel.panel-default
+  .panel-heading
+    h3.panel-title= project.name
+  .list-group
+    = link_to project_apps_path(project), class: 'list-group-item' do
+      = App.model_name.plural.titlecase
+      = badge(project.apps.count)
+    = link_to project_branches_path(project), class: 'list-group-item' do
+      = Branch.model_name.plural.titlecase
+      = badge(project.branches.count)
+    = link_to project_builds_path(project), class: 'list-group-item' do
+      = Build.model_name.plural.titlecase
+      = badge(project.builds.count)
+    = link_to project_issues_path(project), class: 'list-group-item' do
+      = Issue.model_name.plural.titlecase
+      = badge(project.issues.count)
+    = link_to project_releases_path(project), class: 'list-group-item' do
+      = Release.model_name.plural.titlecase
+      = badge(project.releases.count)

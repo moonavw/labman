@@ -1,0 +1,6 @@
+.row
+  - Build.state.options.each do |text, value|
+    .col-md-3 id="build-state-#{value}"
+      .page-header
+        h3= text
+      = render @builds.with_state(value)
