@@ -8,8 +8,8 @@ module WorkState
 
     field :state
     enumerize :state,
-              in: [:todo, :in_progress, :done],
-              default: :todo,
+              in: [:to_do, :in_progress, :done],
+              default: :to_do,
               scope: true
 
     validates_presence_of :state

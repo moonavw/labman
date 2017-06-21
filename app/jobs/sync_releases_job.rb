@@ -15,11 +15,15 @@ class SyncReleasesJob < ApplicationJob
       release.date = r['due_date'].to_date
 
       case r['state']
+        when 'active'
+          release.state = :to_do
         when 'closed'
           release.state = :done
         else
-          release.state = :in_progress if release.issues.any?
+          # nothing
       end
+
+      release.state = :in_progress if release.state.to_do? && release.issues.any?
 
       if release.save
         logger.info("Synced release: #{release.name}")

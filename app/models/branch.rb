@@ -10,4 +10,9 @@ class Branch
 
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  def category
+    ns = name.split('/')
+    ns.first if ns.count > 1
+  end
 end
