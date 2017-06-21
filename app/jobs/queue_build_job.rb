@@ -11,24 +11,53 @@ class QueueBuildJob < ApplicationJob
       return
     end
 
-    # TODO: find the app for build if app nil
-    unless build.app
+    prj = build.branch.project
 
-    end
+    api_client = prj.build_server.api_client
 
-    # then lock the app
-    if build.app
-      build.app.state = :locked
-      build.app.save!
-      logger.info("Locked app: #{build.app.name}")
-    end
+    jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    build.state = :queued
+    logger.info("Found Jobs on Build Server: #{jobs}")
 
-    build.save!
+    job_name = jobs.select {|j|
+      j.include?('build') || j.include?('deploy')
+    }.first
 
-    logger.info("Queued build: #{build.name} -> #{build.status}")
+    logger.info("Using Job: #{job_name}")
 
-    # TODO: schedule run build job
+    api_client.job.build(
+        job_name,
+        {
+            name: build.name,
+            branch: build.branch.name,
+            app: (build.app.name if build.app)
+        }
+    )
+
+    build.update!(state: :queued)
+
+    logger.info("Queued build: #{build.name}, wait a few sec to check status")
+
+    sleep 5
+
+    begin
+      sleep 5
+      status = api_client.job.status(job_name)
+      logger.info("Job #{job_name} status: #{status}")
+
+      case status
+        when 'success', 'failure'
+          build.result = status.to_sym
+          build.state = :completed
+        when 'running', 'aborted'
+          build.state = status.to_sym
+        else
+          logger.error('Unknown status')
+          build.state = :pending
+      end
+      build.save!
+    end while build.state.running?
+
+    logger.info("Finished Run build: #{build.name} -> #{build.status}")
   end
 end

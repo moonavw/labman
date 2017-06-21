@@ -15,8 +15,9 @@ class SyncIssueJob < ApplicationJob
         issue.state = :todo
       when /In Progress/i
         issue.state = :in_progress
-      when 'Done', 'Closed', /Complete/i
+      when 'Done', 'Closed', /Complete/i, /Deploy/i
         issue.state = :done
+        issue.unlock_app
       else
         # do not change issue state
     end
