@@ -8,7 +8,7 @@ module RunState
 
     field :state
     enumerize :state,
-              in: [:pending, :queued, :running, :completed, :aborted],
+              in: [:pending, :running, :completed, :aborted],
               default: :pending,
               scope: true
 

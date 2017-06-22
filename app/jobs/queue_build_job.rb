@@ -34,8 +34,6 @@ class QueueBuildJob < ApplicationJob
         }
     )
 
-    build.update!(state: :queued)
-
     logger.info("Queued build: #{build.name}, wait a few sec to check status")
 
     sleep 5
