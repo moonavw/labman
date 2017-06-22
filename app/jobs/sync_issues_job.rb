@@ -1,9 +1,17 @@
 class SyncIssuesJob < ApplicationJob
   queue_as :default
 
-  def perform(project_id)
-    prj = Project.find(project_id)
+  def perform(*project_ids)
+    projects = Project.all
+    projects = projects.where(:id.in => project_ids) if project_ids.any?
 
+    projects.each {|prj|
+      sync_issues(prj)
+    }
+  end
+
+  private
+  def sync_issues(prj)
     logger.info("Syncing issues for project: #{prj.name}")
 
     api_client = prj.issue_tracker.api_client

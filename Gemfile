@@ -61,6 +61,7 @@ gem 'enumerize'
 gem 'devise'
 gem 'cancancan', '~> 1.17'
 gem 'sidekiq'
+gem 'sidekiq-cron'
 gem 'rails_admin'
 
 gem 'figaro'
