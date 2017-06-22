@@ -19,7 +19,7 @@ class App
   scope :unpipelined, -> {where(pipeline: nil)}
 
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, scope: :project
 
   def locked_build
     builds.last if state.locked?

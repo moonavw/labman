@@ -9,7 +9,7 @@ class Branch
   has_many :builds, dependent: :destroy
 
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, scope: :project
 
   def category
     ns = name.split('/')

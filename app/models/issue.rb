@@ -12,7 +12,7 @@ class Issue
   has_many :builds
 
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, scope: :project
 
   before_destroy :unlock_app
 
