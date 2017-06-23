@@ -11,4 +11,14 @@ class Pipeline
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
+
+  def promote(app)
+    return unless app.pipeline == self
+
+    next_stage = app.next_stage
+    return unless next_stage
+
+    targets = apps.with_stage(next_stage).with_state(:idle)
+    project.app_platform.promote(self, app, targets)
+  end
 end

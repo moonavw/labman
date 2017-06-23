@@ -15,4 +15,12 @@ module PipelineStage
     # validates_presence_of :stage
 
   end
+
+  def next_stage
+    return unless self.stage
+
+    stages = self.class.stage.values
+    idx = stages.index(self.stage)
+    stages.from(idx + 1).first
+  end
 end

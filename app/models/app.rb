@@ -24,4 +24,10 @@ class App
   def locked_build
     builds.last if state.locked?
   end
+
+  def promote
+    return unless pipeline
+
+    pipeline.promote(self)
+  end
 end
