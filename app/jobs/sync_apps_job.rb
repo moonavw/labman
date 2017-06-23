@@ -5,7 +5,7 @@ class SyncAppsJob < ApplicationJob
     unless project_ids.present?
       logger.info('Schedule jobs for all projects')
       Project.each {|prj|
-        SyncAppsJob.perform_later(prj.id.to_s) if prj.platform && prj.config
+        SyncAppsJob.perform_later(prj.id.to_s) if prj.app_platform && prj.config
       }
       return
     end
@@ -20,7 +20,7 @@ class SyncAppsJob < ApplicationJob
   def sync_apps(prj)
     logger.info("Syncing apps for project: #{prj.name}")
 
-    api_client = prj.platform.api_client
+    api_client = prj.app_platform.api_client
 
     resp = api_client.app.list.select {|a|
       a['name'].start_with? prj.config[:HEROKU_PROJECT]
@@ -54,7 +54,7 @@ class SyncAppsJob < ApplicationJob
   def sync_pipelines(prj)
     logger.info("Syncing pipelines for project: #{prj.name}")
 
-    api_client = prj.platform.api_client
+    api_client = prj.app_platform.api_client
 
     resp = api_client.pipeline.list.select {|pl|
       pl['name'].start_with? prj.config[:HEROKU_PROJECT]

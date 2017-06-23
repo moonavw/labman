@@ -7,7 +7,7 @@ class Team
   has_one :code_manager
   has_one :build_server
   has_one :issue_tracker
-  has_one :platform
+  has_one :app_platform
 
   has_many :projects
 

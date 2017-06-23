@@ -11,3 +11,5 @@
   = menu_group pull: :right do
     - if can?(:access, :rails_admin)
       = menu_item icon_w(:cog), rails_admin_path, data: {turbolinks_track: 'reload'}
+    - if can?(:manage, :all)
+      = menu_item icon_w(:bolt), sidekiq_path, data: {turbolinks_track: 'reload'}
