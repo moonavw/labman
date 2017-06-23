@@ -2,9 +2,12 @@
   = menu_group do
     - chosen_team = @team || @project.try(:team)
     - if chosen_team
-      = menu_item chosen_team.name, team_path(chosen_team)
+      = menu_item icon_w(:users, chosen_team.name), team_path(chosen_team)
       - chosen_team.projects.each do |project|
-        = menu_item project.name, project_path(project)
+        = menu_item icon_w(:suitcase, project.name), project_path(project)
     - else
       - Team.all.each do |team|
-        = menu_item team.name, team_path(team)
+        = menu_item icon_w(:users, team.name), team_path(team)
+  = menu_group pull: :right do
+    - if can?(:access, :rails_admin)
+      = menu_item icon_w(:cog), rails_admin_path, data: {turbolinks_track: 'reload'}

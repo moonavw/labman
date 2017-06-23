@@ -1,7 +1,7 @@
 = panel bs_context(build.status), id: "build-#{build.id.to_s}" do
   .panel-heading
     h3.panel-title
-      = build.name
+      = icon_w :gavel, build.name
       - unless build.state.running?
         .pull-right= link_to icon_w(:trash_o), build, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure?', disable_with: 'deleting...'}
   .panel-body

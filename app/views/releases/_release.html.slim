@@ -1,6 +1,6 @@
 = panel bs_context(release.state) do
   .panel-heading
-    h3.panel-title= release.name
+    h3.panel-title= icon_w :flag, release.name
   .panel-body
     span.label-group title="#{Release.human_attribute_name(:date)}" data-toggle="tooltip" data-placement="top"
       = tag_label icon_w(:calendar), :default

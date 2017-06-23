@@ -1,6 +1,6 @@
 = panel bs_context(issue.state) do
   .panel-heading
-    h3.panel-title= issue.name
+    h3.panel-title= icon_w :paw, issue.name
   .panel-body
     - release = issue.release
     - if release

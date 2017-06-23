@@ -1,6 +1,6 @@
 .panel.panel-default
   .panel-heading
-    h3.panel-title= branch.name
+    h3.panel-title= icon_w :code_fork, branch.name
   .panel-body
     = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
 
