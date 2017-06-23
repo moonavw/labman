@@ -14,3 +14,7 @@ sync_releases_job:
   cron: "1 * * * *"
   class: "SyncReleasesJob"
   queue: sync
+sync_builds_job:
+  cron: "*/5 * * * *"
+  class: "SyncBuildsJob"
+  queue: sync

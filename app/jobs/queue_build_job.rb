@@ -1,15 +1,14 @@
 class QueueBuildJob < ApplicationJob
   queue_as :default
 
-  def perform(build_id)
-    build = Build.find(build_id)
+  def perform(*build_ids)
+    Build.with_state(:pending).where(:id.in => build_ids).each {|build|
+      queue_build(build)
+    }
+  end
 
-    logger.info("Queue the #{build.state} build: #{build.name}")
-
-    unless build.state.pending?
-      logger.warn("Skipped Queue build: #{build.name}, since it is not pending")
-      return
-    end
+  def queue_build(build)
+    logger.info("Queue build: #{build.name}")
 
     prj = build.branch.project
 

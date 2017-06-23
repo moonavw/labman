@@ -18,7 +18,6 @@ class Build
 
   def lock_app
     app.update(state: :locked)
-    QueueBuildJob.perform_later(id.to_s) if state.pending?
   end
 
   def unlock_app

@@ -2,10 +2,15 @@ class SyncAppsJob < ApplicationJob
   queue_as :default
 
   def perform(*project_ids)
-    projects = Project.all
-    projects = projects.where(:id.in => project_ids) if project_ids.any?
+    unless project_ids.present?
+      logger.info('Schedule jobs for all projects')
+      Project.each {|prj|
+        SyncAppsJob.perform_later(prj.id.to_s)
+      }
+      return
+    end
 
-    projects.each {|prj|
+    Project.where(:id.in => project_ids).each {|prj|
       sync_apps(prj)
       sync_pipelines(prj)
     }
