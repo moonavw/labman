@@ -1,1 +1,7 @@
-= render @release
+.row
+  - Release.state.options.each do |text, value|
+    .col-md-4
+      .page-header
+        h3= text
+      - if @release.state == value
+        = render @release
