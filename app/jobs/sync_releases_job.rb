@@ -23,15 +23,19 @@ class SyncReleasesJob < ApplicationJob
 
     resp = api_client.tags(prj.config[:GITLAB_PROJECT])
     tags = resp.map {|d|
-      r = d.to_hash
-      r['name']
+      t = d.to_hash
+      t['name'].sub('v', '')
+    }.reject {|tag_name|
+      tag_name.include?('-')
+    }.sort {|x, y|
+      Gem::Version.new(y) <=> Gem::Version.new(x)
     }
 
     resp = api_client.milestones(prj.config[:GITLAB_PROJECT])
     releases = resp.map {|d|
       r = d.to_hash
       release = prj.releases.find_or_initialize_by(name: r['title'])
-      release.date = r['due_date'].to_date
+      release.due_date = r['due_date'].to_date
 
       case r['state']
         when 'active'
@@ -44,9 +48,9 @@ class SyncReleasesJob < ApplicationJob
 
       release.state = :in_progress if release.state.to_do? && release.issues.any?
 
-      release.tags = tags.select {|tag|
-        tag.include?("v#{release.name}.")
-      }
+      release.tag_name = tags.select {|tag_name|
+        tag_name.start_with?("#{release.name}.")
+      }.first
 
       if release.save
         logger.info("Synced release: #{release.name}")
