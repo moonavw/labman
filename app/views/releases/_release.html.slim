@@ -5,6 +5,10 @@
     span.label-group title="#{Release.human_attribute_name(:date)}" data-toggle="tooltip" data-placement="top"
       = tag_label icon_w(:calendar), :default
       = tag_label release.date, :info
+    - release.tags.each do |tag|
+      span.label-group title="#{Release.human_attribute_name(:tags)}" data-toggle="tooltip" data-placement="top"
+        = tag_label icon_w(:tag), :default
+        = tag_label tag, :info
   .list-group
     - release.issues.each do |issue|
       = link_to issue, class: 'list-group-item' do

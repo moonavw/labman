@@ -6,6 +6,7 @@ class Release
 
   field :name, type: String
   field :date, type: Date
+  field :tags, type: Array
 
   belongs_to :project
 

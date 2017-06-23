@@ -21,6 +21,12 @@ class SyncReleasesJob < ApplicationJob
 
     api_client = prj.code_manager.api_client
 
+    resp = api_client.tags(prj.config[:GITLAB_PROJECT])
+    tags = resp.map {|d|
+      r = d.to_hash
+      r['name']
+    }
+
     resp = api_client.milestones(prj.config[:GITLAB_PROJECT])
     releases = resp.map {|d|
       r = d.to_hash
@@ -37,6 +43,10 @@ class SyncReleasesJob < ApplicationJob
       end
 
       release.state = :in_progress if release.state.to_do? && release.issues.any?
+
+      release.tags = tags.select {|tag|
+        tag.include?("v#{release.name}.")
+      }
 
       if release.save
         logger.info("Synced release: #{release.name}")
