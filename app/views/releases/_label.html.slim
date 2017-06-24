@@ -1,3 +1,3 @@
-span.label-group title="#{Release.model_name.human} #{release.state.text}" data-toggle="tooltip" data-placement="top"
+= link_to release, class: 'label-group', title: "#{Release.model_name.human} #{release.state.text}", data: {toggle: 'tooltip', placement: 'top'} do
   = tag_label icon_w(:flag), :default
   = tag_label release.name, bs_context(release.state)

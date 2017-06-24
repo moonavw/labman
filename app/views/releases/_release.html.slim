@@ -2,14 +2,13 @@
   .panel-heading
     h3.panel-title= icon_w :flag, release.name
   .panel-body
-    span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"
-      = tag_label icon_w(:calendar), :default
-      = tag_label release.due_date, :info
-    - if release.tag_name
-      span.label-group title="#{Release.human_attribute_name(:tag_name)}" data-toggle="tooltip" data-placement="top"
-        = tag_label icon_w(:tag), :default
-        = tag_label release.tag_name, :info
-  .list-group
-    - release.issues.each do |issue|
-      = link_to issue, class: 'list-group-item' do
-        = render 'issues/label', issue: issue
+    p
+      span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"
+        = tag_label icon_w(:calendar), :default
+        = tag_label release.due_date, :info
+      - if release.tag_name
+        span.label-group title="#{Release.human_attribute_name(:tag_name)}" data-toggle="tooltip" data-placement="top"
+          = tag_label icon_w(:tag), :default
+          = tag_label release.tag_name, :info
+
+    = render partial: 'issues/label', collection: release.issues, as: :issue

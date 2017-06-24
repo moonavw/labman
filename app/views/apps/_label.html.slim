@@ -1,3 +1,3 @@
-span.label-group title="#{App.model_name.human} #{app.state.text}" data-toggle="tooltip" data-placement="top"
+= link_to app, class: 'label-group', title: "#{App.model_name.human} #{app.state.text}", data: {toggle: 'tooltip', placement: 'top'} do
   = tag_label icon_w(:cloud), :default
   = tag_label app.name, bs_context(app.state)

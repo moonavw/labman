@@ -2,17 +2,15 @@
   .panel-heading
     h3.panel-title= icon_w :code_fork, branch.name
   .panel-body
-    = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
+    p= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
 
-  .list-group
     - build = branch.build
     - if build
-      = link_to build, class: 'list-group-item' do
-        = render 'builds/label', build: build
-        - issue = build.issue
-        - if issue
-          = render 'issues/label', issue: issue
-          - if issue.release
-            = render 'releases/label', release: issue.release
-        - if build.app
-          = render 'apps/label', app: build.app
+      = render 'builds/label', build: build
+      - issue = build.issue
+      - if issue
+        = render 'issues/label', issue: issue
+        - if issue.release
+          = render 'releases/label', release: issue.release
+      - if build.app
+        = render 'apps/label', app: build.app

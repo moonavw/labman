@@ -2,25 +2,23 @@
   .panel-heading
     h3.panel-title= icon_w :cloud, app.name
   .panel-body
+    ul.list-inline
+      li
+        a.btn.btn-primary data-toggle="collapse" href="#app-#{app.id}"
+          = App.human_attribute_name(:config)
 
-    a.btn.btn-primary data-toggle="collapse" href="#app-#{app.id}"
-      = App.human_attribute_name(:config)
-
-    - if app.state.opened?
-      | &nbsp;
-      = link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
+      - if app.state.opened?
+        li= link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
 
     pre.collapse id="app-#{app.id}"
       = app.config.to_yaml.lines[1..-1].join
 
-  .list-group
     - build = app.locked_build
     - if build
-      = link_to build, class: 'list-group-item' do
-        = render 'builds/label', build: build
-        = render 'branches/label', branch: build.branch
-        - issue = build.issue
-        - if issue
-          = render 'issues/label', issue: issue
-          - if issue.release
-            = render 'releases/label', release: issue.release
+      = render 'builds/label', build: build
+      = render 'branches/label', branch: build.branch
+      - issue = build.issue
+      - if issue
+        = render 'issues/label', issue: issue
+        - if issue.release
+          = render 'releases/label', release: issue.release

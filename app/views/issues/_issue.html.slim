@@ -1,15 +1,13 @@
 = panel bs_context(issue.state) do
   .panel-heading
     h3.panel-title= icon_w :paw, issue.name
-  .list-group
+  .panel-body
     - release = issue.release
     - if release
-      = link_to release, class: 'list-group-item' do
-        = render 'releases/label', release: release
+      = render 'releases/label', release: release
     - build = issue.build
     - if build
-      = link_to build, class: 'list-group-item' do
-        = render 'builds/label', build: build
-        = render 'branches/label', branch: build.branch
-        - if build.app
-          = render 'apps/label', app: build.app
+      = render 'builds/label', build: build
+      = render 'branches/label', branch: build.branch
+      - if build.app
+        = render 'apps/label', app: build.app

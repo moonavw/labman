@@ -1,3 +1,3 @@
-span.label-group title="#{Branch.model_name.human}" data-toggle="tooltip" data-placement="top"
+= link_to branch, class: 'label-group', title: Branch.model_name.human, data: {toggle: 'tooltip', placement: 'top'} do
   = tag_label icon_w(:code_fork), :default
   = tag_label branch.name, :info
