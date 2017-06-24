@@ -14,7 +14,7 @@ class App
   belongs_to :project
   belongs_to :pipeline, required: false
 
-  has_many :builds
+  has_one :build
 
   scope :unpipelined, -> {where(pipeline: nil)}
 
@@ -22,7 +22,7 @@ class App
   validates_uniqueness_of :name, scope: :project
 
   def locked_build
-    builds.last if state.locked?
+    build if state.locked?
   end
 
   def promote

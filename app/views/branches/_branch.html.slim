@@ -5,7 +5,8 @@
     = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
 
   .list-group
-    - branch.builds.each do |build|
+    - build = branch.build
+    - if build
       = link_to build, class: 'list-group-item' do
         = render 'builds/label', build: build
         - issue = build.issue

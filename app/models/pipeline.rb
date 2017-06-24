@@ -18,7 +18,7 @@ class Pipeline
     next_stage = app.next_stage
     return unless next_stage
 
-    targets = apps.with_stage(next_stage).with_state(:idle)
+    targets = apps.with_stage(next_stage).with_state(:opened)
     project.app_platform.promote(self, app, targets)
   end
 end

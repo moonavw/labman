@@ -1,7 +1,7 @@
 module BootstrapHelper
   def bs_context(state)
     case state.to_sym
-      when :pending, :to_do, :idle
+      when :pending, :to_do, :opened
         :default
       when :running, :in_progress, :locked
         :warning

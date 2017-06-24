@@ -9,7 +9,7 @@ class Issue
   belongs_to :project
   belongs_to :release, required: false
 
-  has_many :builds
+  has_one :build
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
@@ -17,10 +17,7 @@ class Issue
   before_destroy :unlock_app
 
   def unlock_app
-    last_build = builds.last
-    if last_build
-      last_build.unlock_app
-    end
+    build.unlock_app if build
   end
 
 end

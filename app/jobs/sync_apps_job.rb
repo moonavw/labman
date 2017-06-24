@@ -31,7 +31,7 @@ class SyncAppsJob < ApplicationJob
       app.url = a['web_url']
       app.config = api_client.config_var.info_for_app(app.name)
 
-      app.state = :idle unless app.locked_build.present?
+      app.state = :opened unless app.locked_build
 
       if app.save
         logger.info("Synced app: #{app.name}")

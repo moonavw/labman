@@ -1,7 +1,6 @@
 = bootstrap_form_for build, url: project_builds_path(project) do |f|
   = f.text_field :name
-  = f.collection_select :branch, project.branches, :id, :name, selected: build.branch_id, prompt: true
-  = f.collection_select :app, project.apps.with_state(:idle), :id, :name, selected: build.app_id, prompt: true
-  /= f.collection_select(:issue, project.issues.without_state(:done), :id, :name, selected: build.issue_id, prompt: true)
-  = f.text_field :issue_name, autocomplete: 'off', data: {provide: 'typeahead', source: project.issues.without_state(:done).map(&:name)}
+  = f.collection_select :branch, project.branches.reject {|b| b.build}, :id, :name, selected: build.branch_id, prompt: true
+  = f.collection_select :app, project.apps.with_state(:opened), :id, :name, selected: build.app_id, prompt: true
+  = f.text_field :issue_name, autocomplete: 'off', data: {provide: 'typeahead', source: project.issues.without_state(:done).reject {|b| b.build}.map(&:name)}
   = f.submit

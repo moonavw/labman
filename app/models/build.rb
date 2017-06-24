@@ -21,9 +21,7 @@ class Build
   end
 
   def unlock_app
-    if app.locked_build == self
-      app.update(state: :idle)
-    end
+    app.update(state: :opened) if app.locked_build == self
   end
 
   def issue_name

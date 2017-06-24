@@ -1,3 +1,4 @@
+# Resourceable
 module ResourceState
   extend ActiveSupport::Concern
 
@@ -7,8 +8,8 @@ module ResourceState
 
     field :state
     enumerize :state,
-              in: [:idle, :locked],
-              default: :idle,
+              in: [:opened, :locked],
+              default: :opened,
               scope: true
 
     validates_presence_of :state
