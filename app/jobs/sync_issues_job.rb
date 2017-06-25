@@ -38,7 +38,7 @@ class SyncIssuesJob < ApplicationJob
           issue.state = :in_progress
         when 'Done', 'Closed', 'Cancelled', /Complete/i, /Deploy/i
           issue.state = :done
-          issue.unlock_app
+          issue.unbuild
         else
           # do not change issue state
       end

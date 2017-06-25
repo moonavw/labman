@@ -14,10 +14,10 @@ class Issue
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
 
-  before_destroy :unlock_app
+  before_destroy :unbuild
 
-  def unlock_app
-    build.unlock_app if build
+  def unbuild
+    build.destroy if build
   end
 
 end

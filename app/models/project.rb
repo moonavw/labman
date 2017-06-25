@@ -20,7 +20,6 @@ class Project
            to: :team
 
   def builds
-    branch_ids = branches.map(&:id)
     Build.where(:branch_id.in => branch_ids)
   end
 end

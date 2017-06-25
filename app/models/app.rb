@@ -14,9 +14,13 @@ class App
   belongs_to :project
   belongs_to :pipeline, required: false
 
+  belongs_to :promoted_from, class_name: 'App', inverse_of: :promoted_to, required: false
+  has_many :promoted_to, class_name: 'App', inverse_of: :promoted_from
+
   has_one :build
 
   scope :unpipelined, -> {where(pipeline: nil)}
+  scope :pipelined, -> {where(:pipeline.ne => nil)}
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :project

@@ -22,3 +22,8 @@
         = render 'issues/label', issue: issue
         - if issue.release
           = render 'releases/label', release: issue.release
+    - else
+      - if app.promoted_from
+        span.label-group title="#{App.human_attribute_name(:promoted_from)}" data-toggle="tooltip" data-placement="bottom"
+          = tag_label icon_w(:bolt), :default
+          = render 'apps/label', app: app.promoted_from
