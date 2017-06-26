@@ -2,8 +2,6 @@
   .panel-heading
     h3.panel-title= icon_w :code_fork, branch.name
   .panel-body
-    p= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
-
     - build = branch.build
     - if build
       = render 'builds/label', build: build
@@ -14,3 +12,5 @@
           = render 'releases/label', release: issue.release
       - if build.app
         = render 'apps/label', app: build.app
+    - else
+      = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
