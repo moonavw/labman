@@ -45,4 +45,13 @@ class Release
       args['job_class'] == BumpReleaseJob.name && args['arguments'].include?(self.id.to_s)
     }
   end
+
+  def rebuild
+    return unless branch
+
+    branch.unbuild
+
+    app = project.apps.with_stage(:development).first
+    Build.create(name: tag_name, branch: branch, app: app)
+  end
 end

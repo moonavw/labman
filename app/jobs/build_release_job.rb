@@ -14,10 +14,7 @@ class BuildReleaseJob < ApplicationJob
 
     SyncBranchesJob.perform_now(prj.id.to_s) unless release.branch
 
-    release.branch.unbuild
-
-    app = prj.apps.with_stage(:development).first
-    build = Build.create(name: release.tag_name, branch: release.branch, app: app)
+    build = release.rebuild
     RunBuildJob.perform_now(build.id.to_s)
 
     build.reload
