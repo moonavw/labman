@@ -13,3 +13,12 @@
       = menu_item icon_w(:database), rails_admin_path, data: {turbolinks_track: 'reload'}
     - if can?(:manage, :all)
       = menu_item icon_w(:cogs), sidekiq_path, data: {turbolinks_track: 'reload'}
+
+    - if Rails.env.development?
+      = menu_item icon_w(:terminal), "javascript: $('#console').toggle()"
+      css:
+        #console {
+          bottom: 50px;
+          display: none;
+        }
+      = console
