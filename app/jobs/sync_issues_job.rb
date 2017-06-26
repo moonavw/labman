@@ -24,26 +24,45 @@ class SyncIssuesJob < ApplicationJob
     resp = api_client.Agile.get_sprints(prj.config['JIRA_BOARD'], {state: 'active'})
     cur_sprint = resp['values'].last
 
-    logger.info("Syncing issues from current active sprint: #{cur_sprint['name']}")
+    logger.info("From current active sprint: #{cur_sprint['name']}")
 
-    resp = api_client.Agile.get_sprint_issues(cur_sprint['id'], {fields: 'status,fixVersions', maxResults: 100})
+    issues = Issue.state.values.map {|value|
+      sync_issues_by_state(prj, cur_sprint['id'], value)
+    }.reduce(&:+)
 
-    issues = resp['issues'].map {|d|
-      issue = prj.issues.find_or_initialize_by(name: d['key'])
+    logger.info("Total Synced #{issues.count} issues")
 
-      case d['fields']['status']['name']
-        when 'Reviewed', 'To Do', /Open/i
-          issue.state = :to_do
-        when /In Progress/i
-          issue.state = :in_progress
-        when 'Done', 'Closed', 'Cancelled', /Complete/i, /Deploy/i
-          issue.state = :done
-          issue.unbuild
-        else
-          # do not change issue state
-      end
+    synced_ids = issues.map(&:id)
+    orphans = prj.issues.destroy_all(:id.nin => synced_ids)
 
-      fix_version = d['fields']['fixVersions'].map {|f|
+    logger.warn("Pruned #{orphans} issues")
+  end
+
+  def sync_issues_by_state(prj, sprint_id, issue_state)
+    logger.info("Syncing #{issue_state} issues for project: #{prj.name}")
+
+    api_client = prj.issue_tracker.api_client
+
+    jql_params = {
+        project: prj.config['JIRA_PROJECT'],
+        sprint: sprint_id,
+        status: prj.config["JIRA_ISSUE_#{issue_state.to_s.upcase}"].join('", "')
+    }
+
+    jql_template = 'project = %{project} AND status in ("%{status}") AND Sprint = %{sprint}'
+    jql = jql_template % jql_params
+
+    logger.info("Search issues with the jql: #{jql}")
+
+    # resp = api_client.Agile.get_sprint_issues(sprint_id, {fields: 'status,fixVersions', maxResults: 150})
+    resp = api_client.Issue.jql(jql, {fields: %w(fixVersions), maxResults: 100})
+
+    issues = resp.map {|d|
+      issue = prj.issues.find_or_initialize_by(name: d.key)
+      issue.state = issue_state
+      issue.unbuild if issue.state.done?
+
+      fix_version = d.fields['fixVersions'].map {|f|
         f['name']
       }.join(', ')
 
@@ -62,11 +81,8 @@ class SyncIssuesJob < ApplicationJob
       issue
     }
 
-    logger.info("Synced #{issues.count} issues")
+    logger.info("Synced #{issues.count} #{issue_state} issues")
 
-    synced_ids = issues.map(&:id)
-    orphans = prj.issues.destroy_all(:id.nin => synced_ids)
-
-    logger.warn("Pruned #{orphans} issues")
+    issues
   end
 end
