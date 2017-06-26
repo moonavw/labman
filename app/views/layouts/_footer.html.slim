@@ -1,4 +1,4 @@
-= nav_bar fixed: :bottom, brand: icon_w(:copyright, '2017'), responsive: true do
+= nav_bar fixed: :bottom, brand: icon_w(:copyright, title: 'Labman 2017', data: {toggle: 'tooltip', placement: 'top'}), responsive: true do
   = menu_group do
     - chosen_team = @team || @project.try(:team)
     - if chosen_team
