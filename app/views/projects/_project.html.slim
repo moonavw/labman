@@ -1,6 +1,12 @@
 .panel.panel-default
   .panel-heading
     h3.panel-title= icon_w :suitcase, project.name
+  .panel-body
+    a.btn.btn-primary data-toggle="collapse" href="#project-#{project.id}"
+      = Project.human_attribute_name(:config)
+
+    pre.collapse id="project-#{project.id}"
+      = project.config.to_yaml.lines[1..-1].join
   .list-group
     = link_to project_apps_path(project), class: 'list-group-item' do
       = icon_w :cloud, App.model_name.plural.titlecase

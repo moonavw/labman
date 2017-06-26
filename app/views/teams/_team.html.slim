@@ -1,6 +1,17 @@
 .panel.panel-default
   .panel-heading
     h3.panel-title= icon_w :users, team.name
+  .panel-body
+    dl.dl-horizontal
+      dt= CodeManager.model_name.human
+      dd= team.code_manager.try(:name)
+      dt= AppPlatform.model_name.human
+      dd= team.app_platform.try(:name)
+      dt= IssueTracker.model_name.human
+      dd= team.issue_tracker.try(:name)
+      dt= BuildServer.model_name.human
+      dd= team.build_server.try(:name)
+
   .list-group
     = link_to team_projects_path(team), class: 'list-group-item' do
       = Project.model_name.plural.titlecase
