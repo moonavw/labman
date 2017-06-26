@@ -1,5 +1,4 @@
-# Stageable
-module PipelineStage
+module Stageable
   extend ActiveSupport::Concern
 
   included do

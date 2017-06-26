@@ -2,7 +2,7 @@ class Build
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  include RunState
+  include Runnable
 
   field :name, type: String
 

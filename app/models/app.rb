@@ -2,8 +2,8 @@ class App
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  include PipelineStage
-  include ResourceState
+  include Stageable
+  include Resourceable
 
 
   field :name, type: String

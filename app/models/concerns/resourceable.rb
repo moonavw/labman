@@ -1,5 +1,4 @@
-# Workable
-module WorkState
+module Resourceable
   extend ActiveSupport::Concern
 
   included do
@@ -8,15 +7,19 @@ module WorkState
 
     field :state
     enumerize :state,
-              in: [:to_do, :in_progress, :done],
-              default: :to_do,
+              in: [:opened, :locked],
+              default: :opened,
               scope: true
 
     validates_presence_of :state
 
   end
 
-  def work_in_progress
-    update(state: :in_progress) if state.to_do?
+  def lock
+    update(state: :locked) if state.opened?
+  end
+
+  def unlock
+    update(state: :opened) if state.locked?
   end
 end

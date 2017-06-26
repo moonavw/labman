@@ -1,5 +1,4 @@
-# Runnable
-module RunState
+module Runnable
   extend ActiveSupport::Concern
 
   included do

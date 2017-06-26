@@ -2,7 +2,7 @@ class Release
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  include WorkState
+  include Workable
 
   field :name, type: String
   field :due_date, type: Date
