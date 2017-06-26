@@ -2,6 +2,6 @@
   - Release.state.options.each do |text, value|
     .col-md-4
       .page-header
-        h3= text
+        h3= text.titlecase
       - if @release.state == value
         = render @release

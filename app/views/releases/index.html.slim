@@ -2,5 +2,5 @@
   - Release.state.options.each do |text, value|
     .col-md-4
       .page-header
-        h3= text
+        h3= text.titlecase
       = render @releases.with_state(value)
