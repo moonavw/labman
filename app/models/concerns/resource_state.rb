@@ -15,4 +15,12 @@ module ResourceState
     validates_presence_of :state
 
   end
+
+  def lock
+    update(state: :locked) if state.opened?
+  end
+
+  def unlock
+    update(state: :opened) if state.locked?
+  end
 end

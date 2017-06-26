@@ -15,4 +15,8 @@ class Branch
     ns = name.split('/')
     ns.first if ns.count > 1
   end
+
+  def unbuild
+    build.destroy if build
+  end
 end

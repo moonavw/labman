@@ -34,4 +34,12 @@ class App
 
     pipeline.promote(self)
   end
+
+  def promoting?
+    queue = Sidekiq::Queue.new
+    queue.any? {|job|
+      args = job.args.first
+      args['job_class'] == PromoteAppJob.name && args['arguments'].include?(self.id.to_s)
+    }
+  end
 end

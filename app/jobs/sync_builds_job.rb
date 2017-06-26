@@ -12,7 +12,7 @@ class SyncBuildsJob < ApplicationJob
 
     Project.where(:id.in => project_ids).each {|prj|
       prj.builds.with_state(:pending).each {|b|
-        QueueBuildJob.perform_later(b.id.to_s)
+        RunBuildJob.perform_later(b.id.to_s)
       }
     }
   end

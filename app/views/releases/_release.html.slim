@@ -1,7 +1,10 @@
-= panel bs_context(release.state) do
+= panel bs_context(release.state), id: "release-#{release.id.to_s}" do
   .panel-heading
     h3.panel-title= icon_w :flag, release.name
   .panel-body
+    - if release.can_bump?
+      p= link_to 'Bump', bump_release_path(release), method: :post, remote: true, disabled: release.bumping?, class: 'btn btn-primary', data: {confirm: 'Are you sure?', disable_with: 'bumping...', disabled_text: 'bumping...' }
+
     p
       span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"
         = tag_label icon_w(:calendar), :default
@@ -10,5 +13,14 @@
         span.label-group title="#{Release.human_attribute_name(:tag_name)}" data-toggle="tooltip" data-placement="top"
           = tag_label icon_w(:tag), :default
           = tag_label release.tag_name, :info
+
+      - branch = release.branch
+      - if branch
+        = render 'branches/label', branch: branch
+        - build = branch.build
+        - if build
+          = render 'builds/label', build: build
+          - if build.app
+            = render 'apps/label', app: build.app
 
     = render partial: 'issues/label', collection: release.issues, as: :issue

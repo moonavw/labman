@@ -16,4 +16,33 @@ class Release
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
+
+
+  def work_in_progress
+    super if issues.any? || branch
+  end
+
+  def branch_name
+    "release/v#{name}"
+  end
+
+  def branch
+    @rc_branch ||= project.branches.where(name: branch_name).first
+  end
+
+  def can_bump?
+    state.in_progress?
+  end
+
+  def bump
+    BumpReleaseJob.perform_later(self.id.to_s) if can_bump?
+  end
+
+  def bumping?
+    queue = Sidekiq::Queue.new
+    queue.any? {|job|
+      args = job.args.first
+      args['job_class'] == BumpReleaseJob.name && args['arguments'].include?(self.id.to_s)
+    }
+  end
 end

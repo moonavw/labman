@@ -46,13 +46,12 @@ class SyncReleasesJob < ApplicationJob
           # nothing
       end
 
-      release.state = :in_progress if release.state.to_do? && release.issues.any?
-
       release.tag_name = tags.select {|tag_name|
         tag_name.start_with?("#{release.name}.")
       }.first
 
       if release.save
+        release.work_in_progress
         logger.info("Synced release: #{release.name}")
       else
         logger.error("Failed sync release: #{release.name}")

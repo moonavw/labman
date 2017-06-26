@@ -11,6 +11,11 @@ class ReleasesController < ApplicationController
     respond_with @release
   end
 
+  def bump
+    @release.bump
+    respond_with @release
+  end
+
   private
   def set_project
     @project = Project.find(params[:project_id])

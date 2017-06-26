@@ -52,6 +52,7 @@ class SyncIssuesJob < ApplicationJob
       }.first
 
       if issue.save
+        issue.release.work_in_progress if issue.release
         logger.info("Synced issue: #{issue.name}")
       else
         logger.error("Failed sync issue: #{issue.name}")

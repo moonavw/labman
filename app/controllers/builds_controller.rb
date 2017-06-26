@@ -25,12 +25,8 @@ class BuildsController < ApplicationController
     respond_with @build
   end
 
-  def edit
-    respond_with @build
-  end
-
-  def update
-    @build.update(build_params)
+  def rerun
+    @build.rerun
     respond_with @build
   end
 

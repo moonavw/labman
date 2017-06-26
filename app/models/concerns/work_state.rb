@@ -15,4 +15,8 @@ module WorkState
     validates_presence_of :state
 
   end
+
+  def work_in_progress
+    update(state: :in_progress) if state.to_do?
+  end
 end

@@ -14,9 +14,17 @@ Rails.application.routes.draw do
   resources :projects, shallow: true do
     resources :apps
     resources :branches
-    resources :builds
+    resources :builds do
+      member do
+        post 'rerun'
+      end
+    end
     resources :issues
-    resources :releases
+    resources :releases do
+      member do
+        post 'bump'
+      end
+    end
   end
 
   root to: 'home#index'

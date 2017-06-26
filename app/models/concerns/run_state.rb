@@ -27,4 +27,12 @@ module RunState
       state
     end
   end
+
+  def can_rerun?
+    state.completed? || state.aborted?
+  end
+
+  def rerun
+    update(state: :pending) if can_rerun?
+  end
 end

@@ -1,4 +1,4 @@
-class QueueBuildJob < ApplicationJob
+class RunBuildJob < ApplicationJob
   queue_as :default
 
   def perform(*build_ids)
@@ -8,7 +8,7 @@ class QueueBuildJob < ApplicationJob
   end
 
   def queue_build(build)
-    logger.info("Queue build: #{build.name}")
+    logger.info("Run build: #{build.name}")
 
     prj = build.branch.project
 
@@ -16,26 +16,35 @@ class QueueBuildJob < ApplicationJob
 
     jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    logger.info("Found Jobs on Build Server: #{jobs}")
+    logger.info("Found jobs on Build Server: #{jobs}")
 
     job_name = jobs.select {|j|
-      j.include?('build') || j.include?('deploy')
+      j.end_with?('build') || j.end_with?('deploy')
     }.first
 
-    logger.info("Using Job: #{job_name}")
+    job_params = {
+        name: build.name,
+        branch: build.branch.name,
+        app: build.app.name
+    }
 
-    api_client.job.build(
-        job_name,
-        {
-            name: build.name,
-            branch: build.branch.name,
-            app: (build.app.name if build.app)
-        }
-    )
+    logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
-    logger.info("Queued build: #{build.name}, wait a few sec to check status")
+    previous_job_build_number = api_client.job.get_current_build_number(job_name)
 
-    sleep 5
+    resp = api_client.job.build(job_name, job_params)
+
+    unless resp == '201'
+      logger.error("Unsuccessful queue job, build server response: #{resp}")
+      return
+    end
+
+    logger.info("Queued job: #{job_name}, wait a few sec to check status")
+
+    begin
+      sleep 5
+      job_build_number = api_client.job.get_current_build_number(job_name)
+    end while job_build_number == previous_job_build_number
 
     begin
       sleep 5

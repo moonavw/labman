@@ -17,11 +17,11 @@ class Build
   before_destroy :unlock_app
 
   def lock_app
-    app.update(state: :locked)
+    app.lock
   end
 
   def unlock_app
-    app.update(state: :opened) if app.locked_build == self
+    app.unlock if app.locked_build == self
   end
 
   def issue_name
