@@ -8,7 +8,7 @@ class BuildReleaseJob < ApplicationJob
   end
 
   def build_release(release)
-    logger.info("Building release: #{release.name}")
+    logger.info("Building #{release.named}")
 
     prj = release.project
 

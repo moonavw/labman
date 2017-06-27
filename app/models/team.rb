@@ -2,7 +2,7 @@ class Team
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :name, type: String
+  include Nameable
 
   has_one :code_manager
   has_one :build_server
@@ -11,6 +11,5 @@ class Team
 
   has_many :projects
 
-  validates_presence_of :name
   validates_uniqueness_of :name
 end

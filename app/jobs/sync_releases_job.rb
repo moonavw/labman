@@ -17,7 +17,7 @@ class SyncReleasesJob < ApplicationJob
 
   private
   def sync_releases(prj)
-    logger.info("Syncing releases for project: #{prj.name}")
+    logger.info("Syncing releases for #{prj.named}")
 
     api_client = prj.code_manager.api_client
 
@@ -52,9 +52,9 @@ class SyncReleasesJob < ApplicationJob
 
       if release.save
         release.work_in_progress
-        logger.info("Synced release: #{release.name}")
+        logger.info("Synced #{release.named}")
       else
-        logger.error("Failed sync release: #{release.name}")
+        logger.error("Failed sync #{release.named}")
         logger.error(release.errors.messages)
       end
 

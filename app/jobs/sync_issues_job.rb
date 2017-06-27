@@ -17,7 +17,7 @@ class SyncIssuesJob < ApplicationJob
 
   private
   def sync_issues(prj)
-    logger.info("Syncing issues for project: #{prj.name}")
+    logger.info("Syncing issues for #{prj.named}")
 
     api_client = prj.issue_tracker.api_client
 
@@ -39,7 +39,7 @@ class SyncIssuesJob < ApplicationJob
   end
 
   def sync_issues_by_state(prj, sprint_id, issue_state)
-    logger.info("Syncing #{issue_state} issues for project: #{prj.name}")
+    logger.info("Syncing #{issue_state} issues for #{prj.named}")
 
     api_client = prj.issue_tracker.api_client
 
@@ -72,9 +72,9 @@ class SyncIssuesJob < ApplicationJob
 
       if issue.save
         issue.release.work_in_progress if issue.release
-        logger.info("Synced issue: #{issue.name}")
+        logger.info("Synced #{issue.named}")
       else
-        logger.error("Failed sync issue: #{issue.name}")
+        logger.error("Failed sync #{issue.named}")
         logger.error(issue.errors.messages)
       end
 

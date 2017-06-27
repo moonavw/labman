@@ -17,7 +17,7 @@ class SyncBranchesJob < ApplicationJob
 
   private
   def sync_branches(prj)
-    logger.info("Syncing branches for project: #{prj.name}")
+    logger.info("Syncing branches for #{prj.named}")
 
     api_client = prj.code_manager.api_client
 
@@ -27,9 +27,9 @@ class SyncBranchesJob < ApplicationJob
       branch = prj.branches.find_or_initialize_by(name: b['name'])
 
       if branch.save
-        logger.info("Synced branch: #{branch.name}")
+        logger.info("Synced #{branch.named}")
       else
-        logger.error("Failed sync branch: #{branch.name}")
+        logger.error("Failed sync #{branch.named}")
         logger.error(branch.errors.messages)
       end
 

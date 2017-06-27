@@ -8,7 +8,7 @@ class BumpReleaseJob < ApplicationJob
   end
 
   def bump_release(release)
-    logger.info("Bumping release: #{release.name}")
+    logger.info("Bumping #{release.named}")
 
     if release.branch
       job_name_suffix = 'rc-patch'
@@ -26,7 +26,7 @@ class BumpReleaseJob < ApplicationJob
 
     jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    logger.info("Found jobs on Build Server: #{jobs}")
+    logger.info("Found jobs on #{prj.build_server.named}: #{jobs}")
 
     job_name = jobs.select {|j|
       j.end_with?(job_name_suffix)
@@ -39,7 +39,7 @@ class BumpReleaseJob < ApplicationJob
     resp = api_client.job.build(job_name, job_params)
 
     unless resp == '201'
-      logger.error("Unsuccessful queue job, build server response: #{resp}")
+      logger.error("Unsuccessful queue job, #{prj.build_server.named} response: #{resp}")
       return
     end
 
@@ -57,12 +57,12 @@ class BumpReleaseJob < ApplicationJob
     end while status == 'running'
 
     unless status == 'success'
-      logger.error("Unsuccessful bumping release, due to #{job_name}: #{status}")
+      logger.error("Unsuccessful bumping #{release.named}, due to #{job_name}: #{status}")
       return
     end
 
     SyncReleasesJob.perform_now(prj.id.to_s)
-    logger.info("Bumped release: #{release.name} -> #{release.tag_name}")
+    logger.info("Bumped #{release.named} -> #{release.tag_name}")
 
     BuildReleaseJob.perform_later(release.id.to_s)
   end

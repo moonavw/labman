@@ -2,11 +2,11 @@ class App
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Nameable
   include Stageable
   include Resourceable
 
 
-  field :name, type: String
   field :config, type: Hash
   field :uid, type: String
   field :url, type: String
@@ -22,7 +22,6 @@ class App
   scope :unpipelined, -> {where(pipeline: nil)}
   scope :pipelined, -> {where(:pipeline.ne => nil)}
 
-  validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
 
   def locked_build

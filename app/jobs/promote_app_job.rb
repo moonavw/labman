@@ -8,7 +8,7 @@ class PromoteAppJob < ApplicationJob
   end
 
   def promote_app(app)
-    logger.info("Promoting app: #{app.name} in pipeline #{app.pipeline.name}")
+    logger.info("Promoting #{app.named} in #{app.pipeline.named}")
     logger.info("Stage from #{app.stage} to #{app.next_stage}")
     logger.info("Targets: #{app.promoted_to.map(&:name)}")
 
@@ -34,7 +34,7 @@ class PromoteAppJob < ApplicationJob
     }
     promotion = api_client.pipeline_promotion.create(promotion_params)
 
-    logger.info("Created promotion for app: #{app.name}, wait a few sec to check status")
+    logger.info("Created promotion for #{app.named}, wait a few sec to check status")
 
     begin
       sleep 5
@@ -44,6 +44,6 @@ class PromoteAppJob < ApplicationJob
 
     end while promotion['status'] != 'completed'
 
-    logger.info("Promoted app: #{app.name}")
+    logger.info("Promoted #{app.named}")
   end
 end

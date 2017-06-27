@@ -18,7 +18,7 @@ class SyncAppsJob < ApplicationJob
 
   private
   def sync_apps(prj)
-    logger.info("Syncing apps for project: #{prj.name}")
+    logger.info("Syncing apps for #{prj.named}")
 
     api_client = prj.app_platform.api_client
 
@@ -34,9 +34,9 @@ class SyncAppsJob < ApplicationJob
       app.state = :opened unless app.locked_build
 
       if app.save
-        logger.info("Synced app: #{app.name}")
+        logger.info("Synced #{app.named}")
       else
-        logger.error("Failed sync app: #{app.name}")
+        logger.error("Failed sync #{app.named}")
         logger.error(app.errors.messages)
       end
 
@@ -52,7 +52,7 @@ class SyncAppsJob < ApplicationJob
   end
 
   def sync_pipelines(prj)
-    logger.info("Syncing pipelines for project: #{prj.name}")
+    logger.info("Syncing pipelines for #{prj.named}")
 
     api_client = prj.app_platform.api_client
 
@@ -64,7 +64,7 @@ class SyncAppsJob < ApplicationJob
       pipeline.uid = pl['id']
 
       if pipeline.save
-        logger.info("Synced pipeline: #{pipeline.name}")
+        logger.info("Synced #{pipeline.named}")
 
         # coupling apps to pipeline
         couplings = api_client.pipeline_coupling.list_by_pipeline(pipeline.uid)
@@ -74,9 +74,9 @@ class SyncAppsJob < ApplicationJob
           app.pipeline = pipeline
 
           if app.save
-            logger.info("Coupled app: #{app.name}")
+            logger.info("Coupled #{app.named}")
           else
-            logger.error("Failed couple app: #{app.name}")
+            logger.error("Failed couple #{app.named}")
             logger.error(app.errors.messages)
           end
 
@@ -92,7 +92,7 @@ class SyncAppsJob < ApplicationJob
         logger.warn("Decoupled #{decouples.count} apps")
 
       else
-        logger.error("Failed sync pipeline: #{pipeline.name}")
+        logger.error("Failed sync #{pipeline.named}")
         logger.error(pipeline.errors.messages)
       end
 

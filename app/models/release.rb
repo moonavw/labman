@@ -2,9 +2,9 @@ class Release
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Nameable
   include Workable
 
-  field :name, type: String
   field :due_date, type: Date
   field :tag_name, type: String
 
@@ -14,7 +14,6 @@ class Release
 
   default_scope -> {desc(:due_date)}
 
-  validates_presence_of :name
   validates_uniqueness_of :name, scope: :project
 
 

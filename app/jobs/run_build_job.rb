@@ -8,7 +8,7 @@ class RunBuildJob < ApplicationJob
   end
 
   def queue_build(build)
-    logger.info("Run build: #{build.name}")
+    logger.info("Run #{build.named}")
 
     prj = build.branch.project
 
@@ -16,7 +16,7 @@ class RunBuildJob < ApplicationJob
 
     jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    logger.info("Found jobs on Build Server: #{jobs}")
+    logger.info("Found jobs on #{prj.build_server.named}: #{jobs}")
 
     job_name = jobs.select {|j|
       j.end_with?('build') || j.end_with?('deploy')
@@ -35,7 +35,7 @@ class RunBuildJob < ApplicationJob
     resp = api_client.job.build(job_name, job_params)
 
     unless resp == '201'
-      logger.error("Unsuccessful queue job, build server response: #{resp}")
+      logger.error("Unsuccessful queue job, #{prj.build_server.named} response: #{resp}")
       return
     end
 
@@ -64,6 +64,6 @@ class RunBuildJob < ApplicationJob
       build.save!
     end while build.state.running?
 
-    logger.info("Finished Run build: #{build.name} -> #{build.status}")
+    logger.info("Finished Run #{build.named} -> #{build.status}")
   end
 end
