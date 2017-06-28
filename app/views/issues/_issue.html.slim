@@ -1,6 +1,7 @@
 = panel bs_context(issue.state) do
   .panel-heading
-    h3.panel-title= icon_w :paw, issue.name
+    h3.panel-title
+      = link_to icon_w(:paw, issue.name), issue.url, target: '_blank'
   .panel-body
     - release = issue.release
     - if release

@@ -5,6 +5,7 @@ class Issue
   include Nameable
   include Workable
 
+  field :url, type: String
 
   belongs_to :project
   belongs_to :release, required: false

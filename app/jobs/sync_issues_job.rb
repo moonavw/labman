@@ -70,6 +70,12 @@ class SyncIssuesJob < ApplicationJob
         fix_version.include?(el.name)
       }.first
 
+      url_params = {
+          site: prj.issue_tracker.config['site'].chomp('/'),
+          key: issue.name
+      }
+      issue.url = '%{site}/browse/%{key}' % url_params
+
       if issue.save
         issue.release.work_in_progress if issue.release
         logger.info("Synced #{issue.named}")
