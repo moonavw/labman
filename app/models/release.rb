@@ -34,7 +34,10 @@ class Release
   end
 
   def bump
-    BumpReleaseJob.perform_later(self.id.to_s) if can_bump?
+    return unless can_bump?
+    return if bumping?
+
+    BumpReleaseJob.perform_later(self.id.to_s)
   end
 
   def bumping?

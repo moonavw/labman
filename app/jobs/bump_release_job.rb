@@ -7,6 +7,7 @@ class BumpReleaseJob < ApplicationJob
     }
   end
 
+  private
   def bump_release(release)
     logger.info("Bumping #{release.named}")
 

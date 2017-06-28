@@ -1,18 +1,15 @@
 module Resourceable
   extend ActiveSupport::Concern
+  include Stateable
 
   included do
     extend Enumerize
-    extend ActiveModel::Naming
+    # extend ActiveModel::Naming
 
-    field :state
     enumerize :state,
               in: [:opened, :locked],
               default: :opened,
               scope: true
-
-    validates_presence_of :state
-
   end
 
   def lock

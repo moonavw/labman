@@ -11,6 +11,8 @@ class Build
   belongs_to :issue, required: false
 
 
+  delegate :project,
+           to: :branch
 
   after_create :lock_app
   before_destroy :unlock_app

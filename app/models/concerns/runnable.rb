@@ -1,11 +1,11 @@
 module Runnable
   extend ActiveSupport::Concern
+  include Stateable
 
   included do
     extend Enumerize
-    extend ActiveModel::Naming
+    # extend ActiveModel::Naming
 
-    field :state
     enumerize :state,
               in: [:pending, :running, :completed, :aborted],
               default: :pending,
@@ -15,16 +15,12 @@ module Runnable
     enumerize :result,
               in: [:success, :failure]
 
-    validates_presence_of :state
-
   end
 
   def status
-    if state.completed?
-      result
-    else
-      state
-    end
+    return result if state.completed?
+
+    super
   end
 
   def can_rerun?

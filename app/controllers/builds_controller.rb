@@ -48,6 +48,6 @@ class BuildsController < ApplicationController
 
   def set_build
     @build = Build.find(params[:id])
-    @project = @build.branch.project
+    @project = @build.project
   end
 end

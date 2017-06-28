@@ -13,4 +13,4 @@
       - if build.app
         = render 'apps/label', app: build.app
     - else
-      = link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
+      p= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
