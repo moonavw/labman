@@ -34,7 +34,7 @@ class MergeRequest
     queue = Sidekiq::Queue.new
     queue.any? {|job|
       args = job.args.first
-      args['job_class'] == BumpReleaseJob.name && args['arguments'].include?(self.id.to_s)
+      args['job_class'] == AcceptMergeRequestJob.name && args['arguments'].include?(self.id.to_s)
     }
   end
 end

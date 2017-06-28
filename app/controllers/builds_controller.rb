@@ -18,6 +18,8 @@ class BuildsController < ApplicationController
 
   def create
     @build = Build.create(build_params)
+    @build.run if @build.persisted?
+    
     respond_with @build
   end
 

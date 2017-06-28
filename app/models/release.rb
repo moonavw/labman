@@ -50,12 +50,24 @@ class Release
   end
 
   def rebuild
-    return unless branch
+    return unless can_rebuild?
+    return if rebuilding?
 
-    branch.unbuild
+    BuildReleaseJob.perform_later(self.id.to_s)
+  end
 
-    app = project.apps.with_stage(:development).first
-    Build.create(name: tag_name, branch: branch, app: app)
+  def rebuilding?
+    queue = Sidekiq::Queue.new
+    queue.any? {|job|
+      args = job.args.first
+      args['job_class'] == BuildReleaseJob.name && args['arguments'].include?(self.id.to_s)
+    }
+  end
+
+  def can_rebuild?
+    return false unless branch
+    return true unless branch.build
+    branch.build.name != tag_name
   end
 
   def can_archive?

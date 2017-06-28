@@ -33,4 +33,19 @@ class Build
     # find_by cause Mongoid::Errors::DocumentNotFound when Mongoid.raise_not_found_error true
     self.issue = Issue.where(name: value).first
   end
+
+  def run
+    return unless can_run?
+    return if running?
+
+    RunBuildJob.perform_later(self.id.to_s)
+  end
+
+  def running?
+    queue = Sidekiq::Queue.new
+    queue.any? {|job|
+      args = job.args.first
+      args['job_class'] == RunBuildJob.name && args['arguments'].include?(self.id.to_s)
+    }
+  end
 end

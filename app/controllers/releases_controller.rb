@@ -16,6 +16,11 @@ class ReleasesController < ApplicationController
     respond_with @release
   end
 
+  def rebuild
+    @release.rebuild
+    respond_with @release
+  end
+
   def destroy
     @release.archive
     respond_with @release

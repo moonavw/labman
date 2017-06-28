@@ -14,7 +14,7 @@ class SyncBranchesJob < ApplicationJob
       sync_branches(prj)
     }
 
-    SyncMergeRequestsJob.perform_later(project_ids)
+    SyncMergeRequestsJob.perform_later(*project_ids)
   end
 
   private

@@ -12,9 +12,17 @@ class BuildReleaseJob < ApplicationJob
 
     prj = release.project
 
-    SyncBranchesJob.perform_now(prj.id.to_s) unless release.branch
+    unless release.branch
+      SyncBranchesJob.perform_now(prj.id.to_s)
+      release.reload
+    end
 
-    build = release.rebuild
+    branch = release.branch
+    branch.unbuild
+
+    app = prj.apps.with_stage(:development).first
+
+    build = Build.create(name: release.tag_name, branch: branch, app: app)
     RunBuildJob.perform_now(build.id.to_s)
 
     build.reload

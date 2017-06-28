@@ -23,11 +23,20 @@ module Runnable
     super
   end
 
+  def can_run?
+    state.pending?
+  end
+
   def can_rerun?
     state.completed? || state.aborted?
   end
 
+  def run
+    update(state: :running) if can_run?
+  end
+
   def rerun
     update(state: :pending) if can_rerun?
+    run
   end
 end

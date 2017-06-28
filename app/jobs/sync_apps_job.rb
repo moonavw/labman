@@ -14,7 +14,7 @@ class SyncAppsJob < ApplicationJob
       sync_apps(prj)
     }
 
-    SyncPipelinesJob.perform_later(project_ids)
+    SyncPipelinesJob.perform_later(*project_ids)
   end
 
   private

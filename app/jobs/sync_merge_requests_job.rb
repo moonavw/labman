@@ -100,7 +100,7 @@ class SyncMergeRequestsJob < ApplicationJob
       end
     }
 
-    synced = orphans.count(&:merge_request.persisted?)
+    synced = orphans.count(&:persisted?)
     logger.info("Synced orphaned #{synced} merge requests")
     logger.info("Pruned orphaned #{orphans.count - synced} merge requests")
   end

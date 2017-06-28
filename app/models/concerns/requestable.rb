@@ -15,4 +15,8 @@ module Requestable
   def can_accept?
     state.approved?
   end
+
+  def accept
+    update(state: :accepted) if can_accept?
+  end
 end
