@@ -13,6 +13,8 @@ class SyncBranchesJob < ApplicationJob
     Project.where(:id.in => project_ids).each {|prj|
       sync_branches(prj)
     }
+
+    SyncMergeRequestsJob.perform_later(project_ids)
   end
 
   private
