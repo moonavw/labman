@@ -3,8 +3,8 @@ class AppPlatform
   include Mongoid::Timestamps
 
   include Nameable
+  include Configurable
 
-  field :config, type: Hash
 
   belongs_to :team
 

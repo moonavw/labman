@@ -5,9 +5,9 @@ class App
   include Nameable
   include Stageable
   include Resourceable
+  include Configurable
 
 
-  field :config, type: Hash
   field :uid, type: String
   field :url, type: String
 

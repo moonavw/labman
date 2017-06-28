@@ -11,7 +11,7 @@
         li= link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
 
     pre.collapse id="app-#{app.id}"
-      = app.config.to_yaml.lines[1..-1].join
+      = app.readable_config
 
     - build = app.locked_build
     - if build
