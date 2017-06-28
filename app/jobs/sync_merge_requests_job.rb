@@ -27,9 +27,10 @@ class SyncMergeRequestsJob < ApplicationJob
 
       source_branch = prj.branches.find_by(name: b['source_branch'])
       merge_request = source_branch.merge_requests.find_or_initialize_by(name: "!#{b['iid']}", uid: b['id'], url: b['web_url'])
-      merge_request.target_branch_name = b['target_branch']
 
       merge_request.release = prj.releases.find_by(name: b['milestone']['title']) if b['milestone']
+
+      merge_request.target_branch_name = b['target_branch']
 
       merge_request.issue = prj.issues.select {|issue|
         b['title'].include?(issue.name)
@@ -67,10 +68,22 @@ class SyncMergeRequestsJob < ApplicationJob
     orphans.each {|merge_request|
       resp = api_client.merge_request(prj.config[:GITLAB_PROJECT], merge_request.uid)
       b = resp.to_hash
-      if b['state'] == 'merged'
-        merge_request.target_branch_name = b['target_branch']
 
-        merge_request.release = prj.releases.find_by(name: b['milestone']['title']) if b['milestone']
+      if b['state'] == 'closed'
+        merge_request.destroy
+        next
+      end
+
+      if b['state'] == 'merged'
+        if b['milestone']
+          merge_request.release = prj.releases.find_by(name: b['milestone']['title'])
+          if merge_request.release.state.done?
+            merge_request.destroy
+            next
+          end
+        end
+
+        merge_request.target_branch_name = b['target_branch']
 
         merge_request.issue = prj.issues.select {|issue|
           b['title'].include?(issue.name)
@@ -84,9 +97,6 @@ class SyncMergeRequestsJob < ApplicationJob
           logger.error("Failed sync #{merge_request.named}")
           logger.error(merge_request.errors.messages)
         end
-
-      else
-        merge_request.destroy
       end
     }
 

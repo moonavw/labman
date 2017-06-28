@@ -4,6 +4,7 @@ class Release
 
   include Nameable
   include Workable
+  include Archivable
 
   field :due_date, type: Date
   field :tag_name, type: String
@@ -55,5 +56,9 @@ class Release
 
     app = project.apps.with_stage(:development).first
     Build.create(name: tag_name, branch: branch, app: app)
+  end
+
+  def can_archive?
+    state.done? && super
   end
 end

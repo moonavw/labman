@@ -3,7 +3,7 @@ class ReleasesController < ApplicationController
   before_action :set_release, except: [:index, :new, :create]
 
   def index
-    @releases = @project.releases
+    @releases = @project.releases.unarchived
     respond_with @releases
   end
 
@@ -13,6 +13,11 @@ class ReleasesController < ApplicationController
 
   def bump
     @release.bump
+    respond_with @release
+  end
+
+  def destroy
+    @release.archive
     respond_with @release
   end
 

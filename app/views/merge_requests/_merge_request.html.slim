@@ -4,7 +4,7 @@
       = link_to icon_w(:code, merge_request.name), merge_request.url, target: '_blank'
   .panel-body
     - if merge_request.can_accept?
-      p= link_to 'Accept', accept_merge_request_path(merge_request), method: :post, remote: true, disabled: merge_request.accepting?, class: 'btn btn-primary', data: { confirm: 'Are you sure?', disable_with: 'accepting...', disabled_text: 'accepting...' }
+      p= link_to 'Accept', accept_merge_request_path(merge_request), method: :post, remote: true, disabled: merge_request.accepting?, class: 'btn btn-primary', data: {confirm: 'Are you sure to accept?', disable_with: 'accepting...', disabled_text: 'accepting...'}
 
     = render 'branches/label', branch: merge_request.branch
     span.label-group title="#{MergeRequest.human_attribute_name(:target_branch_name)}" data-toggle="tooltip" data-placement="top"

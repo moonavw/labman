@@ -3,10 +3,10 @@
     h3.panel-title
       = icon_w :gavel, build.name
       - unless build.state.running?
-        .pull-right= link_to icon_w(:trash_o), build, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure?', disable_with: 'deleting...'}
+        .pull-right= link_to icon_w(:trash_o), build, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to delete?', disable_with: 'deleting...'}
   .panel-body
     - if build.can_rerun?
-      p= link_to 'Rerun', rerun_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: { confirm: 'Are you sure?', disable_with: 'rerunning...' }
+      p= link_to 'Rerun', rerun_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rerun?', disable_with: 'rerunning...'}
 
     = render 'branches/label', branch: build.branch
     = render 'apps/label', app: build.app

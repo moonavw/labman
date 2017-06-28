@@ -1,9 +1,12 @@
 = panel bs_context(release.state), id: "release-#{release.id.to_s}" do
   .panel-heading
-    h3.panel-title= icon_w :flag, release.name
+    h3.panel-title
+      = icon_w :flag, release.name
+      - if release.can_archive?
+        .pull-right= link_to icon_w(:archive), release, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to archive?', disable_with: 'archiving...'}
   .panel-body
     - if release.can_bump?
-      p= link_to 'Bump', bump_release_path(release), method: :post, remote: true, disabled: release.bumping?, class: 'btn btn-primary', data: {confirm: 'Are you sure?', disable_with: 'bumping...', disabled_text: 'bumping...' }
+      p= link_to 'Bump', bump_release_path(release), method: :post, remote: true, disabled: release.bumping?, class: 'btn btn-primary', data: {confirm: 'Are you sure to bump?', disable_with: 'bumping...', disabled_text: 'bumping...'}
 
     p
       span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"
