@@ -3,9 +3,9 @@ module BootstrapHelper
     case state.to_sym
       when :pending, :to_do, :opened
         :default
-      when :running, :in_progress, :locked
+      when :running, :in_progress, :locked, :approved
         :warning
-      when :success, :done
+      when :success, :done, :accepted
         :success
       when :failure, :aborted
         :danger

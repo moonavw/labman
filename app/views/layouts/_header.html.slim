@@ -12,6 +12,7 @@
     - if @project
       = menu_item icon_w(:cloud, App.model_name.plural.titlecase), project_apps_path(@project)
       = menu_item icon_w(:code_fork, Branch.model_name.plural.titlecase), project_branches_path(@project)
+      = menu_item icon_w(:code, MergeRequest.model_name.plural.titlecase), project_merge_requests_path(@project)
       = menu_item icon_w(:gavel, Build.model_name.plural.titlecase), project_builds_path(@project)
       = menu_item icon_w(:paw, Issue.model_name.plural.titlecase), project_issues_path(@project)
       = menu_item icon_w(:flag, Release.model_name.plural.titlecase), project_releases_path(@project)

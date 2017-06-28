@@ -6,6 +6,8 @@ class Branch
 
   belongs_to :project
 
+  has_many :merge_requests, dependent: :destroy
+
   has_one :build, dependent: :destroy
 
   validates_uniqueness_of :name, scope: :project

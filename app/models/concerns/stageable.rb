@@ -8,10 +8,7 @@ module Stageable
     field :stage
     enumerize :stage,
               in: [:development, :staging, :production],
-              # default: nil,
               scope: true
-
-    # validates_presence_of :stage
 
   end
 

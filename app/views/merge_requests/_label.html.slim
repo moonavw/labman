@@ -1,0 +1,3 @@
+= link_to merge_request, class: 'label-group', title: merge_request.stated, data: {toggle: 'tooltip', placement: 'top'} do
+  = tag_label icon_w(:code), :default
+  = tag_label merge_request.name, bs_context(merge_request.state)

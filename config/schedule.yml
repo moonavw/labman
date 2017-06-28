@@ -6,6 +6,10 @@ sync_branches_job:
   cron: "*/10 * * * *"
   class: "SyncBranchesJob"
   queue: sync
+sync_merge_requests_job:
+  cron: "*/15 * * * *"
+  class: "SyncMergeRequestsJob"
+  queue: sync
 sync_issues_job:
   cron: "*/10 * * * *"
   class: "SyncIssuesJob"

@@ -22,4 +22,8 @@ class Project
   def builds
     Build.where(:branch_id.in => branch_ids)
   end
+
+  def merge_requests
+    MergeRequest.where(:branch_id.in => branch_ids)
+  end
 end

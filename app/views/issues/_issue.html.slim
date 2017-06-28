@@ -11,3 +11,5 @@
       = render 'branches/label', branch: build.branch
       - if build.app
         = render 'apps/label', app: build.app
+
+    = render partial: 'merge_requests/label', collection: issue.merge_requests, as: :merge_request

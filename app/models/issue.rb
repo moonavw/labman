@@ -9,6 +9,8 @@ class Issue
   belongs_to :project
   belongs_to :release, required: false
 
+  has_many :merge_requests
+
   has_one :build
 
   validates_uniqueness_of :name, scope: :project

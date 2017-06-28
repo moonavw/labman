@@ -1,0 +1,21 @@
+= panel bs_context(merge_request.state), id: "merge_request-#{merge_request.id.to_s}" do
+  .panel-heading
+    h3.panel-title
+      = icon_w :code, merge_request.name
+  .panel-body
+    - if merge_request.can_accept?
+      p= link_to 'Accept', accept_merge_request_path(merge_request), method: :post, remote: true, disabled: merge_request.accepting?, class: 'btn btn-primary', data: { confirm: 'Are you sure?', disable_with: 'accepting...', disabled_text: 'accepting...' }
+
+    = render 'branches/label', branch: merge_request.branch
+    span.label-group title="#{MergeRequest.human_attribute_name(:target_branch_name)}" data-toggle="tooltip" data-placement="top"
+      = tag_label icon_w(:arrow_right), :default
+      = tag_label merge_request.target_branch_name, :info
+    - release = merge_request.release
+    - if release
+      = render 'releases/label', release: release
+
+    - issue = merge_request.issue
+    - if issue
+      = render 'issues/label', issue: issue
+      - if issue.release && issue.release != release
+        = render 'releases/label', release: issue.release

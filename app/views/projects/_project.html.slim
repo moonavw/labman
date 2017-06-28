@@ -14,6 +14,9 @@
     = link_to project_branches_path(project), class: 'list-group-item' do
       = icon_w :code_fork, Branch.model_name.plural.titlecase
       = badge(project.branches.count)
+    = link_to project_merge_requests_path(project), class: 'list-group-item' do
+      = icon_w :code, MergeRequest.model_name.plural.titlecase
+      = badge(project.merge_requests.count)
     = link_to project_builds_path(project), class: 'list-group-item' do
       = icon_w :gavel, Build.model_name.plural.titlecase
       = badge(project.builds.count)
