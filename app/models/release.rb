@@ -4,7 +4,9 @@ class Release
 
   include Nameable
   include Workable
+  include Versionable
   include Archivable
+  include Queueable
 
   field :due_date, type: Date
   field :tag_name, type: String
@@ -31,43 +33,31 @@ class Release
   end
 
   def can_bump?
-    state.in_progress?
+    state.in_progress? && super
   end
 
   def bump
-    return unless can_bump?
-    return if bumping?
+    return unless super
 
-    BumpReleaseJob.perform_later(self.id.to_s)
-  end
-
-  def bumping?
-    queue = Sidekiq::Queue.new
-    queue.any? {|job|
-      args = job.args.first
-      args['job_class'] == BumpReleaseJob.name && args['arguments'].include?(self.id.to_s)
-    }
-  end
-
-  def rebuild
-    return unless can_rebuild?
-    return if rebuilding?
-
-    BuildReleaseJob.perform_later(self.id.to_s)
-  end
-
-  def rebuilding?
-    queue = Sidekiq::Queue.new
-    queue.any? {|job|
-      args = job.args.first
-      args['job_class'] == BuildReleaseJob.name && args['arguments'].include?(self.id.to_s)
-    }
+    BumpReleaseJob.perform_later(self.id.to_s) unless queued?(BumpReleaseJob)
   end
 
   def can_rebuild?
     return false unless branch
+    return false unless tag_name
     return true unless branch.build
     branch.build.name != tag_name
+  end
+
+  def rebuild
+    return unless can_rebuild?
+
+    app = project.apps.with_stage(:development).first
+
+    branch.unbuild
+    branch.create_build(name: tag_name, app: app)
+
+    BuildReleaseJob.perform_later(self.id.to_s) unless queued?(BuildReleaseJob)
   end
 
   def can_archive?

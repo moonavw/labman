@@ -4,6 +4,7 @@ class MergeRequest
 
   include Nameable
   include Requestable
+  include Queueable
 
   field :target_branch_name, type: String
   field :uid, type: String
@@ -30,16 +31,7 @@ class MergeRequest
 
   def accept
     return unless can_accept?
-    return if accepting?
 
-    AcceptMergeRequestJob.perform_later(self.id.to_s)
-  end
-
-  def accepting?
-    queue = Sidekiq::Queue.new
-    queue.any? {|job|
-      args = job.args.first
-      args['job_class'] == AcceptMergeRequestJob.name && args['arguments'].include?(self.id.to_s)
-    }
+    AcceptMergeRequestJob.perform_later(self.id.to_s) unless queued?(AcceptMergeRequestJob)
   end
 end

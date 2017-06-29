@@ -7,9 +7,9 @@
   .panel-body
     ul.list-inline
       - if release.can_bump?
-        li= link_to 'Bump', bump_release_path(release), method: :post, remote: true, disabled: release.bumping?, class: 'btn btn-primary', data: {confirm: 'Are you sure to bump?', disable_with: 'bumping...', disabled_text: 'bumping...'}
+        li= link_to 'Bump', bump_release_path(release), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to bump?', disable_with: 'bumping...'}
       - if release.can_rebuild?
-        li= link_to 'Rebuild', rebuild_release_path(release), method: :post, remote: true, disabled: release.rebuilding?, class: 'btn btn-primary', data: {confirm: 'Are you sure to rebuild?', disable_with: 'rebuilding...', disabled_text: 'rebuilding...'}
+        li= link_to 'Rebuild', rebuild_release_path(release), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rebuild?', disable_with: 'rebuilding...'}
 
     p
       span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"

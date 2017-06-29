@@ -22,7 +22,7 @@ class SyncIssuesJob < ApplicationJob
     api_client = prj.issue_tracker.api_client
 
     resp = api_client.Agile.get_sprints(prj.config['JIRA_BOARD'], {state: 'active'})
-    cur_sprint = resp['values'].last
+    cur_sprint = resp['values'].select {|d| d['originBoardId'] == prj.config['JIRA_BOARD']}.last
 
     logger.info("From current active sprint: #{cur_sprint['name']}")
 

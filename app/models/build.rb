@@ -4,6 +4,7 @@ class Build
 
   include Nameable
   include Runnable
+  include Queueable
 
 
   belongs_to :branch
@@ -36,16 +37,7 @@ class Build
 
   def run
     return unless can_run?
-    return if running?
 
-    RunBuildJob.perform_later(self.id.to_s)
-  end
-
-  def running?
-    queue = Sidekiq::Queue.new
-    queue.any? {|job|
-      args = job.args.first
-      args['job_class'] == RunBuildJob.name && args['arguments'].include?(self.id.to_s)
-    }
+    RunBuildJob.perform_later(self.id.to_s) unless queued?(RunBuildJob)
   end
 end

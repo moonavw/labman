@@ -22,13 +22,10 @@ class SyncReleasesJob < ApplicationJob
     api_client = prj.code_manager.api_client
 
     resp = api_client.tags(prj.config[:GITLAB_PROJECT])
-    tags = resp.map {|d|
-      t = d.to_hash
-      t['name'].sub('v', '')
-    }.reject {|tag_name|
-      tag_name.include?('-')
+    tags = resp.map(&:to_hash).reject {|tag|
+      tag['name'].include?('-')
     }.sort {|x, y|
-      Gem::Version.new(y) <=> Gem::Version.new(x)
+      Gem::Version.new(y['name'].sub('v', '')) <=> Gem::Version.new(x['name'].sub('v', ''))
     }
 
     resp = api_client.milestones(prj.config[:GITLAB_PROJECT])
@@ -46,9 +43,29 @@ class SyncReleasesJob < ApplicationJob
           # nothing
       end
 
-      release.tag_name = tags.select {|tag_name|
-        tag_name.start_with?("#{release.name}.")
+      latest_tag = tags.select {|tag|
+        tag['name'].start_with?("v#{release.name}.")
       }.first
+
+      if latest_tag
+        release.tag_name = latest_tag['name']
+
+        if release.branch
+          commits = api_client.commits(prj.config[:GITLAB_PROJECT], {ref_name: release.branch.name})
+          latest_commit = commits.first
+          if latest_commit
+            c = latest_commit.to_hash
+            if c['id'] == latest_tag['commit']['id']
+              release.check = :updated
+            else
+              release.check = :outdated
+            end
+          end
+        end
+      else
+        release.tag_name = nil
+        release.check = :outdated unless release.state.done?
+      end
 
       if release.save
         release.work_in_progress

@@ -18,7 +18,9 @@ class BumpReleaseJob < ApplicationJob
       }
     else
       job_name_suffix = 'rc'
-      job_params = {}
+      job_params = {
+          SEMVER: 'minor'
+      }
     end
 
     prj = release.project
@@ -62,9 +64,13 @@ class BumpReleaseJob < ApplicationJob
       return
     end
 
+    SyncBranchesJob.perform_now(prj.id.to_s) unless release.branch
     SyncReleasesJob.perform_now(prj.id.to_s)
+
+    release.reload
+
     logger.info("Bumped #{release.named} -> #{release.tag_name}")
 
-    BuildReleaseJob.perform_later(release.id.to_s)
+    release.rebuild
   end
 end

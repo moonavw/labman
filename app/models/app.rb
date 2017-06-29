@@ -6,7 +6,7 @@ class App
   include Stageable
   include Resourceable
   include Configurable
-
+  include Queueable
 
   field :uid, type: String
   field :url, type: String
@@ -38,18 +38,9 @@ class App
 
   def promote
     return unless can_promote?
-    return if promoting?
 
     self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened)
 
-    PromoteAppJob.perform_later(self.id.to_s)
-  end
-
-  def promoting?
-    queue = Sidekiq::Queue.new
-    queue.any? {|job|
-      args = job.args.first
-      args['job_class'] == PromoteAppJob.name && args['arguments'].include?(self.id.to_s)
-    }
+    PromoteAppJob.perform_later(self.id.to_s) unless queued?(PromoteAppJob)
   end
 end

@@ -10,22 +10,20 @@ class BuildReleaseJob < ApplicationJob
   def build_release(release)
     logger.info("Building #{release.named}")
 
-    prj = release.project
-
     unless release.branch
-      SyncBranchesJob.perform_now(prj.id.to_s)
-      release.reload
+      logger.error("Not found the RC branch for #{release.named}")
+      return
     end
 
-    branch = release.branch
-    branch.unbuild
+    unless release.branch.build
+      logger.error("Not found the build for #{release.named}")
+      return
+    end
 
-    app = prj.apps.with_stage(:development).first
-
-    build = Build.create(name: release.tag_name, branch: branch, app: app)
+    build = release.branch.build
     RunBuildJob.perform_now(build.id.to_s)
 
     build.reload
-    app.promote if build.status == :success
+    build.app.promote if build.status == :success
   end
 end
