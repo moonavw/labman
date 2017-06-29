@@ -7,9 +7,17 @@ module Requestable
     # extend ActiveModel::Naming
 
     enumerize :state,
-              in: [:opened, :approved, :accepted],
+              in: [:opened, :reviewed, :approved, :accepted],
               default: :opened,
               scope: true
+  end
+
+  def can_approve?
+    state.reviewed?
+  end
+
+  def approve
+    update(state: :approved) if can_approve?
   end
 
   def can_accept?

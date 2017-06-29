@@ -23,6 +23,11 @@ class MergeRequest
     @t_branch ||= project.branches.where(name: target_branch_name).first
   end
 
+  def approve
+    super
+    accept
+  end
+
   def accept
     return unless can_accept?
     return if accepting?

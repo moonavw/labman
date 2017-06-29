@@ -13,8 +13,8 @@ class MergeRequestsController < ApplicationController
     respond_with @merge_request
   end
 
-  def accept
-    @merge_request.accept
+  def approve
+    @merge_request.approve
     respond_with @merge_request
   end
 

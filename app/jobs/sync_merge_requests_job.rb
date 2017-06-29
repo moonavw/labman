@@ -38,7 +38,7 @@ class SyncMergeRequestsJob < ApplicationJob
 
       if !b['work_in_progress'] && b['merge_status'] == 'can_be_merged' && b['upvotes'] > b['downvotes']
         # TODO: merge_when_build_succeeds
-        merge_request.state = :approved
+        merge_request.state = :reviewed
       else
         merge_request.state = :opened
       end

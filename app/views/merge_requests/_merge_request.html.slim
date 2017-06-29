@@ -3,8 +3,8 @@
     h3.panel-title
       = link_to icon_w(:code, merge_request.name), merge_request.url, target: '_blank'
   .panel-body
-    - if merge_request.can_accept?
-      p= link_to 'Accept', accept_merge_request_path(merge_request), method: :post, remote: true, disabled: merge_request.accepting?, class: 'btn btn-primary', data: {confirm: 'Are you sure to accept?', disable_with: 'accepting...', disabled_text: 'accepting...'}
+    - if merge_request.can_approve?
+      p= link_to 'Approve', approve_merge_request_path(merge_request), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to approve?', disable_with: 'approving...'}
 
     = render 'branches/label', branch: merge_request.branch
     span.label-group title="#{MergeRequest.human_attribute_name(:target_branch_name)}" data-toggle="tooltip" data-placement="top"

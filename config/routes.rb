@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     resources :branches
     resources :merge_requests do
       member do
-        post 'accept'
+        post 'approve'
       end
     end
     resources :builds do

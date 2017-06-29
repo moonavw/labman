@@ -1,6 +1,6 @@
 .row
   - MergeRequest.state.options.each do |text, value|
-    .col-md-4
+    .col-md-3 id="merge_request-state-#{value}"
       .page-header
         h3= text
       = render @merge_requests.with_state(value)
