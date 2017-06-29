@@ -28,10 +28,21 @@ class App
     build if state.locked?
   end
 
-  def promote
-    return unless pipeline
+  def lock
+    super && update(promoted_from: nil)
+  end
 
-    pipeline.promote(self)
+  def can_promote?
+    pipeline && next_stage
+  end
+
+  def promote
+    return unless can_promote?
+    return if promoting?
+
+    self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened)
+
+    PromoteAppJob.perform_later(self.id.to_s)
   end
 
   def promoting?
