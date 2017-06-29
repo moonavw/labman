@@ -7,6 +7,6 @@ module Configurable
   end
 
   def readable_config
-    config.to_yaml.lines[1..-1].join
+    config.to_yaml.gsub(/!ruby\/.+/, '')
   end
 end

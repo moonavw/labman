@@ -50,5 +50,7 @@ class SyncAppsJob < ApplicationJob
     orphans = prj.apps.destroy_all(:id.nin => synced_ids)
 
     logger.warn("Pruned #{orphans} apps")
+
+    SyncAppVersionJob.perform_later(*synced_ids.map(&:to_s))
   end
 end

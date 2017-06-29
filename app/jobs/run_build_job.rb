@@ -65,5 +65,7 @@ class RunBuildJob < ApplicationJob
     end while build.state.running?
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
+
+    SyncAppVersionJob.perform_later(build.app.id.to_s)
   end
 end

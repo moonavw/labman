@@ -14,6 +14,10 @@
     pre.collapse id="app-#{app.id}"
       = app.readable_config
 
+    - if app.version_name
+      span.label-group title="#{App.human_attribute_name(:version_name)}" data-toggle="tooltip" data-placement="top"
+        = tag_label icon_w(:tag), :default
+        = tag_label app.version_name, :info
     - build = app.locked_build
     - if build
       = render 'builds/label', build: build

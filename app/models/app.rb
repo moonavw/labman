@@ -10,6 +10,7 @@ class App
 
   field :uid, type: String
   field :url, type: String
+  field :version_name, type: String
 
   belongs_to :project
   belongs_to :pipeline, required: false
