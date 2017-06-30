@@ -7,6 +7,7 @@ class TeamsController < ApplicationController
   end
 
   def show
+    authorize! :read, @team
     respond_with @team
   end
 

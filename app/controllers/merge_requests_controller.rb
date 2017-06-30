@@ -10,10 +10,12 @@ class MergeRequestsController < ApplicationController
   end
 
   def show
+    authorize! :read, @merge_request
     respond_with @merge_request
   end
 
   def approve
+    authorize! :update, @merge_request
     @merge_request.approve
     respond_with @merge_request
   end
@@ -21,6 +23,7 @@ class MergeRequestsController < ApplicationController
   private
   def set_project
     @project = Project.find(params[:project_id])
+    authorize! :read, @project
     @release = @project.releases.find(params[:release_id]) if params[:release_id]
     @branch = @project.branches.find(params[:branch_id]) if params[:branch_id]
   end

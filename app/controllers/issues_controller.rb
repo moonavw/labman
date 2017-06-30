@@ -8,12 +8,14 @@ class IssuesController < ApplicationController
   end
 
   def show
+    authorize! :read, @issue
     respond_with @issue
   end
 
   private
   def set_project
     @project = Project.find(params[:project_id])
+    authorize! :read, @project
   end
 
   def set_issue

@@ -10,12 +10,14 @@ class BranchesController < ApplicationController
   end
 
   def show
+    authorize! :read, @branch
     respond_with @branch
   end
 
   private
   def set_project
     @project = Project.find(params[:project_id])
+    authorize! :read, @project
   end
 
   def set_branch

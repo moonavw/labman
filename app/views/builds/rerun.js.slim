@@ -1,2 +1,5 @@
-| $('#build-#{@build.id}').remove();
-| $('#build-state-#{@build.state}').append('#{ j( render @build ) }')
+| target = '#build-#{@build.id}';
+
+- unless @error
+  | $(target).remove();
+  | $('#build-state-#{@build.state}').append('#{ j( render @build ) }');

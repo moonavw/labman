@@ -1,1 +1,4 @@
-| $('#release-#{@release.id}').remove()
+| target = '#release-#{@release.id}';
+
+- unless @error
+  | $(target).remove();

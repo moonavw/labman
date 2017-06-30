@@ -17,22 +17,26 @@ class BuildsController < ApplicationController
   end
 
   def create
-    @build = Build.create(build_params)
-    @build.run if @build.persisted?
-    
+    @build = Build.new(build_params)
+    authorize! :create, @build
+    @build.run if @build.save
+
     respond_with @build
   end
 
   def show
+    authorize! :read, @build
     respond_with @build
   end
 
   def rerun
+    authorize! :update, @build
     @build.rerun
     respond_with @build
   end
 
   def destroy
+    authorize! :destroy, @build
     @build.destroy
     respond_with @build
   end
@@ -40,6 +44,7 @@ class BuildsController < ApplicationController
   private
   def set_project
     @project = Project.find(params[:project_id])
+    authorize! :read, @project
     @app = @project.apps.find(params[:app_id]) if params[:app_id]
     @branch = @project.branches.find(params[:branch_id]) if params[:branch_id]
   end

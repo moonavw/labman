@@ -8,20 +8,24 @@ class ReleasesController < ApplicationController
   end
 
   def show
+    authorize! :read, @release
     respond_with @release
   end
 
   def bump
+    authorize! :update, @release
     @release.bump
     respond_with @release
   end
 
   def rebuild
+    authorize! :update, @release
     @release.rebuild
     respond_with @release
   end
 
   def destroy
+    authorize! :update, @release
     @release.archive
     respond_with @release
   end
@@ -29,6 +33,7 @@ class ReleasesController < ApplicationController
   private
   def set_project
     @project = Project.find(params[:project_id])
+    authorize! :read, @project
   end
 
   def set_release

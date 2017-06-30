@@ -1,1 +1,4 @@
-| $('#build-#{@build.id}').remove();
+| target = '#build-#{@build.id}';
+
+- unless @error
+  | $(target).remove();

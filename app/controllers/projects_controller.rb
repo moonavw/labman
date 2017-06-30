@@ -8,12 +8,14 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    authorize! :read, @project
     respond_with @project
   end
 
   private
   def set_team
     @team = Team.find(params[:team_id])
+    authorize! :read, @team
   end
 
   def set_project
