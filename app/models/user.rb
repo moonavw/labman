@@ -35,12 +35,8 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
 
-  extend Enumerize
 
-  field :role
-  enumerize :role, in: [:user, :admin], default: :user
-
-  validates_presence_of :role
+  field :admin, type: Boolean
 
   alias_method :name, :email
 end

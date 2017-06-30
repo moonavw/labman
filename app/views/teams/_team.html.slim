@@ -16,3 +16,12 @@
     = link_to team_projects_path(team), class: 'list-group-item' do
       = Project.model_name.plural.titlecase
       = badge(team.projects.count)
+    = link_to "#team-members-#{team.id}", class: 'list-group-item', data: {toggle: 'collapse'} do
+      = Team.human_attribute_name(:members)
+      = badge(team.members.count)
+  ul.list-group.collapse id="team-members-#{team.id}"
+    - team.members.each do |user|
+      li.list-group-item
+        = user.name
+        - if team.managed_by?(user)
+          = badge 'master'

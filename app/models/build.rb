@@ -13,7 +13,7 @@ class Build
   belongs_to :issue, required: false
 
 
-  delegate :project,
+  delegate :project, :protected?,
            to: :branch
 
   after_create :lock_app

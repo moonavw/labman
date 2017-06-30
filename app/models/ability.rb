@@ -29,16 +29,39 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
-    can :read, :all
     if user
       # Always performed
       can :access, :rails_admin # needed to access RailsAdmin
       can :dashboard
-      can :export, :all
-      can :history, :all # for HistoryIndex
+      # can :read, :all
+      # can :export, :all
+      # can :history, :all # for HistoryIndex
 
-      if user.role.admin?
+      if user.admin?
         can :manage, :all
+      else
+        [Team, Project].each do |model|
+          can :read, model, model.all do |entity|
+            entity.joined_in?(user)
+          end
+        end
+        [App, Branch, Issue, Release, MergeRequest, Build].each do |model|
+          can :read, model, model.all do |entity|
+            entity.project.joined_in?(user)
+          end
+        end
+        [MergeRequest, Release].each do |model|
+          can :update, model, model.all do |entity|
+            entity.project.managed_by?(user)
+          end
+        end
+        can [:create, :update, :destroy], Build, Build.all do |entity|
+          if entity.protected?
+            entity.project.managed_by?(user)
+          else
+            entity.project.joined_in?(user)
+          end
+        end
       end
     end
   end

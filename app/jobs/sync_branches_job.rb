@@ -27,6 +27,7 @@ class SyncBranchesJob < ApplicationJob
     branches = resp.map {|d|
       b = d.to_hash
       branch = prj.branches.find_or_initialize_by(name: b['name'])
+      branch.protected = b['protected']
 
       if branch.save
         logger.info("Synced #{branch.named}")

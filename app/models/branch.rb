@@ -4,6 +4,8 @@ class Branch
 
   include Nameable
 
+  field :protected, type: Boolean
+
   belongs_to :project
 
   has_many :merge_requests, dependent: :destroy

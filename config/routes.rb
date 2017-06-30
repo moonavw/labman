@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  authenticate :user, lambda {|u| u.role.admin?} do
+  authenticate :user, lambda {|u| u.admin?} do
     require 'sidekiq/web'
     require 'sidekiq/cron/web'
     mount Sidekiq::Web => '/jobs', as: 'sidekiq'

@@ -6,7 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-admin = User.find_or_initialize_by(role: :admin, email: ENV['ADMIN_EMAIL'].dup)
+admin = User.find_or_initialize_by(admin: true, email: ENV['ADMIN_EMAIL'].dup)
 admin.password = ENV['ADMIN_PASSWORD'].dup
 admin.save!
 puts 'DEFAULT ADMIN: ' << admin.email
