@@ -40,7 +40,13 @@ class App
   def promote
     return unless can_promote?
 
-    self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened)
+    release_build_config_keys = project.config['RELEASE_BUILD_CONFIG'].keys
+
+    self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened).reject {|t|
+      release_build_config_keys.any? {|k|
+        t.config[k] == config[k]
+      }
+    }
 
     PromoteAppJob.perform_later(self.id.to_s) unless queued?(PromoteAppJob)
   end

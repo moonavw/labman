@@ -28,6 +28,8 @@ class RunBuildJob < ApplicationJob
         app: build.app.name
     }
 
+    job_params.merge!(build.config.symbolize_keys) if build.config
+
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
     previous_job_build_number = api_client.job.get_current_build_number(job_name)

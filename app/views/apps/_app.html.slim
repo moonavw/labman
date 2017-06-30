@@ -5,13 +5,13 @@
   .panel-body
     ul.list-inline
       li
-        a.btn.btn-primary data-toggle="collapse" href="#app-#{app.id}"
+        a.btn.btn-primary data-toggle="collapse" href="#app-config-#{app.id}"
           = App.human_attribute_name(:config)
 
       - if app.state.opened?
         li= link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
 
-    pre.collapse id="app-#{app.id}"
+    pre.collapse id="app-config-#{app.id}"
       = app.readable_config
 
     - if app.version_name

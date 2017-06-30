@@ -5,6 +5,7 @@ class Build
   include Nameable
   include Runnable
   include Queueable
+  include Configurable
 
 
   belongs_to :branch

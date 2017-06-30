@@ -54,8 +54,12 @@ class Release
 
     app = project.apps.with_stage(:development).first
 
+    config = project.config['RELEASE_BUILD_CONFIG'].map {|k, v|
+      [k, instance_eval(v)]
+    }.to_h
+
     branch.unbuild
-    branch.create_build(name: tag_name, app: app)
+    branch.create_build(name: tag_name, config: config, app: app)
 
     BuildReleaseJob.perform_later(self.id.to_s) unless queued?(BuildReleaseJob)
   end

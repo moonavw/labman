@@ -5,8 +5,15 @@
       - unless build.state.running?
         .pull-right= link_to icon_w(:trash_o), build, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to delete?', disable_with: 'deleting...'}
   .panel-body
-    - if build.can_rerun?
-      p= link_to 'Rerun', rerun_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rerun?', disable_with: 'rerunning...'}
+    ul.list-inline
+      li
+        a.btn.btn-primary data-toggle="collapse" href="#build-config-#{build.id}"
+          = Build.human_attribute_name(:config)
+      - if build.can_rerun?
+        li= link_to 'Rerun', rerun_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rerun?', disable_with: 'rerunning...'}
+
+    pre.collapse id="build-config-#{build.id}"
+      = build.readable_config
 
     = render 'branches/label', branch: build.branch
     = render 'apps/label', app: build.app

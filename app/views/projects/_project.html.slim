@@ -2,10 +2,10 @@
   .panel-heading
     h3.panel-title= icon_w :suitcase, project.name
   .panel-body
-    a.btn.btn-primary data-toggle="collapse" href="#project-#{project.id}"
+    a.btn.btn-primary data-toggle="collapse" href="#project-config-#{project.id}"
       = Project.human_attribute_name(:config)
 
-    pre.collapse id="project-#{project.id}"
+    pre.collapse id="project-config-#{project.id}"
       = project.readable_config
   .list-group
     = link_to project_apps_path(project), class: 'list-group-item' do
