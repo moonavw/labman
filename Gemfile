@@ -77,6 +77,5 @@ gem 'platform-api'
 
 gem 'rest-client'
 
-gem 'font-awesome-sass'
-gem 'twitter-bootstrap-rails'
+gem 'font-awesome-rails'
 gem 'bootstrap_form'
