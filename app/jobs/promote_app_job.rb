@@ -7,6 +7,7 @@ class PromoteAppJob < ApplicationJob
     }
   end
 
+  private
   def promote_app(app)
     logger.info("Promoting #{app.named} in #{app.pipeline.named}")
     logger.info("Stage from #{app.stage} to #{app.next_stage}")

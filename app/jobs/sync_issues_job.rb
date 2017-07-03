@@ -46,7 +46,7 @@ class SyncIssuesJob < ApplicationJob
     jql_params = {
         project: prj.config['JIRA_PROJECT'],
         sprint: sprint_id,
-        status: prj.config["JIRA_ISSUE_#{issue_state.to_s.upcase}"].join('", "')
+        status: prj.config['JIRA_ISSUE_STATUS'][issue_state.to_s.upcase].join('", "')
     }
 
     jql_template = 'project = %{project} AND status in ("%{status}") AND Sprint = %{sprint}'

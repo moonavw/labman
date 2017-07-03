@@ -62,5 +62,19 @@ class AcceptMergeRequestJob < ApplicationJob
     merge_request.update(state: :accepted)
 
     logger.info("Accepted #{merge_request.named}")
+
+    if merge_request.issue
+      target_transitions = prj.config['JIRA_ISSUE_TRANSITIONS']['ACCEPT_MERGE_REQUEST']
+      TransitIssueJob.perform_later(target_transitions, merge_request.issue.id.to_s)
+
+      if merge_request.release
+        VersionIssueJob.perform_later(merge_request.release.name, merge_request.issue.id.to_s)
+      else
+        logger.warn("Unable to version issue, since no release for #{merge_request.named}")
+      end
+    else
+      logger.warn("Unable to transit and version issue, since no issue for #{merge_request.named}")
+    end
+
   end
 end

@@ -7,6 +7,7 @@ class RunBuildJob < ApplicationJob
     }
   end
 
+  private
   def queue_build(build)
     logger.info("Run #{build.named}")
 

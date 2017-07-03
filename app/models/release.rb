@@ -54,7 +54,7 @@ class Release
 
     app = project.apps.with_stage(:development).first
 
-    config = project.config['RELEASE_BUILD_CONFIG'].map {|k, v|
+    config = project.config['RELEASE']['BUILD_CONFIG'].map {|k, v|
       [k, instance_eval(v)]
     }.to_h
 
