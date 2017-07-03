@@ -1,0 +1,29 @@
+# docker exec -e "ADMIN_EMAIL=<email>" -e "ADMIN_PASSWORD=<password>" $(docker-compose ps -q app) ./bin/rails db:seed
+
+version: "3"
+
+services:
+  app:
+    build: .
+    ports:
+      - 3000
+    environment:
+      MONGO_URL: mongo:27017
+      REDIS_URL: redis://redis:6379
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379
+
+  sidekiq:
+    image: labman_app
+    command: sidekiq
+    environment:
+      MONGO_URL: mongo:27017
+      REDIS_URL: redis://redis:6379

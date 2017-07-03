@@ -3,7 +3,6 @@
 :pidfile: ./tmp/pids/sidekiq.pid
 production:
   :concurrency: 20
-  :logfile: ./log/sidekiq.log
 :queues:
   - default
   - mailer
