@@ -1,5 +1,7 @@
 .label-group {
   display: inline-block;
+  margin-left: 1px;
+  margin-right: 1px;
 
   .label {
     font-weight: normal;
@@ -10,7 +12,6 @@
       margin-right: 0;
     }
 
-    & + .label-group .label,
     & + .label {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;

@@ -1,3 +1,7 @@
-= link_to app, class: 'label-group', title: app.stated, data: {toggle: 'tooltip', placement: 'top'} do
-  = tag_label icon_w(:cloud), :default
+ruby:
+  title ||= app.stated
+  icon ||= :cloud
+
+= link_to app, class: 'label-group', title: title, data: {toggle: 'tooltip', placement: 'top'} do
+  = tag_label icon_w(icon), :default
   = tag_label app.name, bs_context(app.state)
