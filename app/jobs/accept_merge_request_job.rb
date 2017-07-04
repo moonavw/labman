@@ -19,16 +19,21 @@ class AcceptMergeRequestJob < ApplicationJob
 
 
     prj = merge_request.project
-
-    api_client = prj.build_server.api_client
+    build_server = prj.build_server
+    api_client = build_server.api_client
 
     jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    logger.info("Found jobs on #{prj.build_server.named}: #{jobs}")
+    logger.info("Found jobs on #{build_server.named}: #{jobs}")
 
     job_name = jobs.select {|j|
       j.end_with?(job_name_suffix)
     }.first
+
+    unless job_name
+      logger.error("No job for #{job_name_suffix} on #{build_server.named}")
+      return
+    end
 
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
@@ -37,7 +42,7 @@ class AcceptMergeRequestJob < ApplicationJob
     resp = api_client.job.build(job_name, job_params)
 
     unless resp == '201'
-      logger.error("Unsuccessful queue job, #{prj.build_server.named} response: #{resp}")
+      logger.error("Unsuccessful queue job, #{build_server.named} response: #{resp}")
       return
     end
 

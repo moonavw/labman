@@ -12,16 +12,40 @@ class RunBuildJob < ApplicationJob
     logger.info("Run #{build.named}")
 
     prj = build.branch.project
-
-    api_client = prj.build_server.api_client
+    build_server = prj.build_server
+    api_client = build_server.api_client
 
     jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
 
-    logger.info("Found jobs on #{prj.build_server.named}: #{jobs}")
+    logger.info("Found jobs on #{build_server.named}: #{jobs}")
+
+    job_name_suffix = build.branch.name.gsub('/', '-')
 
     job_name = jobs.select {|j|
-      j.end_with?('build') || j.end_with?('deploy')
+      j.end_with?(job_name_suffix)
     }.first
+
+    unless job_name
+      logger.info("Creating job for #{job_name_suffix} on #{build_server.named}")
+      src_job_name = jobs.select {|j|
+        j.end_with?('build')
+      }.first
+      unless src_job_name
+        logger.error("No job for build on #{build_server.named}")
+        return
+      end
+
+      job_name = "#{src_job_name}-#{job_name_suffix}"
+      resp = api_client.job.copy(src_job_name, job_name)
+      unless %w(201 302).include?(resp)
+        logger.error("Unsuccessful Creating job, #{build_server.named} response: #{resp}")
+        return
+      end
+
+      # need disable then enable to make the job buildable
+      api_client.job.disable(job_name)
+      api_client.job.enable(job_name)
+    end
 
     job_params = {
         name: build.name,
@@ -38,7 +62,7 @@ class RunBuildJob < ApplicationJob
     resp = api_client.job.build(job_name, job_params)
 
     unless resp == '201'
-      logger.error("Unsuccessful queue job, #{prj.build_server.named} response: #{resp}")
+      logger.error("Unsuccessful queue job, #{build_server.named} response: #{resp}")
       return
     end
 
@@ -68,6 +92,9 @@ class RunBuildJob < ApplicationJob
     end while build.state.running?
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
+
+    # cleanup if success
+    api_client.job.delete(job_name) if build.status == :success
 
     SyncAppVersionJob.perform_later(build.app.id.to_s)
   end

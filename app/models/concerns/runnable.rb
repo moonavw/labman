@@ -36,7 +36,7 @@ module Runnable
   end
 
   def rerun
-    update(state: :pending) if can_rerun?
+    update(state: :pending, result: nil) if can_rerun?
     run
   end
 end
