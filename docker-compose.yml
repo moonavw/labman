@@ -10,6 +10,7 @@ services:
     environment:
       MONGO_URL: mongo:27017
       REDIS_URL: redis://redis:6379
+      ADMIN_EMAIL: admin@labman.local
 
   mongo:
     image: mongo
