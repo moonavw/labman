@@ -31,8 +31,8 @@ class Ability
 
     if user
       # Always performed
-      can :access, :rails_admin # needed to access RailsAdmin
-      can :dashboard
+      # can :access, :rails_admin # needed to access RailsAdmin
+      # can :dashboard
       # can :read, :all
       # can :export, :all
       # can :history, :all # for HistoryIndex
