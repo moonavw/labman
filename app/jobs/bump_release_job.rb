@@ -25,9 +25,8 @@ class BumpReleaseJob < ApplicationJob
 
     prj = release.project
     build_server = prj.build_server
-    api_client = build_server.api_client
 
-    jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
+    jobs = build_server.api_client.job.list(prj.config[:JENKINS_PROJECT])
 
     logger.info("Found jobs on #{build_server.named}: #{jobs}")
 
@@ -42,9 +41,9 @@ class BumpReleaseJob < ApplicationJob
 
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
-    previous_job_build_number = api_client.job.get_current_build_number(job_name)
+    previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)
 
-    resp = api_client.job.build(job_name, job_params)
+    resp = build_server.api_client.job.build(job_name, job_params)
 
     unless resp == '201'
       logger.error("Unsuccessful queue job, #{build_server.named} response: #{resp}")
@@ -55,12 +54,12 @@ class BumpReleaseJob < ApplicationJob
 
     begin
       sleep 5
-      job_build_number = api_client.job.get_current_build_number(job_name)
+      job_build_number = build_server.api_client.job.get_current_build_number(job_name)
     end while job_build_number == previous_job_build_number
 
     begin
       sleep 5
-      status = api_client.job.status(job_name)
+      status = build_server.api_client.job.status(job_name)
       logger.info("Job #{job_name} status: #{status}")
     end while status == 'running'
 

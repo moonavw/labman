@@ -19,16 +19,16 @@ class SyncReleasesJob < ApplicationJob
   def sync_releases(prj)
     logger.info("Syncing releases for #{prj.named}")
 
-    api_client = prj.code_manager.api_client
+    code_manager = prj.code_manager
 
-    resp = api_client.tags(prj.config[:GITLAB_PROJECT])
+    resp = code_manager.api_client.tags(prj.config[:GITLAB_PROJECT])
     tags = resp.map(&:to_hash).reject {|tag|
       tag['name'].include?('-')
     }.sort {|x, y|
       Gem::Version.new(y['name'].sub('v', '')) <=> Gem::Version.new(x['name'].sub('v', ''))
     }
 
-    resp = api_client.milestones(prj.config[:GITLAB_PROJECT])
+    resp = code_manager.api_client.milestones(prj.config[:GITLAB_PROJECT])
     releases = resp.map {|d|
       r = d.to_hash
       release = prj.releases.find_or_initialize_by(name: r['title'])
@@ -51,7 +51,7 @@ class SyncReleasesJob < ApplicationJob
         release.tag_name = latest_tag['name']
 
         if release.branch
-          commits = api_client.commits(prj.config[:GITLAB_PROJECT], {ref_name: release.branch.name})
+          commits = code_manager.api_client.commits(prj.config[:GITLAB_PROJECT], {ref_name: release.branch.name})
           latest_commit = commits.first
           if latest_commit
             c = latest_commit.to_hash

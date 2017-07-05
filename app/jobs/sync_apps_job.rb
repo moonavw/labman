@@ -21,16 +21,15 @@ class SyncAppsJob < ApplicationJob
   def sync_apps(prj)
     logger.info("Syncing apps for #{prj.named}")
 
-    api_client = prj.app_platform.api_client
+    app_platform = prj.app_platform
 
-    resp = api_client.app.list.select {|a|
+    resp = app_platform.api_client.app.list.select {|a|
       a['name'].start_with? prj.config[:HEROKU_PROJECT]
     }
     apps = resp.map {|a|
       app = prj.apps.find_or_initialize_by(name: a['name'])
       app.uid = a['id']
       app.url = a['web_url']
-      app.config = api_client.config_var.info_for_app(app.name)
 
       app.state = :opened unless app.locked_build
 
@@ -51,6 +50,7 @@ class SyncAppsJob < ApplicationJob
 
     logger.warn("Pruned #{orphans} apps")
 
+    SyncAppConfigJob.perform_later(*synced_ids.map(&:to_s))
     SyncAppVersionJob.perform_later(*synced_ids.map(&:to_s))
   end
 end

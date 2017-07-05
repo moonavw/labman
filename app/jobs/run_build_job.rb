@@ -13,9 +13,8 @@ class RunBuildJob < ApplicationJob
 
     prj = build.branch.project
     build_server = prj.build_server
-    api_client = build_server.api_client
 
-    jobs = api_client.job.list(prj.config[:JENKINS_PROJECT])
+    jobs = build_server.api_client.job.list(prj.config[:JENKINS_PROJECT])
 
     logger.info("Found jobs on #{build_server.named}: #{jobs}")
 
@@ -36,15 +35,15 @@ class RunBuildJob < ApplicationJob
       end
 
       job_name = "#{src_job_name}-#{job_name_suffix}"
-      resp = api_client.job.copy(src_job_name, job_name)
+      resp = build_server.api_client.job.copy(src_job_name, job_name)
       unless %w(201 302).include?(resp)
         logger.error("Unsuccessful Creating job, #{build_server.named} response: #{resp}")
         return
       end
 
       # need disable then enable to make the job buildable
-      api_client.job.disable(job_name)
-      api_client.job.enable(job_name)
+      build_server.api_client.job.disable(job_name)
+      build_server.api_client.job.enable(job_name)
     end
 
     job_params = {
@@ -53,13 +52,22 @@ class RunBuildJob < ApplicationJob
         app: build.app.name
     }
 
-    job_params.merge!(build.config.symbolize_keys) if build.config
+    if build.config
+      config_keys = build.config.keys & build.app.config.keys
+
+      app_config = build.config.select {|k, v| config_keys.include?(k)}
+      logger.info("#{build.named} requires app config: #{app_config}")
+
+      job_config = build.config.reject {|k, v| config_keys.include?(k)}
+      logger.info("#{build.named} requires job config: #{job_config}")
+      job_params.merge!(job_config.symbolize_keys)
+    end
 
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
-    previous_job_build_number = api_client.job.get_current_build_number(job_name)
+    previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)
 
-    resp = api_client.job.build(job_name, job_params)
+    resp = build_server.api_client.job.build(job_name, job_params)
 
     unless resp == '201'
       logger.error("Unsuccessful queue job, #{build_server.named} response: #{resp}")
@@ -70,12 +78,12 @@ class RunBuildJob < ApplicationJob
 
     begin
       sleep 5
-      job_build_number = api_client.job.get_current_build_number(job_name)
+      job_build_number = build_server.api_client.job.get_current_build_number(job_name)
     end while job_build_number == previous_job_build_number
 
     begin
       sleep 5
-      status = api_client.job.status(job_name)
+      status = build_server.api_client.job.status(job_name)
       logger.info("Job #{job_name} status: #{status}")
 
       case status
@@ -94,7 +102,16 @@ class RunBuildJob < ApplicationJob
     logger.info("Finished Run #{build.named} -> #{build.status}")
 
     # cleanup if success
-    api_client.job.delete(job_name) if build.status == :success
+    build_server.api_client.job.delete(job_name) if build.status == :success
+
+    if app_config
+      logger.info("Updating #{build.app.named} config: #{app_config}")
+      app_platform = prj.app_platform
+      app_platform.api_client.config_var.update(build.app.name, app_config)
+      logger.info("Updated #{build.app.named} config: #{app_config}")
+
+      SyncAppConfigJob.perform_later(build.app.id.to_s)
+    end
 
     SyncAppVersionJob.perform_later(build.app.id.to_s)
   end

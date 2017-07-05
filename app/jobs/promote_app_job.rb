@@ -14,7 +14,7 @@ class PromoteAppJob < ApplicationJob
     logger.info("Targets: #{app.promoted_to.map(&:name)}")
 
     prj = app.project
-    api_client = prj.app_platform.api_client
+    app_platform = prj.app_platform
 
     promotion_params = {
         pipeline: {
@@ -33,13 +33,13 @@ class PromoteAppJob < ApplicationJob
           }
         }
     }
-    promotion = api_client.pipeline_promotion.create(promotion_params)
+    promotion = app_platform.api_client.pipeline_promotion.create(promotion_params)
 
     logger.info("Created promotion for #{app.named}, wait a few sec to check status")
 
     begin
       sleep 5
-      promotion = api_client.pipeline_promotion.info(promotion['id'])
+      promotion = app_platform.api_client.pipeline_promotion.info(promotion['id'])
 
       logger.info("Promotion status: #{promotion['status']}")
 

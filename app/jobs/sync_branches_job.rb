@@ -21,9 +21,9 @@ class SyncBranchesJob < ApplicationJob
   def sync_branches(prj)
     logger.info("Syncing branches for #{prj.named}")
 
-    api_client = prj.code_manager.api_client
+    code_manager = prj.code_manager
 
-    resp = api_client.branches(prj.config[:GITLAB_PROJECT])
+    resp = code_manager.api_client.branches(prj.config[:GITLAB_PROJECT])
     branches = resp.map {|d|
       b = d.to_hash
       branch = prj.branches.find_or_initialize_by(name: b['name'])

@@ -19,9 +19,9 @@ class SyncIssuesJob < ApplicationJob
   def sync_issues(prj)
     logger.info("Syncing issues for #{prj.named}")
 
-    api_client = prj.issue_tracker.api_client
+    issue_tracker = prj.issue_tracker
 
-    resp = api_client.Agile.get_sprints(prj.config['JIRA_BOARD'], {state: 'active'})
+    resp = issue_tracker.api_client.Agile.get_sprints(prj.config['JIRA_BOARD'], {state: 'active'})
     cur_sprint = resp['values'].select {|d| d['originBoardId'] == prj.config['JIRA_BOARD']}.last
 
     logger.info("From current active sprint: #{cur_sprint['name']}")
@@ -41,7 +41,7 @@ class SyncIssuesJob < ApplicationJob
   def sync_issues_by_state(prj, sprint_id, issue_state)
     logger.info("Syncing #{issue_state} issues for #{prj.named}")
 
-    api_client = prj.issue_tracker.api_client
+    issue_tracker = prj.issue_tracker
 
     jql_params = {
         project: prj.config['JIRA_PROJECT'],
@@ -54,8 +54,8 @@ class SyncIssuesJob < ApplicationJob
 
     logger.info("Search issues with the jql: #{jql}")
 
-    # resp = api_client.Agile.get_sprint_issues(sprint_id, {fields: 'status,fixVersions', maxResults: 150})
-    resp = api_client.Issue.jql(jql, {fields: %w(fixVersions), maxResults: 100})
+    # resp = issue_tracker.api_client.Agile.get_sprint_issues(sprint_id, {fields: 'status,fixVersions', maxResults: 150})
+    resp = issue_tracker.api_client.Issue.jql(jql, {fields: %w(fixVersions), maxResults: 100})
 
     issues = resp.map {|d|
       issue = prj.issues.find_or_initialize_by(name: d.key)

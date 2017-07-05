@@ -10,12 +10,12 @@ class TransitIssueJob < ApplicationJob
   private
   def transit_issue(issue, target_transitions)
     prj = issue.project
-    api_client = prj.issue_tracker.api_client
+    issue_tracker = prj.issue_tracker
 
     logger.info("Transiting #{issue.named} to #{target_transitions}")
 
-    r_issue = api_client.Issue.find(issue.name, {fields: []})
-    transitions = api_client.Transition.all(issue: r_issue)
+    r_issue = issue_tracker.api_client.Issue.find(issue.name, {fields: []})
+    transitions = issue_tracker.api_client.Transition.all(issue: r_issue)
 
     logger.info("Available transitions: #{transitions.map(&:name)}")
 

@@ -15,9 +15,9 @@ class VersionIssueJob < ApplicationJob
     end
 
     prj = issue.project
-    api_client = prj.issue_tracker.api_client
+    issue_tracker = prj.issue_tracker
 
-    r_issue = api_client.Issue.find(issue.name, {fields: 'fixVersions'})
+    r_issue = issue_tracker.api_client.Issue.find(issue.name, {fields: 'fixVersions'})
 
     r_editmeta = r_issue.editmeta
     matched_version = r_editmeta['fixVersions']['allowedValues'].select {|f|

@@ -19,9 +19,9 @@ class SyncPipelinesJob < ApplicationJob
   def sync_pipelines(prj)
     logger.info("Syncing pipelines for #{prj.named}")
 
-    api_client = prj.app_platform.api_client
+    app_platform = prj.app_platform
 
-    resp = api_client.pipeline.list.select {|pl|
+    resp = app_platform.api_client.pipeline.list.select {|pl|
       pl['name'].start_with? prj.config[:HEROKU_PROJECT]
     }
     pipelines = resp.map {|pl|
@@ -32,7 +32,7 @@ class SyncPipelinesJob < ApplicationJob
         logger.info("Synced #{pipeline.named}")
 
         # coupling apps to pipeline
-        couplings = api_client.pipeline_coupling.list_by_pipeline(pipeline.uid)
+        couplings = app_platform.api_client.pipeline_coupling.list_by_pipeline(pipeline.uid)
         apps = couplings.map {|c|
           app = prj.apps.find_by(uid: c['app']['id'])
           app.stage = c['stage'].to_sym

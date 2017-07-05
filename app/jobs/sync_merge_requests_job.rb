@@ -19,9 +19,9 @@ class SyncMergeRequestsJob < ApplicationJob
   def sync_merge_requests(prj)
     logger.info("Syncing merge requests for #{prj.named}")
 
-    api_client = prj.code_manager.api_client
+    code_manager = prj.code_manager
 
-    resp = api_client.merge_requests(prj.config[:GITLAB_PROJECT], {state: :opened, per_page: 50})
+    resp = code_manager.api_client.merge_requests(prj.config[:GITLAB_PROJECT], {state: :opened, per_page: 50})
     merge_requests = resp.map {|d|
       b = d.to_hash
 
@@ -63,10 +63,10 @@ class SyncMergeRequestsJob < ApplicationJob
   def sync_orphaned_merge_requests(prj, orphans)
     logger.info("Syncing orphaned #{orphans.count} merge requests for #{prj.named}")
 
-    api_client = prj.code_manager.api_client
+    code_manager = prj.code_manager
 
     orphans.each {|merge_request|
-      resp = api_client.merge_request(prj.config[:GITLAB_PROJECT], merge_request.uid)
+      resp = code_manager.api_client.merge_request(prj.config[:GITLAB_PROJECT], merge_request.uid)
       b = resp.to_hash
 
       if b['state'] == 'closed'
