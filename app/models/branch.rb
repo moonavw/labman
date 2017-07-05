@@ -22,4 +22,8 @@ class Branch
   def unbuild
     build.destroy if build
   end
+
+  def flat_name
+    name.gsub('/', '-')
+  end
 end

@@ -15,6 +15,7 @@ class SyncBranchesJob < ApplicationJob
     }
 
     SyncMergeRequestsJob.perform_later(*project_ids)
+    CleanupBuildsJob.perform_later(*project_ids)
   end
 
   private

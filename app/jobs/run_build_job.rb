@@ -15,7 +15,7 @@ class RunBuildJob < ApplicationJob
     build_server = prj.build_server
 
     job_name_prefix = prj.config[:JENKINS_PROJECT][:BUILD]
-    job_name = "#{job_name_prefix}-#{build.branch.name.gsub('/', '-')}"
+    job_name = "#{job_name_prefix}-#{build.branch.flat_name}"
 
     unless build_server.api_client.job.exists?(job_name)
       logger.info("Creating job: #{job_name} on #{build_server.named}")
@@ -90,9 +90,6 @@ class RunBuildJob < ApplicationJob
     end while build.state.running?
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
-
-    # cleanup if success
-    build_server.api_client.job.delete(job_name) if build.status == :success
 
     if app_config
       logger.info("Updating #{build.app.named} config: #{app_config}")
