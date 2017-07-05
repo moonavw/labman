@@ -21,8 +21,8 @@ class SyncIssuesJob < ApplicationJob
 
     issue_tracker = prj.issue_tracker
 
-    resp = issue_tracker.api_client.Agile.get_sprints(prj.config['JIRA_BOARD'], {state: 'active'})
-    cur_sprint = resp['values'].select {|d| d['originBoardId'] == prj.config['JIRA_BOARD']}.last
+    resp = issue_tracker.api_client.Agile.get_sprints(prj.config[:JIRA_BOARD], {state: 'active'})
+    cur_sprint = resp['values'].select {|d| d['originBoardId'] == prj.config[:JIRA_BOARD]}.last
 
     logger.info("From current active sprint: #{cur_sprint['name']}")
 
@@ -44,9 +44,9 @@ class SyncIssuesJob < ApplicationJob
     issue_tracker = prj.issue_tracker
 
     jql_params = {
-        project: prj.config['JIRA_PROJECT'],
+        project: prj.config[:JIRA_PROJECT],
         sprint: sprint_id,
-        status: prj.config['JIRA_ISSUE_STATUS'][issue_state.to_s.upcase].join('", "')
+        status: prj.config[:JIRA_ISSUE_STATUS][issue_state.to_s.upcase].join('", "')
     }
 
     jql_template = 'project = %{project} AND status in ("%{status}") AND Sprint = %{sprint}'
@@ -71,7 +71,7 @@ class SyncIssuesJob < ApplicationJob
       }.first
 
       url_params = {
-          site: prj.issue_tracker.config['site'].chomp('/'),
+          site: prj.issue_tracker.config[:site].chomp('/'),
           key: issue.name
       }
       issue.url = '%{site}/browse/%{key}' % url_params

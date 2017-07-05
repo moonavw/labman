@@ -14,28 +14,18 @@ class RunBuildJob < ApplicationJob
     prj = build.branch.project
     build_server = prj.build_server
 
-    jobs = build_server.api_client.job.list(prj.config[:JENKINS_PROJECT])
+    job_name_prefix = prj.config[:JENKINS_PROJECT][:BUILD]
+    job_name = "#{job_name_prefix}-#{build.branch.name.gsub('/', '-')}"
 
-    logger.info("Found jobs on #{build_server.named}: #{jobs}")
+    unless build_server.api_client.job.exists?(job_name)
+      logger.info("Creating job: #{job_name} on #{build_server.named}")
 
-    job_name_suffix = build.branch.name.gsub('/', '-')
-
-    job_name = jobs.select {|j|
-      j.end_with?(job_name_suffix)
-    }.first
-
-    unless job_name
-      logger.info("Creating job for #{job_name_suffix} on #{build_server.named}")
-      src_job_name = jobs.select {|j|
-        j.end_with?('build')
-      }.first
-      unless src_job_name
-        logger.error("No job for build on #{build_server.named}")
+      unless build_server.api_client.job.exists?(job_name_prefix)
+        logger.error("Not found #{job_name_prefix} on #{build_server.named}")
         return
       end
 
-      job_name = "#{src_job_name}-#{job_name_suffix}"
-      resp = build_server.api_client.job.copy(src_job_name, job_name)
+      resp = build_server.api_client.job.copy(job_name_prefix, job_name)
       unless %w(201 302).include?(resp)
         logger.error("Unsuccessful Creating job, #{build_server.named} response: #{resp}")
         return

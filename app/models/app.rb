@@ -40,7 +40,7 @@ class App
   def promote
     return unless can_promote?
 
-    release_build_config_keys = project.config['RELEASE']['BUILD_CONFIG'].keys
+    release_build_config_keys = project.config[:RELEASE][:BUILD_CONFIG].keys
 
     self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened).reject {|t|
       release_build_config_keys.any? {|k|

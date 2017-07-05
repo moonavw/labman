@@ -12,12 +12,12 @@ class BumpReleaseJob < ApplicationJob
     logger.info("Bumping #{release.named}")
 
     if release.branch
-      job_name_suffix = 'rc-patch'
+      job_name = prj.config[:JENKINS_PROJECT][:RC_PATCH]
       job_params = {
           RC_VERSION: release.name
       }
     else
-      job_name_suffix = 'rc'
+      job_name = prj.config[:JENKINS_PROJECT][:RC]
       job_params = {
           SEMVER: 'minor'
       }
@@ -26,16 +26,8 @@ class BumpReleaseJob < ApplicationJob
     prj = release.project
     build_server = prj.build_server
 
-    jobs = build_server.api_client.job.list(prj.config[:JENKINS_PROJECT])
-
-    logger.info("Found jobs on #{build_server.named}: #{jobs}")
-
-    job_name = jobs.select {|j|
-      j.end_with?(job_name_suffix)
-    }.first
-
-    unless job_name
-      logger.error("No job for #{job_name_suffix} on #{build_server.named}")
+    unless build_server.api_client.job.exists?(job_name)
+      logger.error("Not found #{job_name} on #{build_server.named}")
       return
     end
 

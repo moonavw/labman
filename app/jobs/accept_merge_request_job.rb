@@ -11,7 +11,6 @@ class AcceptMergeRequestJob < ApplicationJob
   def accept_merge_request(merge_request)
     logger.info("Accepting #{merge_request.named}")
 
-    job_name_suffix = 'mr-accept'
     job_params = {
         sourceBranch: merge_request.source_branch.name,
         targetBranch: merge_request.target_branch_name
@@ -21,18 +20,13 @@ class AcceptMergeRequestJob < ApplicationJob
     prj = merge_request.project
     build_server = prj.build_server
 
-    jobs = build_server.api_client.job.list(prj.config[:JENKINS_PROJECT])
+    job_name = prj.config[:JENKINS_PROJECT][:ACCEPT_MERGE_REQUEST]
 
-    logger.info("Found jobs on #{build_server.named}: #{jobs}")
-
-    job_name = jobs.select {|j|
-      j.end_with?(job_name_suffix)
-    }.first
-
-    unless job_name
-      logger.error("No job for #{job_name_suffix} on #{build_server.named}")
+    unless build_server.api_client.job.exists?(job_name)
+      logger.error("Not found #{job_name} on #{build_server.named}")
       return
     end
+
 
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
@@ -68,7 +62,7 @@ class AcceptMergeRequestJob < ApplicationJob
     logger.info("Accepted #{merge_request.named}")
 
     if merge_request.issue
-      target_transitions = prj.config['JIRA_ISSUE_TRANSITIONS']['ACCEPT_MERGE_REQUEST']
+      target_transitions = prj.config[:JIRA_ISSUE_TRANSITIONS][:ACCEPT_MERGE_REQUEST]
       TransitIssueJob.perform_later(target_transitions, merge_request.issue.id.to_s)
 
       if merge_request.release

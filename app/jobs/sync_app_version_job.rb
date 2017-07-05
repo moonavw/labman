@@ -10,9 +10,9 @@ class SyncAppVersionJob < ApplicationJob
   private
   def sync_app_version(app)
     prj = app.project
-    config = prj.config['APP']['CONFIG'].merge(app.config)
+    config = prj.config[:APP][:CONFIG].merge(app.config)
 
-    app_version_api = app.url.chomp('/') + prj.config['APP']['VERSION_API'] % config.symbolize_keys
+    app_version_api = app.url.chomp('/') + prj.config[:APP][:VERSION_API] % config.symbolize_keys
     logger.info("Fetching #{app.named} version: #{app_version_api}")
 
     begin

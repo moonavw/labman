@@ -28,7 +28,7 @@ class BuildReleaseJob < ApplicationJob
     build.app.promote if build.status == :success
 
     prj = release.project
-    target_transitions = prj.config['JIRA_ISSUE_TRANSITIONS']['BUILD_RELEASE']
+    target_transitions = prj.config[:JIRA_ISSUE_TRANSITIONS][:BUILD_RELEASE]
 
     release.issues.each {|issue|
       TransitIssueJob.perform_later(target_transitions, issue.id.to_s)
