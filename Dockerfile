@@ -11,6 +11,7 @@ COPY . .
 
 RUN echo "SECRET_KEY_BASE: "$(rake secret) > config/application.yml
 
+RUN rails tmp:create
 RUN rails assets:precompile
 
 EXPOSE 3000
