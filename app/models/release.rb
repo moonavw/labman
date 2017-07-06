@@ -46,7 +46,8 @@ class Release
     return false unless branch
     return false unless tag_name
     return true unless branch.build
-    branch.build.name != tag_name
+    return false unless branch.build.can_rerun?
+    tag_name != "v#{branch.build.app.version_name}"
   end
 
   def rebuild
@@ -54,12 +55,15 @@ class Release
 
     app = project.apps.with_stage(:development).first
 
-    config = project.config[:RELEASE][:BUILD_CONFIG].map {|k, v|
+    config = project.config[:RELEASE][:BUILD][:CONFIG].map {|k, v|
       [k, instance_eval(v)]
     }.to_h
 
-    branch.unbuild
-    branch.create_build(name: tag_name, config: config, app: app)
+    unless branch.build
+      branch.create_build(name: project.config[:RELEASE][:BUILD][:NAME], config: config, app: app)
+    else
+      branch.build.reset
+    end
 
     BuildReleaseJob.perform_later(self.id.to_s) unless queued?(BuildReleaseJob)
   end

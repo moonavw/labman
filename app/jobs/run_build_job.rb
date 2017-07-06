@@ -37,22 +37,19 @@ class RunBuildJob < ApplicationJob
     end
 
     job_params = {
-        name: build.name,
-        branch: build.branch.name,
-        app: build.app.name
+        NAME: build.name,
+        BRANCH: build.branch.name,
+        APP: build.app.name
     }
 
-    if build.config
+    if build.config && !build.config.empty?
       config_keys = build.config.keys & build.app.config.keys
 
       app_config = build.config.select {|k, v| config_keys.include?(k)}
       logger.info("#{build.named} requires app config: #{app_config}")
-
-      job_config = build.config.reject {|k, v| config_keys.include?(k)}
-      logger.info("#{build.named} requires job config: #{job_config}")
-      job_params.merge!(job_config.symbolize_keys)
     end
 
+    job_params.merge!(build.full_config.symbolize_keys)
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
     previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)
@@ -91,7 +88,7 @@ class RunBuildJob < ApplicationJob
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
 
-    if app_config
+    if app_config && !app_config.empty?
       logger.info("Updating #{build.app.named} config: #{app_config}")
       app_platform = prj.app_platform
       app_platform.api_client.config_var.update(build.app.name, app_config)

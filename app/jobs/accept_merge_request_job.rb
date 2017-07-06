@@ -12,8 +12,8 @@ class AcceptMergeRequestJob < ApplicationJob
     logger.info("Accepting #{merge_request.named}")
 
     job_params = {
-        sourceBranch: merge_request.source_branch.name,
-        targetBranch: merge_request.target_branch_name
+        SOURCE_BRANCH: merge_request.source_branch.name,
+        TARGET_BRANCH: merge_request.target_branch_name
     }
 
 
