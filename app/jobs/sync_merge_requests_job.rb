@@ -36,7 +36,7 @@ class SyncMergeRequestsJob < ApplicationJob
         b['title'].include?(issue.name)
       }.first
 
-      if !b['work_in_progress'] && b['merge_status'] == 'can_be_merged' && b['upvotes'] > b['downvotes']
+      if !b['work_in_progress'] && b['merge_status'] == 'can_be_merged' && (b['upvotes'] - b['downvotes']) >= prj.config[:MERGE_REQUEST][:APPROVAL]
         # TODO: merge_when_build_succeeds
         merge_request.state = :reviewed
       else
