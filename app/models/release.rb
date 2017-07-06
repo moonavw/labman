@@ -33,7 +33,7 @@ class Release
   end
 
   def can_bump?
-    state.in_progress? && super
+    state.in_progress? && super && Release.with_state(:in_progress).count == 1
   end
 
   def bump

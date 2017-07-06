@@ -51,12 +51,24 @@ class SyncReleasesJob < ApplicationJob
         release.tag_name = latest_tag['name']
 
         if release.branch
+          unless release.branch.protected?
+            logger.info("Protect #{release.branch.named}")
+            code_manager.api_client.protect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
+          end
+
           commits = code_manager.api_client.commits(prj.config[:GITLAB_PROJECT], {ref_name: release.branch.name})
           latest_commit = commits.first
           if latest_commit
             c = latest_commit.to_hash
             if c['id'] == latest_tag['commit']['id']
               release.check = :updated
+
+              if release.state.done?
+                logger.info("Close #{release.named} at #{release.tag_name}, Unprotect and delete #{release.branch.named}")
+                code_manager.api_client.unprotect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
+                code_manager.api_client.delete_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
+                release.branch.destroy
+              end
             else
               release.check = :outdated
             end
