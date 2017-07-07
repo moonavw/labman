@@ -11,6 +11,9 @@ class BumpReleaseJob < ApplicationJob
   def bump_release(release)
     logger.info("Bumping #{release.named}")
 
+    prj = release.project
+    build_server = prj.build_server
+
     if release.branch
       job_name = prj.config[:JENKINS_PROJECT][:RC_PATCH]
       job_params = {
@@ -22,9 +25,6 @@ class BumpReleaseJob < ApplicationJob
           SEMVER: 'minor'
       }
     end
-
-    prj = release.project
-    build_server = prj.build_server
 
     unless build_server.api_client.job.exists?(job_name)
       logger.error("Not found #{job_name} on #{build_server.named}")
