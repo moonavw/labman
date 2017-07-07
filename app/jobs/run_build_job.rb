@@ -94,7 +94,9 @@ class RunBuildJob < ApplicationJob
       app_platform.api_client.config_var.update(build.app.name, app_config)
       logger.info("Updated #{build.app.named} config: #{app_config}")
 
-      SyncAppConfigJob.perform_later(build.app.id.to_s)
+      # update locals instead of SyncAppConfigJob.perform_later(build.app.id.to_s)
+      build.app.config.merge!(app_config)
+      build.app.save!
     end
 
     SyncAppVersionJob.perform_later(build.app.id.to_s)
