@@ -45,6 +45,6 @@ class Build
   def full_config
     project.config[:BUILD][:CONFIG].map {|k, v|
       [k, instance_eval(v)]
-    }.to_h.merge(config)
+    }.to_h.merge(config||{})
   end
 end
