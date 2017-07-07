@@ -29,6 +29,9 @@ class SyncBranchesJob < ApplicationJob
       b = d.to_hash
       branch = prj.branches.find_or_initialize_by(name: b['name'])
       branch.protected = b['protected']
+      branch.commit = b['commit']['id']
+
+      branch.build.rerun if branch.commit_changed? && branch.build
 
       if branch.save
         logger.info("Synced #{branch.named}")

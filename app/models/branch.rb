@@ -4,6 +4,7 @@ class Branch
 
   include Nameable
 
+  field :commit, type: String
   field :protected, type: Boolean
 
   belongs_to :project
