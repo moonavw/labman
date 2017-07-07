@@ -57,6 +57,7 @@ class SyncReleasesJob < ApplicationJob
           unless release.branch.protected?
             logger.info("Protect #{release.branch.named}")
             code_manager.api_client.protect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
+            release.branch.update(protected: true)
           end
 
           if release.branch.commit == latest_tag['commit']['id']

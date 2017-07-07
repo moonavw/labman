@@ -31,3 +31,8 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    help:
+      build:
+        name: "the name for version. e.g. feature-name, epic-name, phase-name."
+        readable_config: "config for app, in YAML format, e.g. key: value"

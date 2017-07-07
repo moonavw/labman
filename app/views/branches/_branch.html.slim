@@ -1,6 +1,9 @@
-= panel branch.protected? ? :warning : :default do
+= panel do
   .panel-heading
-    h3.panel-title= icon_w :code_fork, branch.name
+    h3.panel-title
+      = icon_w :code_fork, branch.name
+      - if branch.protected?
+        .pull-right= icon_w(:lock)
   .panel-body
     - build = branch.build
     - if build

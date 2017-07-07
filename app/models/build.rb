@@ -12,6 +12,7 @@ class Build
   belongs_to :app
   belongs_to :issue, required: false
 
+  validates_format_of :name, with: /\A[0-9a-z-]+\z/
 
   delegate :project, :protected?,
            to: :branch
