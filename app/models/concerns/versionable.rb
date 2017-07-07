@@ -16,6 +16,6 @@ module Versionable
   end
 
   def bump
-    update(check: nil) if can_bump?
+    update(check: :updated) if can_bump?
   end
 end

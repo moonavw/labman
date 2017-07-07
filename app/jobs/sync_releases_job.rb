@@ -43,6 +43,9 @@ class SyncReleasesJob < ApplicationJob
           # nothing
       end
 
+      # move to in progress if possible
+      release.work_in_progress
+
       latest_tag = tags.select {|tag|
         tag['name'].start_with?("v#{release.name}.")
       }.first
@@ -76,11 +79,10 @@ class SyncReleasesJob < ApplicationJob
         end
       else
         release.tag_name = nil
-        release.check = :outdated unless release.state.done?
+        release.check = :outdated if release.state.in_progress?
       end
 
       if release.save
-        release.work_in_progress
         logger.info("Synced #{release.named}")
       else
         logger.error("Failed sync #{release.named}")
