@@ -6,10 +6,11 @@
     - if merge_request.can_approve?
       p= link_to 'Approve', approve_merge_request_path(merge_request), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to approve?', disable_with: 'approving...'}
 
-    = render 'branches/label', branch: merge_request.branch
-    span.label-group title="#{MergeRequest.human_attribute_name(:target_branch_name)}" data-toggle="tooltip" data-placement="top"
-      = tag_label icon_w(:arrow_right), :default
-      = tag_label merge_request.target_branch_name, :info
+    - if merge_request.source_branch.present?
+      = render 'branches/label', branch: merge_request.source_branch, title: MergeRequest.human_attribute_name(:source_branch)
+    - if merge_request.target_branch.present?
+      = render 'branches/label', branch: merge_request.target_branch, icon: :arrow_right, title: MergeRequest.human_attribute_name(:target_branch)
+
     - release = merge_request.release
     - if release
       = render 'releases/label', release: release

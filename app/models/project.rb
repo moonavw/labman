@@ -9,6 +9,7 @@ class Project
   belongs_to :team
 
   has_many :branches, dependent: :destroy
+  has_many :merge_requests, dependent: :destroy
   has_many :releases, dependent: :destroy
   has_many :issues, dependent: :destroy
   has_many :apps, dependent: :destroy
@@ -21,9 +22,5 @@ class Project
 
   def builds
     Build.where(:branch_id.in => branch_ids)
-  end
-
-  def merge_requests
-    MergeRequest.where(:branch_id.in => branch_ids)
   end
 end

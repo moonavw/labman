@@ -25,12 +25,11 @@ class SyncMergeRequestsJob < ApplicationJob
     merge_requests = resp.map {|d|
       b = d.to_hash
 
-      source_branch = prj.branches.find_by(name: b['source_branch'])
-      merge_request = source_branch.merge_requests.find_or_initialize_by(name: "!#{b['iid']}", uid: b['id'], url: b['web_url'])
+      merge_request = prj.merge_requests.find_or_initialize_by(name: "!#{b['iid']}", uid: b['id'], url: b['web_url'])
+      merge_request.source_branch = prj.branches.where(name: b['source_branch']).first
+      merge_request.target_branch =  prj.branches.where(name: b['target_branch']).first
 
       merge_request.release = prj.releases.find_by(name: b['milestone']['title']) if b['milestone']
-
-      merge_request.target_branch_name = b['target_branch']
 
       merge_request.issue = prj.issues.select {|issue|
         b['title'].include?(issue.name)
@@ -83,7 +82,8 @@ class SyncMergeRequestsJob < ApplicationJob
           end
         end
 
-        merge_request.target_branch_name = b['target_branch']
+        merge_request.source_branch = prj.branches.where(name: b['source_branch']).first
+        merge_request.target_branch =  prj.branches.where(name: b['target_branch']).first
 
         merge_request.issue = prj.issues.select {|issue|
           b['title'].include?(issue.name)

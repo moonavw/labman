@@ -1,3 +1,7 @@
-= link_to branch, class: 'label-group', title: Branch.model_name.human, data: {toggle: 'tooltip', placement: 'top'} do
-  = tag_label icon_w(:code_fork), :default
+ruby:
+  title ||= Branch.model_name.human
+  icon ||= :code_fork
+
+= link_to branch, class: 'label-group', title: title, data: {toggle: 'tooltip', placement: 'top'} do
+  = tag_label icon_w(icon), :default
   = tag_label branch.name, :info

@@ -32,8 +32,8 @@ class Ability
     # Allow read access non-private
     can :read, Team, private: false
     can :read, Project, team: {private: false}
-    can :read, [App, Branch, Issue, Release], project: {team: {private: false}}
-    can :read, [MergeRequest, Build], branch: {project: {team: {private: false}}}
+    can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {private: false}}
+    can :read, Build, branch: {project: {team: {private: false}}}
 
     if user
       # Always performed
@@ -45,13 +45,13 @@ class Ability
 
       can :read, Team, member_ids: user.id
       can :read, Project, team: {member_ids: user.id}
-      can :read, [App, Branch, Issue, Release], project: {team: {member_ids: user.id}}
-      can :read, [MergeRequest, Build], branch: {project: {team: {member_ids: user.id}}}
+      can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {member_ids: user.id}}
+      can :read, Build, branch: {project: {team: {member_ids: user.id}}}
 
       can [:run, :destroy], Build, branch: {protected: false, project: {team: {member_ids: user.id}}}
       can [:run, :destroy], Build, branch: {protected: true, project: {team: {master_ids: user.id}}}
 
-      can :approve, MergeRequest, branch: {project: {team: {master_ids: user.id}}}
+      can :approve, MergeRequest, project: {team: {master_ids: user.id}}
 
       if user.admin?
         can :manage, :all

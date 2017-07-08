@@ -4,8 +4,6 @@ class MergeRequestsController < ApplicationController
 
   def index
     @merge_requests = @project.merge_requests
-    @merge_requests = @merge_requests.where(branch: @branch) if @branch
-    @merge_requests = @merge_requests.where(release: @release) if @release
     respond_with @merge_requests
   end
 
@@ -24,8 +22,6 @@ class MergeRequestsController < ApplicationController
   def set_project
     @project = Project.find(params[:project_id])
     authorize! :read, @project
-    @release = @project.releases.find(params[:release_id]) if params[:release_id]
-    @branch = @project.branches.find(params[:branch_id]) if params[:branch_id]
   end
 
   def set_merge_request

@@ -6,22 +6,17 @@ class MergeRequest
   include Requestable
   include Queueable
 
-  field :target_branch_name, type: String
   field :uid, type: String
   field :url, type: String
 
-  belongs_to :branch
+  belongs_to :project
   belongs_to :release, inverse_of: nil, required: false
   belongs_to :issue, required: false
+  belongs_to :source_branch, class_name: 'Branch', inverse_of: nil, required: false
+  belongs_to :target_branch, class_name: 'Branch', inverse_of: nil, required: false
 
-  delegate :project,
-           to: :branch
-
-
-  alias_method :source_branch, :branch
-
-  def target_branch
-    @t_branch ||= project.branches.where(name: target_branch_name).first
+  def can_approve?
+    super && source_branch.present? && target_branch.present?
   end
 
   def approve

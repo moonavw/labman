@@ -11,12 +11,6 @@ class AcceptMergeRequestJob < ApplicationJob
   def accept_merge_request(merge_request)
     logger.info("Accepting #{merge_request.named}")
 
-    job_params = {
-        SOURCE_BRANCH: merge_request.source_branch.name,
-        TARGET_BRANCH: merge_request.target_branch_name
-    }
-
-
     prj = merge_request.project
     build_server = prj.build_server
 
@@ -27,6 +21,10 @@ class AcceptMergeRequestJob < ApplicationJob
       return
     end
 
+    job_params = {
+        SOURCE_BRANCH: merge_request.source_branch.name,
+        TARGET_BRANCH: merge_request.target_branch.name
+    }
 
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
