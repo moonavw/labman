@@ -19,7 +19,7 @@ class Issue
   before_destroy :unbuild
 
   def unbuild
-    build.destroy if build
+    build.destroy if build.present?
   end
 
 end

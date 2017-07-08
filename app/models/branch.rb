@@ -19,7 +19,7 @@ class Branch
   end
 
   def unbuild
-    build.destroy if build
+    build.destroy if build.present?
   end
 
   def flat_name

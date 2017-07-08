@@ -35,7 +35,7 @@ class Ability
     can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {private: false}}
     can :read, Build, branch: {project: {team: {private: false}}}
 
-    if user
+    if user.present?
       # Always performed
       # can :access, :rails_admin # needed to access RailsAdmin
       # can :dashboard

@@ -5,7 +5,7 @@ class SyncReleasesJob < ApplicationJob
     unless project_ids.present?
       logger.info('Schedule jobs for all projects')
       Project.each {|prj|
-        SyncReleasesJob.perform_later(prj.id.to_s) if prj.code_manager && prj.config
+        SyncReleasesJob.perform_later(prj.id.to_s) if prj.code_manager.present? && prj.config.present?
       }
       return
     end
@@ -50,10 +50,10 @@ class SyncReleasesJob < ApplicationJob
         tag['name'].start_with?("v#{release.name}.")
       }.first
 
-      if latest_tag
+      if latest_tag.present?
         release.tag_name = latest_tag['name']
 
-        if release.branch
+        if release.branch.present?
           unless release.branch.protected?
             logger.info("Protect #{release.branch.named}")
             code_manager.api_client.protect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)

@@ -15,18 +15,18 @@
       span.label-group title="#{Release.human_attribute_name(:due_date)}" data-toggle="tooltip" data-placement="top"
         = tag_label icon_w(:calendar), :default
         = tag_label release.due_date, :info
-      - if release.tag_name
+      - if release.tag_name.present?
         span.label-group title="#{Release.human_attribute_name(:tag_name)}" data-toggle="tooltip" data-placement="top"
           = tag_label icon_w(:tag), :default
           = tag_label release.tag_name, :info
 
       - branch = release.branch
-      - if branch
+      - if branch.present?
         = render 'branches/label', branch: branch
         - build = branch.build
-        - if build
+        - if build.present?
           = render 'builds/label', build: build
-          - if build.app
+          - if build.app.present?
             = render 'apps/label', app: build.app
 
     = render partial: 'issues/label', collection: release.issues, as: :issue

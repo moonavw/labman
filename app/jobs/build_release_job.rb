@@ -11,12 +11,12 @@ class BuildReleaseJob < ApplicationJob
   def build_release(release)
     logger.info("Building #{release.named}")
 
-    unless release.branch
+    unless release.branch.present?
       logger.error("Not found the RC branch for #{release.named}")
       return
     end
 
-    unless release.branch.build
+    unless release.branch.build.present?
       logger.error("Not found the build for #{release.named}")
       return
     end

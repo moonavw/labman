@@ -42,7 +42,7 @@ class RunBuildJob < ApplicationJob
         APP: build.app.name
     }
 
-    if build.config && !build.config.empty?
+    if build.config.present? && !build.config.empty?
       config_keys = build.config.keys & build.app.config.keys
 
       app_config = build.config.select {|k, v| config_keys.include?(k)}
@@ -88,7 +88,7 @@ class RunBuildJob < ApplicationJob
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
 
-    if app_config && !app_config.empty?
+    if app_config.present? && !app_config.empty?
       logger.info("Updating #{build.app.named} config: #{app_config}")
       app_platform = prj.app_platform
       app_platform.api_client.config_var.update(build.app.name, app_config)

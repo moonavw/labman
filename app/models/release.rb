@@ -43,9 +43,9 @@ class Release
   end
 
   def can_rebuild?
-    return false unless branch
-    return false unless tag_name
-    return true unless branch.build
+    return false unless branch.present?
+    return false unless tag_name.present?
+    return true unless branch.build.present?
     return false unless branch.build.can_rerun?
     tag_name != "v#{branch.build.app.version_name}"
   end
@@ -59,7 +59,7 @@ class Release
       [k, instance_eval(v)]
     }.to_h
 
-    unless branch.build
+    unless branch.build.present?
       branch.create_build(name: project.config[:RELEASE][:BUILD][:NAME], config: config, app: app)
     else
       branch.build.reset

@@ -18,7 +18,7 @@
     = render 'branches/label', branch: build.branch
     = render 'apps/label', app: build.app
     - issue = build.issue
-    - if issue
+    - if issue.present?
       = render 'issues/label', issue: issue
-      - if issue.release
+      - if issue.release.present?
         = render 'releases/label', release: issue.release

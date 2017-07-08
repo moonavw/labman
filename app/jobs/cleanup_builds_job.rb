@@ -5,7 +5,7 @@ class CleanupBuildsJob < ApplicationJob
     unless project_ids.present?
       logger.info('Schedule jobs for all projects')
       Project.each {|prj|
-        CleanupBuildsJob.perform_later(prj.id.to_s) if prj.build_server && prj.config
+        CleanupBuildsJob.perform_later(prj.id.to_s) if prj.build_server.present? && prj.config.present?
       }
       return
     end

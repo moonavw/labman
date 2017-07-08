@@ -1,5 +1,5 @@
 | target = '#merge_request-#{@merge_request.id}';
 
-- unless @error
+- unless @error.present?
   | $(target).remove();
   | $('#merge_request-state-#{@merge_request.state}').append('#{ j(render @merge_request) }');

@@ -25,7 +25,7 @@ class TransitIssueJob < ApplicationJob
       }
     }.first
 
-    if matched_transition
+    if matched_transition.present?
       logger.info("Transiting #{issue.named} to matched transition: #{matched_transition.name}")
 
       r_issue_transition = r_issue.transitions.build

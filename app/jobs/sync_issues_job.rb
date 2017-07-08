@@ -5,7 +5,7 @@ class SyncIssuesJob < ApplicationJob
     unless project_ids.present?
       logger.info('Schedule jobs for all projects')
       Project.each {|prj|
-        SyncIssuesJob.perform_later(prj.id.to_s) if prj.issue_tracker && prj.config
+        SyncIssuesJob.perform_later(prj.id.to_s) if prj.issue_tracker.present? && prj.config.present?
       }
       return
     end

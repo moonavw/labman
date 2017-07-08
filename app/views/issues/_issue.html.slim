@@ -4,13 +4,13 @@
       = link_to icon_w(:paw, issue.name), issue.url, target: '_blank'
   .panel-body
     - release = issue.release
-    - if release
+    - if release.present?
       = render 'releases/label', release: release
     - build = issue.build
-    - if build
+    - if build.present?
       = render 'builds/label', build: build
       = render 'branches/label', branch: build.branch
-      - if build.app
+      - if build.app.present?
         = render 'apps/label', app: build.app
 
     = render partial: 'merge_requests/label', collection: issue.merge_requests, as: :merge_request

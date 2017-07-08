@@ -9,7 +9,7 @@ class VersionIssueJob < ApplicationJob
 
   private
   def version_issue(issue, version_name)
-    if issue.release && issue.release.name == version_name
+    if issue.release.present? && issue.release.name == version_name
       logger.info("No need to version #{issue.named}, since it already versioned by #{issue.release.named}")
       return
     end
@@ -24,7 +24,7 @@ class VersionIssueJob < ApplicationJob
       f['name'].include?("Release #{version_name}")
     }.first
 
-    if matched_version
+    if matched_version.present?
       logger.info("Versioning #{issue.named} to: #{matched_version['name']}")
 
       r_issue.save!(fields: {fixVersions: [{name: matched_version['name']}]})

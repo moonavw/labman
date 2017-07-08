@@ -1,4 +1,4 @@
 | target = '#release-#{@release.id}';
 
-- unless @error
+- unless @error.present?
   | $(target).replaceWith('#{ j( render @release ) }');

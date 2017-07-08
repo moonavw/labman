@@ -1,5 +1,5 @@
 | target = '#build-#{@build.id}';
 
-- unless @error
+- unless @error.present?
   | $(target).remove();
   | $('#build-state-#{@build.state}').append('#{ j( render @build ) }');

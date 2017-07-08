@@ -14,7 +14,7 @@ class BumpReleaseJob < ApplicationJob
     prj = release.project
     build_server = prj.build_server
 
-    if release.branch
+    if release.branch.present?
       job_name = prj.config[:JENKINS_PROJECT][:RC_PATCH]
       job_params = {
           RC_VERSION: release.name

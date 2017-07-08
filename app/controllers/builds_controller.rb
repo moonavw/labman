@@ -4,15 +4,15 @@ class BuildsController < ApplicationController
 
   def index
     @builds = @project.builds
-    @builds = @builds.where(app: @app) if @app
-    @builds = @builds.where(branch: @branch) if @branch
+    @builds = @builds.where(app: @app) if @app.present?
+    @builds = @builds.where(branch: @branch) if @branch.present?
     respond_with @builds
   end
 
   def new
     @build = Build.new
-    @build.app = @app if @app
-    @build.branch = @branch if @branch
+    @build.app = @app if @app.present?
+    @build.branch = @branch if @branch.present?
     respond_with @build
   end
 
@@ -45,8 +45,8 @@ class BuildsController < ApplicationController
   def set_project
     @project = Project.find(params[:project_id])
     authorize! :read, @project
-    @app = @project.apps.find(params[:app_id]) if params[:app_id]
-    @branch = @project.branches.find(params[:branch_id]) if params[:branch_id]
+    @app = @project.apps.find(params[:app_id]) if params[:app_id].present?
+    @branch = @project.branches.find(params[:branch_id]) if params[:branch_id].present?
   end
 
   def build_params

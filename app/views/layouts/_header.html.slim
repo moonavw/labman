@@ -2,14 +2,14 @@
   = menu_group do
     = drop_down icon_w(:users, Team.model_name.plural.titlecase) do
       - Team.all.each do |team|
-        - args = {status: :active} if @project && @project.team == team
+        - args = {status: :active} if @project.present? && @project.team == team
         = menu_item team.name, team_path(team), args
     - chosen_team = @team || @project.try(:team)
-    - if chosen_team
+    - if chosen_team.present?
       = drop_down icon_w(:suitcase, Project.model_name.plural.titlecase) do
         - chosen_team.projects.each do |project|
           = menu_item project.name, project_path(project)
-    - if @project
+    - if @project.present?
       = menu_item icon_w(:cloud, App.model_name.plural.titlecase), project_apps_path(@project)
       = menu_item icon_w(:code_fork, Branch.model_name.plural.titlecase), project_branches_path(@project)
       = menu_item icon_w(:code, MergeRequest.model_name.plural.titlecase), project_merge_requests_path(@project)

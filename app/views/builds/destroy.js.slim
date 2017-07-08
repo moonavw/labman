@@ -1,4 +1,4 @@
 | target = '#build-#{@build.id}';
 
-- unless @error
+- unless @error.present?
   | $(target).remove();

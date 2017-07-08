@@ -5,7 +5,7 @@ class SyncMergeRequestsJob < ApplicationJob
     unless project_ids.present?
       logger.info('Schedule jobs for all projects')
       Project.each {|prj|
-        SyncMergeRequestsJob.perform_later(prj.id.to_s) if prj.code_manager && prj.config
+        SyncMergeRequestsJob.perform_later(prj.id.to_s) if prj.code_manager.present? && prj.config.present?
       }
       return
     end

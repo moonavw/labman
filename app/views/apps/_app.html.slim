@@ -14,19 +14,19 @@
     pre.collapse id="app-config-#{app.id}"
       = app.readable_config
 
-    - if app.version_name
+    - if app.version_name.present?
       span.label-group title="#{App.human_attribute_name(:version_name)}" data-toggle="tooltip" data-placement="top"
         = tag_label icon_w(:tag), :default
         = tag_label app.version_name, :info
     - build = app.locked_build
-    - if build
+    - if build.present?
       = render 'builds/label', build: build
       = render 'branches/label', branch: build.branch
       - issue = build.issue
-      - if issue
+      - if issue.present?
         = render 'issues/label', issue: issue
-        - if issue.release
+        - if issue.release.present?
           = render 'releases/label', release: issue.release
     - else
-      - if app.promoted_from
+      - if app.promoted_from.present?
         = render 'apps/label', app: app.promoted_from, title: App.human_attribute_name(:promoted_from), icon: :bolt
