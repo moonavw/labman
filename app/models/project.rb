@@ -17,7 +17,6 @@ class Project
   validates_uniqueness_of :name, scope: :team
 
   delegate :code_manager, :issue_tracker, :build_server, :app_platform,
-           :joined_in?, :managed_by?,
            to: :team
 
   def builds

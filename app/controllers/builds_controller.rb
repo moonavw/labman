@@ -18,7 +18,7 @@ class BuildsController < ApplicationController
 
   def create
     @build = Build.new(build_params)
-    authorize! :create, @build
+    authorize! :run, @build
     @build.run if @build.save
 
     respond_with @build
@@ -30,7 +30,7 @@ class BuildsController < ApplicationController
   end
 
   def rerun
-    authorize! :update, @build
+    authorize! :run, @build
     @build.rerun
     respond_with @build
   end

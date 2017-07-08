@@ -18,6 +18,10 @@ Bundler.require(*Rails.groups)
 
 SafeYAML::OPTIONS[:default_mode] = :safe
 
+Dir["#{__dir__}/../lib/*.rb"].each do |file|
+  require file
+end
+
 module Labman
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

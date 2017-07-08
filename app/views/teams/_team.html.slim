@@ -1,6 +1,9 @@
 .panel.panel-default
   .panel-heading
-    h3.panel-title= icon_w :users, team.name
+    h3.panel-title
+      = icon_w :users, team.name
+      - if team.private?
+        .pull-right= icon_w(:lock)
   .panel-body
     dl.dl-horizontal
       dt= CodeManager.model_name.human
@@ -23,5 +26,5 @@
     - team.members.each do |user|
       li.list-group-item
         = user.name
-        - if team.managed_by?(user)
+        - if team.masters.include?(user)
           = badge 'master'

@@ -29,6 +29,12 @@ class Ability
     # See the wiki for details:
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
+    # Allow read access non-private
+    can :read, Team, private: false
+    can :read, Project, team: {private: false}
+    can :read, [App, Branch, Issue, Release], project: {team: {private: false}}
+    can :read, [MergeRequest, Build], branch: {project: {team: {private: false}}}
+
     if user
       # Always performed
       # can :access, :rails_admin # needed to access RailsAdmin
@@ -37,31 +43,18 @@ class Ability
       # can :export, :all
       # can :history, :all # for HistoryIndex
 
+      can :read, Team, member_ids: user.id
+      can :read, Project, team: {member_ids: user.id}
+      can :read, [App, Branch, Issue, Release], project: {team: {member_ids: user.id}}
+      can :read, [MergeRequest, Build], branch: {project: {team: {member_ids: user.id}}}
+
+      can [:run, :destroy], Build, branch: {protected: false, project: {team: {member_ids: user.id}}}
+      can [:run, :destroy], Build, branch: {protected: true, project: {team: {master_ids: user.id}}}
+
+      can :approve, MergeRequest, branch: {project: {team: {master_ids: user.id}}}
+
       if user.admin?
         can :manage, :all
-      else
-        [Team, Project].each do |model|
-          can :read, model, model.all do |entity|
-            entity.joined_in?(user)
-          end
-        end
-        [App, Branch, Issue, Release, MergeRequest, Build].each do |model|
-          can :read, model, model.all do |entity|
-            entity.project.joined_in?(user)
-          end
-        end
-        [MergeRequest, Release].each do |model|
-          can :update, model, model.all do |entity|
-            entity.project.managed_by?(user)
-          end
-        end
-        can [:create, :update, :destroy], Build, Build.all do |entity|
-          if entity.protected?
-            entity.project.managed_by?(user)
-          else
-            entity.project.joined_in?(user)
-          end
-        end
       end
     end
   end
