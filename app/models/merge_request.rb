@@ -12,8 +12,8 @@ class MergeRequest
   belongs_to :project
   belongs_to :release, inverse_of: nil, required: false
   belongs_to :issue, required: false
-  belongs_to :source_branch, class_name: 'Branch', inverse_of: nil, required: false
-  belongs_to :target_branch, class_name: 'Branch', inverse_of: nil, required: false
+  belongs_to :source_branch, class_name: 'Branch', inverse_of: :outgoing_merges, required: false
+  belongs_to :target_branch, class_name: 'Branch', inverse_of: :incoming_merges, required: false
 
   def can_approve?
     super && source_branch.present? && target_branch.present?

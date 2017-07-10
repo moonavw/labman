@@ -11,6 +11,9 @@ class Branch
 
   has_one :build, dependent: :destroy
 
+  has_many :outgoing_merges, class_name: 'MergeRequest', inverse_of: :source_branch
+  has_many :incoming_merges, class_name: 'MergeRequest', inverse_of: :target_branch
+
   validates_uniqueness_of :name, scope: :project
 
   def category
@@ -24,9 +27,5 @@ class Branch
 
   def flat_name
     name.gsub('/', '-')
-  end
-
-  def merge_requests
-    project.merge_requests.where(source_branch: self)
   end
 end

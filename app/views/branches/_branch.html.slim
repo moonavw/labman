@@ -18,4 +18,10 @@
     - else
       p= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
 
-    = render partial: 'merge_requests/label', collection: branch.merge_requests, as: :merge_request
+  ul.list-group
+    - if branch.outgoing_merges.any?
+      li.list-group-item.list-group-item-info title="#{Branch.human_attribute_name(:outgoing_merges)}" data-toggle="tooltip" data-placement="bottom"
+        = render partial: 'merge_requests/label', collection: branch.outgoing_merges, as: :merge_request
+    - if branch.incoming_merges.any?
+      li.list-group-item.list-group-item-warning title="#{Branch.human_attribute_name(:incoming_merges)}" data-toggle="tooltip" data-placement="bottom"
+        = render partial: 'merge_requests/label', collection: branch.incoming_merges, as: :merge_request
