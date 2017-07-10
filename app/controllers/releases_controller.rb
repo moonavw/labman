@@ -13,13 +13,13 @@ class ReleasesController < ApplicationController
   end
 
   def bump
-    authorize! :update, @release
+    authorize! :bump, @release
     @release.bump
     respond_with @release
   end
 
   def rebuild
-    authorize! :update, @release
+    authorize! :run, @release
     @release.rebuild
     respond_with @release
   end
