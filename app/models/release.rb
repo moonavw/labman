@@ -9,7 +9,6 @@ class Release
   include Queueable
 
   field :due_date, type: Date
-  field :tag_name, type: String
 
   belongs_to :project
 
@@ -24,12 +23,26 @@ class Release
     super if issues.any? || branch
   end
 
+  def publish_name
+    "v#{name}"
+  end
+
   def branch_name
-    "release/v#{name}"
+    "release/#{publish_name}"
   end
 
   def branch
     @rc_branch ||= project.branches.where(name: branch_name).first
+  end
+
+  def can_publish?
+    state.in_progress? && super
+  end
+
+  def publish
+    return unless super
+
+    PublishReleaseJob.perform_later(self.id.to_s) unless queued?(PublishReleaseJob)
   end
 
   def can_bump?

@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     resources :releases do
       member do
         post 'bump'
+        post 'publish'
         post 'rebuild'
       end
     end

@@ -18,6 +18,12 @@ class ReleasesController < ApplicationController
     respond_with @release
   end
 
+  def publish
+    authorize! :publish, @release
+    @release.publish
+    respond_with @release
+  end
+
   def rebuild
     authorize! :run, @release
     @release.rebuild

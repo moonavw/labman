@@ -53,7 +53,7 @@ class Ability
 
       can :approve, MergeRequest, project: {team: {master_ids: user.id}}
 
-      can [:run, :bump], Release, project: {team: {master_ids: user.id}}
+      can [:run, :bump, :publish], Release, project: {team: {master_ids: user.id}}
 
       if user.admin?
         can :manage, :all

@@ -8,6 +8,8 @@
     ul.list-inline
       - if release.can_bump?
         li= link_to 'Bump', bump_release_path(release), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to bump?', disable_with: 'bumping...'}
+      - if release.can_publish?
+        li= link_to 'Publish', publish_release_path(release), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to publish?', disable_with: 'publishing...'}
       - if release.can_rebuild?
         li= link_to 'Rebuild', rebuild_release_path(release), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rebuild?', disable_with: 'rebuilding...'}
 
