@@ -16,6 +16,7 @@ class RunBuildJob < ApplicationJob
 
     job_name_prefix = prj.config[:JENKINS_PROJECT][:BUILD]
     job_name = "#{job_name_prefix}-#{build.branch.flat_name}"
+    build.url = "http://#{build_server.config[:server_ip]}:#{build_server.config[:server_port]}/job/#{job_name}"
 
     unless build_server.api_client.job.exists?(job_name)
       logger.info("Creating job: #{job_name} on #{build_server.named}")

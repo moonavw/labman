@@ -7,6 +7,7 @@ class Build
   include Queueable
   include Configurable
 
+  field :url, type: String
 
   belongs_to :branch
   belongs_to :app
