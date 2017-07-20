@@ -31,7 +31,7 @@ class SyncAppsJob < ApplicationJob
       app.uid = a['id']
       app.url = a['web_url']
 
-      app.state = :opened unless app.locked_build
+      app.state = :opened unless app.locked_build.present?
 
       if app.save
         logger.info("Synced #{app.named}")

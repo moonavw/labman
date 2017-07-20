@@ -60,7 +60,7 @@ class BumpReleaseJob < ApplicationJob
       return
     end
 
-    SyncBranchesJob.perform_now(prj.id.to_s) unless release.branch
+    SyncBranchesJob.perform_now(prj.id.to_s)
     SyncReleasesJob.perform_now(prj.id.to_s)
 
     release.reload
