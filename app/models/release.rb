@@ -66,7 +66,7 @@ class Release
   def rebuild
     return unless can_rebuild?
 
-    app = project.apps.with_stage(:development).first
+    app = project.apps.find_by(name: project.config[:RELEASE][:BUILD][:APP])
 
     config = project.config[:RELEASE][:BUILD][:CONFIG].map {|k, v|
       [k, instance_eval(v)]
