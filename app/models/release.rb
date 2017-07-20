@@ -20,7 +20,7 @@ class Release
 
 
   def work_in_progress
-    super if issues.any? || branch
+    super if issues.without_state(:to_do).any? || branch
   end
 
   def publish_name
