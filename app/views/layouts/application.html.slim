@@ -3,7 +3,8 @@ html lang="en"
   head
     title
       = content_for?(:title) ? yield(:title) : controller_name
-      = ' | Labman'
+      = ' | '
+      = t('app')
     = csrf_meta_tags
 
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'

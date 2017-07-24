@@ -30,7 +30,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  app: "Labman"
   activerecord:
     help:
       build:
@@ -40,3 +40,8 @@ en:
     header:
       sign_out: "Sign out"
       sign_in: "Sign in"
+    footer:
+      copyright: "Labman 2017"
+  home:
+    index:
+      welcome: "The Integrated CI Dashboard, choose your team to Start"

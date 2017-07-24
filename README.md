@@ -1,24 +1,155 @@
-# README
+# Labman
+Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to provide all info in one place, and the action buttons for CI workflow.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Features
+- Team & Projects
+	- each team has the Gitlab, Jenkins, Heroku and JIRA behind, need config for their connections
+	- all projects in the team share the same from above
+- User & Access
+	- user could be in multiple teams
+	- anonymous has readonly access to non-private team's items 
+	- members in the team has operation access to the non-protected items: e.g. feature branch deployment
+	- masters in the team has operation access to the protected items: e.g. rc branch bump and deployment
+- Apps
+	- all apps and pipelines from heroku
+	- show all app config and version
+	- show all related builds and promotions
+	- team members could pick an app to deploy the branch build for demo etc, and locked the app from other team members
+	- the app will be unlocked automatically when the related JIRA issue done (resolved/closed/done/ready for test/deployed...)
+	- when have a RC build, it would automatically arrive next stage by promotion
+- Branches
+	- all branches from gitlab repository
+	- show all outgoing/incoming merges for branch
+	- show the app of the branch deployed to
+	- team members could build the branch to deploy to app
+- Merge Requests
+	- show all merge requests for current working releases with status
+	- team masters could approve the merge request if it reviewed (pass code review and build check), then CI will accept the merge request automatically
+	- transit the related JIRA issue status to complete/resolve/done and set fix version when merge request accepted
+- Builds
+	- show all builds with status
+	- the build will automatically rerun when the branch has new commit (except: the rc build is run by demand)
+- Issues
+	- show all JIRA issues in current sprint with status
+	- show related build, related release, and related merge request for the JIRA issue
+- Releases
+	- show all releases (milestones defined in gitlab) with status, due date, last version tag
+	- show related JIRA issues, rc branch, rc build for release
+	- team masters could bump release: create RC or patch RC
+	- when bumped, it auto build release and deploy to first stage in pipeline, also promote to next stage in pipeline. And transit issue status to "Ready for test/Deployed..."
+	- auto configure the app config for each release build
+	- team masters could publish the release as the RC ready to release
 
-Things you may want to cover:
+## Configuration
+various config required for the connections to external systems and internal workflow.
+all in YAML format.
 
-* Ruby version
+### Code Manager
+- Gitlab CE v8+ config
+```
+endpoint: <your-gitlab-api-endpoint>
+private_token: <your-gitlab-token>
+```
 
-* System dependencies
+### Build Server
+- Jenkins v2+ config
+```
+server_ip: <your-jenkins-server-ip>
+server_port: <your-jenkins-server-port>
+username: <your-jenkins-user>
+password: <your-jenkins-pwd>
+```
 
-* Configuration
+### App Platform
+- Heroku config
+```
+oauth_token: <your-heroku-token>
+```
 
-* Database creation
+### Issue Tracker
+- JIRA config
+```
+username: <your-jira-user>
+password: <your-jira-pwd>
+site: <your-jira-website>
+context_path: ''
+auth_type: basic
+```
 
-* Database initialization
+### Project
+```
+GITLAB_PROJECT: <your-gitlab-project-full-name>
+JENKINS_PROJECT:
+  BUILD: <your-jenkins-job-template-for-build-branch>
+  RC: <your-jenkins-job-for-bump-rc>
+  RC_PATCH: <your-jenkins-job-for-bump-rc-patch>
+  ACCEPT_MERGE_REQUEST: <your-jenkins-job-for-accepting-merge-request>
+HEROKU_PROJECT: <your-heroku-app-prefix-name>
+MERGE_REQUEST:
+  APPROVAL: <min-number-of-thumbup-to-approve-merge-request>
+APP:
+  CONFIG:
+   <your-app-default-config-key>: <your-app-default-config-value>
+   ...
+  VERSION_API: <your-app-version-api-url, support-string-template-with-config-keys>
+BUILD:
+  CONFIG:
+   <your-build-default-app-config-key>: <your-build-default-app-config-value, support-eval-instance-self>
+   ...
+RELEASE:
+  BUILD:
+    NAME: <your-rc-build-name, lower-case>
+    APP: <your-rc-build-app-name>
+    CONFIG:
+     <your-build-app-config-key>: <your-build-app-config-value, support-eval-instance-self>
+     ...
+JIRA_PROJECT: <your-jira-project-key>
+JIRA_BOARD: <your-jira-agile-board-id>
+JIRA_ISSUE_STATUS:
+  TO_DO:
+  - <your-jira-issue-status-as-to-do>
+  ...
+  IN_PROGRESS:
+  - <your-jira-issue-status-as-in-progress>
+  ...
+  DONE:
+  - <your-jira-issue-status-as-done>
+  ...
+JIRA_ISSUE_TRANSITIONS:
+  ACCEPT_MERGE_REQUEST:
+  - <your-jira-issue-status-to-transit-when-merge-request-accepted>
+  ...
+  BUILD_RELEASE:
+  - <your-jira-issue-status-to-transit-when-release-built>
+  ...
+```
 
-* How to run the test suite
+## Services
+all the long running activities for Gitlab, Jenkins, Heroku, JIRA are enqueued to redis, then performed by sidekiq.
 
-* Services (job queues, cache servers, search engines, etc.)
+the data syncing via regular schedules:
 
-* Deployment instructions
+- every 10 min: sync apps, pipelines from Heroku
+- every 10 min: sync releases(milestones) from Gitlab
+- every 5 min: sync branches, merge requests from Gitlab
+- every 5 min: sync issues from JIRA
 
-* ...
+## Deployment
+It is a dockerized app, docker-compose with redis and mongo.
+
+external volume for database is required to avoid data loss, that need to be created first:
+
+```docker volume create dbstore```
+
+then simply run:
+
+```docker-compose up -d```
+
+## Database
+it needs a default admin when fresh deployed:
+
+```docker exec -e "ADMIN_EMAIL=<email>" -e "ADMIN_PASSWORD=<password>" $(docker-compose ps -q app) ./bin/rails db:seed```
+
+or with default value for ADMIN_EMAIL (see docker-compose.yml) and ADMIN_PASSWORD (see db/seeds.rb)
+
+```docker-compose exec app ./bin/rails db:seed```
