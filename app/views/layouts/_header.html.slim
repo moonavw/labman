@@ -18,7 +18,8 @@
       = menu_item icon_w(:flag, Release.model_name.plural.titlecase), project_releases_path(@project)
   = menu_group pull: :right do
     - if signed_in?
-      = menu_item icon_w(:user, current_user.name), edit_user_registration_path
-      = menu_item icon_w(:sign_out), destroy_user_session_path, method: :delete
+      = drop_down icon_w(:user) do
+        = menu_item icon_w(:user_o, current_user.name), edit_user_registration_path
+        = menu_item icon_w(:sign_out, t('.sign_out')), destroy_user_session_path, method: :delete
     - else
-      = menu_item icon_w(:sign_in), new_user_session_path
+      = menu_item icon_w(:sign_in, t('.sign_in')), new_user_session_path

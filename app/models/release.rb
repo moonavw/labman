@@ -23,12 +23,8 @@ class Release
     super if issues.without_state(:to_do).any? || branch
   end
 
-  def publish_name
-    "v#{name}"
-  end
-
   def branch_name
-    "release/#{publish_name}"
+    "release/v#{name}"
   end
 
   def branch

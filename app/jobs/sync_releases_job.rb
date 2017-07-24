@@ -21,9 +21,11 @@ class SyncReleasesJob < ApplicationJob
 
     code_manager = prj.code_manager
 
+    tag_regexp = /\Av\d+\.\d+\.\d+\z/
+
     resp = code_manager.api_client.tags(prj.config[:GITLAB_PROJECT])
-    tags = resp.map(&:to_hash).reject {|tag|
-      tag['name'].include?('-')
+    tags = resp.map(&:to_hash).select {|tag|
+      tag_regexp.match?(tag['name'])
     }.sort {|x, y|
       Gem::Version.new(y['name'].sub('v', '')) <=> Gem::Version.new(x['name'].sub('v', ''))
     }

@@ -13,17 +13,18 @@ class PublishReleaseJob < ApplicationJob
 
     prj = release.project
     code_manager = prj.code_manager
+    publish_tag_name = 'latest'
 
     # delete existing publish tag if found any
     begin
-      code_manager.api_client.delete_tag(prj.config[:GITLAB_PROJECT], release.publish_name)
+      code_manager.api_client.delete_tag(prj.config[:GITLAB_PROJECT], publish_tag_name)
     rescue Gitlab::Error::NotFound
       # just ignore it
     end
 
     # create new publish tag
     begin
-      code_manager.api_client.create_tag(prj.config[:GITLAB_PROJECT], release.publish_name, release.branch_name)
+      code_manager.api_client.create_tag(prj.config[:GITLAB_PROJECT], publish_tag_name, release.branch_name)
       logger.info("Published #{release.named} on #{release.published_on}")
     rescue Gitlab::Error::BadRequest => e
       logger.error("Failed Publishing #{release.named}")
