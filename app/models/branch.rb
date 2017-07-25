@@ -28,4 +28,9 @@ class Branch
   def flat_name
     name.gsub('/', '-')
   end
+
+  def release
+    @rc_name ||= name.sub(Release::BRANCH_PREFIX, '')
+    @rc ||= project.releases.where(name: @rc_name).first
+  end
 end

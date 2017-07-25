@@ -31,7 +31,7 @@ class SyncBranchesJob < ApplicationJob
       branch.protected = b['protected']
       branch.commit = b['commit']['id']
 
-      branch.build.rerun if branch.commit_changed? && branch.build.present? && branch.build.name != prj.config[:RELEASE][:BUILD][:NAME]
+      branch.build.rerun if branch.commit_changed? && branch.build.present? && branch.build.branch.release.nil?
 
       if branch.save
         logger.info("Synced #{branch.named}")

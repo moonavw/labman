@@ -1,4 +1,9 @@
 class Release
+
+  BRANCH_PREFIX = 'release/v'
+  BUILD_NAME = 'rc'
+  PUBLISH_TAG = 'latest'
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -24,7 +29,8 @@ class Release
   end
 
   def branch_name
-    "release/v#{name}"
+    # "release/v#{name}"
+    BRANCH_PREFIX + name
   end
 
   def branch
@@ -69,12 +75,14 @@ class Release
     }.to_h
 
     unless branch.build.present?
-      branch.create_build(name: project.config[:RELEASE][:BUILD][:NAME], config: config, app: app)
+      branch.create_build(
+          name: BUILD_NAME,
+          config: config,
+          app: app
+      ).run
     else
-      branch.build.reset
+      branch.build.rerun
     end
-
-    BuildReleaseJob.perform_later(self.id.to_s) unless queued?(BuildReleaseJob)
   end
 
   def can_archive?

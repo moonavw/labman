@@ -40,6 +40,15 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- auto configure the app config for each release build
 	- team masters could publish the release as the RC ready to release
 
+## Constants
+there are some constants defined in code as convention
+```
+# Release
+BRANCH_PREFIX = 'release/v'
+BUILD_NAME = 'rc'
+PUBLISH_TAG = 'latest'
+```
+
 ## Configuration
 various config required for the connections to external systems and internal workflow.
 all in YAML format.
@@ -98,7 +107,6 @@ BUILD:
    ...
 RELEASE:
   BUILD:
-    NAME: <your-rc-build-name, lower-case>
     APP: <your-rc-build-app-name>
     CONFIG:
      <your-build-app-config-key>: <your-build-app-config-value, support-eval-instance-self>

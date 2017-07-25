@@ -89,6 +89,8 @@ class RunBuildJob < ApplicationJob
 
     logger.info("Finished Run #{build.named} -> #{build.status}")
 
+    return unless build.status == :success
+
     if app_config.present? && !app_config.empty?
       logger.info("Updating #{build.app.named} config: #{app_config}")
       app_platform = prj.app_platform
@@ -101,5 +103,15 @@ class RunBuildJob < ApplicationJob
     end
 
     SyncAppVersionJob.perform_later(build.app.id.to_s)
+
+    # for rc build
+    if build.branch.release.present?
+      build.app.promote
+
+      target_transitions = prj.config[:JIRA_ISSUE_TRANSITIONS][:BUILD_RELEASE]
+      issue_ids = build.branch.release.issues.map(&:id)
+
+      TransitIssueJob.perform_later(target_transitions, *issue_ids.map(&:to_s))
+    end
   end
 end
