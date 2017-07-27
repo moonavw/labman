@@ -72,7 +72,7 @@ gem 'figaro'
 
 gem 'gitlab'
 gem 'jenkins_api_client'
-gem 'jira-ruby', github: 'sumoheavy/jira-ruby'
+gem 'jira-ruby', '~> 1.3'
 gem 'platform-api'
 
 gem 'rest-client'
