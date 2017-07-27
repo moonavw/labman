@@ -19,7 +19,7 @@ class SyncMergeRequestsJob < ApplicationJob
 
       merge_request = prj.merge_requests.find_or_initialize_by(name: "!#{b['iid']}", uid: b['id'], url: b['web_url'])
       merge_request.source_branch = prj.branches.where(name: b['source_branch']).first
-      merge_request.target_branch =  prj.branches.where(name: b['target_branch']).first
+      merge_request.target_branch = prj.branches.where(name: b['target_branch']).first
 
       merge_request.release = prj.releases.find_by(name: b['milestone']['title']) if b['milestone']
 
@@ -47,53 +47,17 @@ class SyncMergeRequestsJob < ApplicationJob
     logger.info("Synced #{merge_requests.count} merge requests")
 
     synced_ids = merge_requests.map(&:id)
+
     orphans = prj.merge_requests.where(:id.nin => synced_ids)
-    sync_orphaned_merge_requests(prj, orphans) if orphans.any?
-  end
 
-  def sync_orphaned_merge_requests(prj, orphans)
-    logger.info("Syncing orphaned #{orphans.count} merge requests for #{prj.named}")
+    unaccepted_orphans = orphans.without_state(:accepted).destroy_all
 
-    code_manager = prj.code_manager
+    logger.warn("Pruned #{unaccepted_orphans} orphaned unaccepted merge requests")
 
-    orphans.each {|merge_request|
-      resp = code_manager.api_client.merge_request(prj.config[:GITLAB_PROJECT], merge_request.uid)
-      b = resp.to_hash
+    accepted_orphans = orphans.with_state(:accepted).select{|mr|
+      mr.target_branch.nil? || (!mr.target_branch.protected? && mr.issue.nil?)
+    }.each(&:destroy).count
 
-      if b['state'] == 'closed'
-        merge_request.destroy
-        next
-      end
-
-      if b['state'] == 'merged'
-        if b['milestone']
-          merge_request.release = prj.releases.find_by(name: b['milestone']['title'])
-          if merge_request.release.state.done?
-            merge_request.destroy
-            next
-          end
-        end
-
-        merge_request.source_branch = prj.branches.where(name: b['source_branch']).first
-        merge_request.target_branch =  prj.branches.where(name: b['target_branch']).first
-
-        merge_request.issue = prj.issues.select {|issue|
-          b['title'].include?(issue.name)
-        }.first
-
-        merge_request.state = :accepted
-
-        if merge_request.save
-          logger.info("Synced orphaned #{merge_request.named}")
-        else
-          logger.error("Failed sync orphaned #{merge_request.named}")
-          logger.error(merge_request.errors.messages)
-        end
-      end
-    }
-
-    synced = orphans.count(&:persisted?)
-    logger.info("Synced orphaned #{synced} merge requests")
-    logger.info("Pruned orphaned #{orphans.count - synced} merge requests")
+    logger.warn("Pruned #{accepted_orphans} orphaned accepted merge requests")
   end
 end
