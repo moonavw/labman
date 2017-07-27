@@ -2,14 +2,6 @@ class SyncMergeRequestsJob < ApplicationJob
   queue_as :default
 
   def perform(*project_ids)
-    unless project_ids.present?
-      logger.info('Schedule jobs for all projects')
-      Project.each {|prj|
-        SyncMergeRequestsJob.perform_later(prj.id.to_s) if prj.code_manager.present? && prj.config.present?
-      }
-      return
-    end
-
     Project.where(:id.in => project_ids).each {|prj|
       sync_merge_requests(prj)
     }
@@ -92,9 +84,9 @@ class SyncMergeRequestsJob < ApplicationJob
         merge_request.state = :accepted
 
         if merge_request.save
-          logger.info("Synced #{merge_request.named}")
+          logger.info("Synced orphaned #{merge_request.named}")
         else
-          logger.error("Failed sync #{merge_request.named}")
+          logger.error("Failed sync orphaned #{merge_request.named}")
           logger.error(merge_request.errors.messages)
         end
       end

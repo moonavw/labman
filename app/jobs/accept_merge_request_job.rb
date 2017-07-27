@@ -55,7 +55,9 @@ class AcceptMergeRequestJob < ApplicationJob
       return
     end
 
-    merge_request.update(state: :accepted)
+    merge_request.update!(state: :accepted)
+    merge_request.source_branch.destroy
+    merge_request.target_branch.release.update!(check: :outdated) if merge_request.target_branch.release.present?
 
     logger.info("Accepted #{merge_request.named}")
 

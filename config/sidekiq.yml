@@ -6,4 +6,3 @@ production:
 :queues:
   - default
   - mailer
-  - sync

@@ -16,6 +16,8 @@ class Branch
 
   validates_uniqueness_of :name, scope: :project
 
+  before_destroy :cleanup_build
+
   def category
     ns = name.split('/')
     ns.first if ns.count > 1
@@ -32,5 +34,9 @@ class Branch
   def release
     @rc_name ||= name.sub(Release::BRANCH_PREFIX, '')
     @rc ||= project.releases.where(name: @rc_name).first
+  end
+
+  def cleanup_build
+    CleanupBuildJob.perform_later(project.id.to_s, flat_name)
   end
 end

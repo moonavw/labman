@@ -102,7 +102,10 @@ class RunBuildJob < ApplicationJob
       build.app.save!
     end
 
-    SyncAppVersionJob.perform_later(build.app.id.to_s)
+    # update locals instead of SyncAppVersionJob.perform_later(build.app.id.to_s)
+    resp = build_server.api_client.job.get_build_details(job_name, job_build_number)
+    build.app.version_name = resp['displayName'].chomp
+    build.app.save!
 
     # for rc build
     if build.branch.release.present?

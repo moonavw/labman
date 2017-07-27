@@ -135,12 +135,38 @@ JIRA_ISSUE_TRANSITIONS:
 ## Services
 all the long running activities for Gitlab, Jenkins, Heroku, JIRA are enqueued to redis, then performed by sidekiq.
 
-the data syncing via regular schedules:
+### Sync Code Manager
+sync from Gitlab:
 
-- every 10 min: sync apps, pipelines from Heroku
-- every 10 min: sync releases(milestones) from Gitlab
-- every 5 min: sync branches, merge requests from Gitlab
-- every 5 min: sync issues from JIRA
+- branches
+- merge requests
+- releases (by milestones, tags)
+
+scheduled via set interval for a CodeManager in cron format:
+
+- every 10 min:
+```*/10 * * * *```
+
+### Sync Issue Tracker
+sync from JIRA:
+
+- issues (by agile board, sprint)
+
+scheduled via set interval for a IssueTracker in cron format:
+
+- every 10 min:
+```*/10 * * * *```
+
+### Sync App Platform
+sync from Heroku:
+
+- apps
+- pipelines
+
+scheduled via set interval for a AppPlatform in cron format:
+
+- every 30 min:
+```*/30 * * * *```
 
 ## Deployment
 It is a dockerized app, docker-compose with redis and mongo.

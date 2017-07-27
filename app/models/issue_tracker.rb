@@ -1,9 +1,13 @@
 class IssueTracker
+
+  SCHEDULE_JOB = SyncIssueTrackerJob
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
   include Nameable
   include Configurable
+  include Schedulable
 
 
   belongs_to :team

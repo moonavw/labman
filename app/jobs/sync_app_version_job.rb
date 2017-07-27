@@ -18,11 +18,11 @@ class SyncAppVersionJob < ApplicationJob
     begin
       r = RestClient.get(app_version_api)
       version_data = JSON.parse(r)
-      app.version_name = version_data['version']
+      version_name = version_data['version']
 
-      logger.info("Fetched #{app.named} version: #{app.version_name}")
+      logger.info("Fetched #{app.named} version: #{version_name}")
 
-      app.save!
+      app.update!(version_name: version_name)
     rescue RestClient::ExceptionWithResponse => e
       logger.error("Failed fetching #{app.named} version")
       logger.error(e.response)

@@ -1,9 +1,13 @@
 class AppPlatform
+
+  SCHEDULE_JOB = SyncAppPlatformJob
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
   include Nameable
   include Configurable
+  include Schedulable
 
 
   belongs_to :team

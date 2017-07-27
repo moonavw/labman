@@ -1,9 +1,13 @@
 class CodeManager
+
+  SCHEDULE_JOB = SyncCodeManagerJob
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
   include Nameable
   include Configurable
+  include Schedulable
 
 
   belongs_to :team

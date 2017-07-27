@@ -2,19 +2,9 @@ class SyncAppsJob < ApplicationJob
   queue_as :default
 
   def perform(*project_ids)
-    unless project_ids.present?
-      logger.info('Schedule jobs for all projects')
-      Project.each {|prj|
-        SyncAppsJob.perform_later(prj.id.to_s) if prj.app_platform.present? && prj.config.present?
-      }
-      return
-    end
-
     Project.where(:id.in => project_ids).each {|prj|
       sync_apps(prj)
     }
-
-    SyncPipelinesJob.perform_later(*project_ids)
   end
 
   private
@@ -30,6 +20,7 @@ class SyncAppsJob < ApplicationJob
       app = prj.apps.find_or_initialize_by(name: a['name'])
       app.uid = a['id']
       app.url = a['web_url']
+      app.config = app_platform.api_client.config_var.info_for_app(app.name)
 
       app.state = :opened unless app.locked_build.present?
 
@@ -50,7 +41,6 @@ class SyncAppsJob < ApplicationJob
 
     logger.warn("Pruned #{orphans} apps")
 
-    SyncAppConfigJob.perform_later(*synced_ids.map(&:to_s))
     SyncAppVersionJob.perform_later(*synced_ids.map(&:to_s))
   end
 end

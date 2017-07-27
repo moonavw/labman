@@ -60,10 +60,13 @@ class BumpReleaseJob < ApplicationJob
       return
     end
 
-    SyncBranchesJob.perform_now(prj.id.to_s)
-    SyncReleasesJob.perform_now(prj.id.to_s)
+    # update locals instead of SyncBranchesJob.perform_now(prj.id.to_s)
+    prj.branches.create!(name: release.branch_name, protected: true) unless release.branch.present?
 
-    release.reload
+    # update locals instead of SyncReleasesJob.perform_now(prj.id.to_s) ; release.reload
+    resp = build_server.api_client.job.get_build_details(job_name, job_build_number)
+    version_name = resp['displayName'].chomp
+    release.update!(tag_name: "v#{version_name}", check: :updated)
 
     logger.info("Bumped #{release.named} -> #{release.tag_name}")
 
