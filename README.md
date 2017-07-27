@@ -9,13 +9,13 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- user could be in multiple teams
 	- anonymous has readonly access to non-private team's items 
 	- members in the team has operation access to the non-protected items: e.g. feature branch deployment
-	- masters in the team has operation access to the protected items: e.g. rc branch bump and deployment
+	- masters in the team has operation access to the protected items: e.g. RC branch bump and deployment
 - Apps
-	- all apps and pipelines from heroku
+	- all apps and pipelines from Heroku
 	- show all app config and version
 	- show all related builds and promotions
-	- team members could pick an app to deploy the branch build for demo etc, and locked the app from other team members
-	- the app will be unlocked automatically when the related JIRA issue done (resolved/closed/done/ready for test/deployed...)
+	- team members could pick an app to deploy the branch build for demo etc, and locked the app from other branch builds
+	- the app will be unlocked automatically when the related JIRA issue done (resolved/closed/done/ready for test/deployed...) or the branch deleted (e.g. remove source branch when merge request accepted)
 	- when have a RC build, it would automatically arrive next stage by promotion
 - Branches
 	- all branches from gitlab repository
@@ -28,15 +28,15 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- transit the related JIRA issue status to complete/resolve/done and set fix version when merge request accepted
 - Builds
 	- show all builds with status
-	- the build will automatically rerun when the branch has new commit (except: the rc build is run by demand)
+	- the build will automatically rerun when the branch has new commit (except: the RC build is run by demand)
 - Issues
 	- show all JIRA issues in current sprint with status
 	- show related build, related release, and related merge request for the JIRA issue
 - Releases
 	- show all releases (milestones defined in gitlab) with status, due date, last version tag
-	- show related JIRA issues, rc branch, rc build for release
+	- show related JIRA issues, RC branch, RC build for release
 	- team masters could bump release: create RC or patch RC
-	- when bumped, it auto build release and deploy to first stage in pipeline, also promote to next stage in pipeline. And transit issue status to "Ready for test/Deployed..."
+	- when bumped, it auto build release and deploy to specified app in pipeline, also promote to next stage in pipeline. And transit issue status to "Ready for test/Deployed..."
 	- auto configure the app config for each release build
 	- team masters could publish the release as the RC ready to release
 
@@ -134,6 +134,14 @@ JIRA_ISSUE_TRANSITIONS:
 
 ## Services
 all the long running activities for Gitlab, Jenkins, Heroku, JIRA are enqueued to redis, then performed by sidekiq.
+
+### Build Server
+kick Jenkins for:
+
+- run branch build by copying Jenkins job from a specified job, the Jenkins job must set the build displayName as a version: e.g. displayName = '2.22.1'
+- create RC branch with bumped major/minor version, the Jenkins job must set the build displayName as the bumped version
+- patch RC branch as bumping patch version, the Jenkins job must set the build displayName as the bumped version
+- accept merge request
 
 ### Sync Code Manager
 sync from Gitlab:

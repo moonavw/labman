@@ -2,7 +2,7 @@ class BumpReleaseJob < ApplicationJob
   queue_as :default
 
   def perform(*release_ids)
-    Release.with_state(:in_progress).where(:id.in => release_ids).each {|release|
+    Release.with_state(:in_progress).where(check: nil, :id.in => release_ids).each {|release|
       bump_release(release)
     }
   end

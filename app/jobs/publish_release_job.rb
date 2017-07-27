@@ -2,7 +2,7 @@ class PublishReleaseJob < ApplicationJob
   queue_as :default
 
   def perform(*release_ids)
-    Release.with_state(:in_progress).where(:id.in => release_ids).each {|release|
+    Release.with_state(:in_progress).where(published_on: Release::PUBLISH_TAG, :tag_name.ne => nil, :id.in => release_ids).each {|release|
       publish_release(release)
     }
   end
@@ -23,7 +23,9 @@ class PublishReleaseJob < ApplicationJob
 
     # create new publish tag
     begin
-      code_manager.api_client.create_tag(prj.config[:GITLAB_PROJECT], Release::PUBLISH_TAG, release.branch_name)
+      code_manager.api_client.create_tag(prj.config[:GITLAB_PROJECT], Release::PUBLISH_TAG, release.tag_name)
+      release.update!(published_on: release.tag_name)
+
       logger.info("Published #{release.named} on #{release.published_on}")
     rescue Gitlab::Error::BadRequest => e
       logger.error("Failed Publishing #{release.named}")
