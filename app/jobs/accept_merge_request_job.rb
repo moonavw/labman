@@ -65,13 +65,14 @@ class AcceptMergeRequestJob < ApplicationJob
       target_transitions = prj.config[:JIRA_ISSUE_TRANSITIONS][:ACCEPT_MERGE_REQUEST]
       TransitIssueJob.perform_later(target_transitions, merge_request.issue.id.to_s)
 
-      if merge_request.release.present?
-        VersionIssueJob.perform_later(merge_request.release.name, merge_request.issue.id.to_s)
-      else
-        logger.warn("Unable to version issue, since no release for #{merge_request.named}")
+      # get release from target branch
+      if merge_request.target_branch.release.present?
+        release = merge_request.target_branch.release
+      elsif merge_request.target_branch.protected? && merge_request.target_branch.category.nil?
+        release = prj.releases.with_state(:in_progress).where(tag_name: nil).first
       end
-    else
-      logger.warn("Unable to transit and version issue, since no issue for #{merge_request.named}")
+
+      VersionIssueJob.perform_later(release.name, merge_request.issue.id.to_s) if release.present?
     end
 
   end
