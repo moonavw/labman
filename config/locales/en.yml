@@ -36,6 +36,9 @@ en:
       build:
         name: "the name for version. e.g. feature-name, epic-name, phase-name."
         readable_config: "config for app, in YAML format, e.g. key: value"
+      test:
+        name: "the name for version. e.g. feature-name, epic-name, phase-name."
+        readable_config: "config for test, in YAML format, e.g. key: value"
   layouts:
     header:
       sign_out: "Sign out"

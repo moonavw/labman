@@ -8,8 +8,8 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 - User & Access
 	- user could be in multiple teams
 	- anonymous has readonly access to non-private team's items 
-	- members in the team has operation access to the non-protected items: e.g. feature branch deployment
-	- masters in the team has operation access to the protected items: e.g. RC branch bump and deployment
+	- members in the team has operation access to the non-protected items: e.g. feature branch build & test
+	- masters in the team has operation access to the protected items: e.g. RC branch bump, build & test
 - Apps
 	- all apps and pipelines from Heroku
 	- show all app config and version
@@ -22,6 +22,7 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- show all outgoing/incoming merges for branch
 	- show the app of the branch deployed to
 	- team members could build the branch to deploy to app
+	- team members could test the branch with local app, or with app of build if branch has build
 - Merge Requests
 	- show all merge requests for current working releases with status
 	- team masters could approve the merge request if it reviewed (pass code review and build check), then CI will accept the merge request automatically
@@ -29,6 +30,8 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 - Builds
 	- show all builds with status
 	- the build will automatically rerun when the branch has new commit (except: the RC build is run by demand)
+- Tests
+	- show all tests with status
 - Issues
 	- show all JIRA issues in current sprint with status
 	- show related build, related release, and related merge request for the JIRA issue
@@ -90,6 +93,7 @@ auth_type: basic
 GITLAB_PROJECT: <your-gitlab-project-full-name>
 JENKINS_PROJECT:
   BUILD: <your-jenkins-job-template-for-build-branch>
+  TEST: <your-jenkins-job-template-for-test-branch>
   RC: <your-jenkins-job-for-bump-rc>
   RC_PATCH: <your-jenkins-job-for-bump-rc-patch>
   ACCEPT_MERGE_REQUEST: <your-jenkins-job-for-accepting-merge-request>
@@ -104,6 +108,10 @@ APP:
 BUILD:
   CONFIG:
    <your-build-default-app-config-key>: <your-build-default-app-config-value, support-eval-instance-self>
+   ...
+TEST:
+  CONFIG:
+   <your-test-default-config-key>: <your-test-default-config-value, support-eval-instance-self>
    ...
 RELEASE:
   BUILD:

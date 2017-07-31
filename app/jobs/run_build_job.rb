@@ -50,7 +50,7 @@ class RunBuildJob < ApplicationJob
       logger.info("#{build.named} requires app config: #{app_config}")
     end
 
-    job_params.merge!(build.full_config.symbolize_keys)
+    job_params.merge!(build.final_config.symbolize_keys)
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
     previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)

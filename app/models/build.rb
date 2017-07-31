@@ -44,8 +44,8 @@ class Build
     RunBuildJob.perform_later(self.id.to_s) unless queued?(RunBuildJob)
   end
 
-  def full_config
-    project.config[:BUILD][:CONFIG].map {|k, v|
+  def final_config
+    (project.config[:BUILD][:CONFIG]||{}).map {|k, v|
       [k, instance_eval(v)]
     }.to_h.merge(config||{})
   end

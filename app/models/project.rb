@@ -23,4 +23,8 @@ class Project
   def builds
     Build.where(:branch_id.in => branch_ids)
   end
+
+  def tests
+    Test.where(:branch_id.in => branch_ids)
+  end
 end

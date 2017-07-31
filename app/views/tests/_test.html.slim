@@ -1,0 +1,18 @@
+= panel bs_context(test.status), id: "test-#{test.id.to_s}" do
+  .panel-heading
+    h3.panel-title
+      = link_to icon_w(:flask, test.name), test.url, target: '_blank'
+      - unless test.state.running?
+        .pull-right= link_to icon_w(:trash_o), test, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to delete?', disable_with: 'deleting...'}
+  .panel-body
+    ul.list-inline
+      li
+        a.btn.btn-primary data-toggle="collapse" href="#test-config-#{test.id}"
+          = Test.human_attribute_name(:config)
+      - if test.can_rerun?
+        li= link_to 'Rerun', rerun_test_path(test), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rerun?', disable_with: 'rerunning...'}
+
+    pre.collapse id="test-config-#{test.id}"
+      = test.readable_config
+
+    = render 'branches/label', branch: test.branch

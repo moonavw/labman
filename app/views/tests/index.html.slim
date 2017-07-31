@@ -1,0 +1,6 @@
+.row
+  - Test.state.options.each do |text, value|
+    .col-md-3 id="test-state-#{value}"
+      .page-header
+        h3= text
+      = render @tests.with_state(value)

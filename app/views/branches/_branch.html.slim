@@ -5,18 +5,27 @@
       - if branch.protected?
         .pull-right= icon_w(:lock)
   .panel-body
-    - build = branch.build
-    - if build.present?
-      = render 'builds/label', build: build
-      - issue = build.issue
-      - if issue.present?
-        = render 'issues/label', issue: issue
-        - if issue.release.present?
-          = render 'releases/label', release: issue.release
-      - if build.app.present?
-        = render 'apps/label', app: build.app
-    - else
-      p= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
+    p
+      - build = branch.build
+      - if build.present?
+        = render 'builds/label', build: build
+        - issue = build.issue
+        - if issue.present?
+          = render 'issues/label', issue: issue
+          - if issue.release.present?
+            = render 'releases/label', release: issue.release
+        - if build.app.present?
+          = render 'apps/label', app: build.app
+
+      - test = branch.test
+      - if test.present?
+        = render 'tests/label', test: test
+
+    ul.list-inline
+      - unless build.present?
+        li= link_to 'New Build', new_project_build_path(branch.project, branch_id: branch), class: 'btn btn-primary'
+      - unless test.present?
+        li= link_to 'New Test', new_project_test_path(branch.project, branch_id: branch), class: 'btn btn-primary'
 
   ul.list-group
     - if branch.outgoing_merges.any?

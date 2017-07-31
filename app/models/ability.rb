@@ -33,7 +33,7 @@ class Ability
     can :read, Team, private: false
     can :read, Project, team: {private: false}
     can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {private: false}}
-    can :read, Build, branch: {project: {team: {private: false}}}
+    can :read, [Build, Test], branch: {project: {team: {private: false}}}
 
     if user.present?
       # Always performed
@@ -46,10 +46,10 @@ class Ability
       can :read, Team, member_ids: user.id
       can :read, Project, team: {member_ids: user.id}
       can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {member_ids: user.id}}
-      can :read, Build, branch: {project: {team: {member_ids: user.id}}}
+      can :read, [Build, Test], branch: {project: {team: {member_ids: user.id}}}
 
-      can [:run, :destroy], Build, branch: {protected: false, project: {team: {member_ids: user.id}}}
-      can [:run, :destroy], Build, branch: {protected: true, project: {team: {master_ids: user.id}}}
+      can [:run, :destroy], [Build, Test], branch: {protected: false, project: {team: {member_ids: user.id}}}
+      can [:run, :destroy], [Build, Test], branch: {protected: true, project: {team: {master_ids: user.id}}}
 
       can :approve, MergeRequest, project: {team: {master_ids: user.id}}
 

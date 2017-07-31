@@ -24,6 +24,11 @@ Rails.application.routes.draw do
         post 'rerun'
       end
     end
+    resources :tests do
+      member do
+        post 'rerun'
+      end
+    end
     resources :issues
     resources :releases do
       member do

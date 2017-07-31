@@ -70,7 +70,7 @@ class Release
 
     app = project.apps.find_by(name: project.config[:RELEASE][:BUILD][:APP])
 
-    config = project.config[:RELEASE][:BUILD][:CONFIG].map {|k, v|
+    config = (project.config[:RELEASE][:BUILD][:CONFIG]||{}).map {|k, v|
       [k, instance_eval(v)]
     }.to_h
 

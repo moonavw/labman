@@ -20,6 +20,9 @@
     = link_to project_builds_path(project), class: 'list-group-item' do
       = icon_w :gavel, Build.model_name.plural.titlecase
       = badge(project.builds.count)
+    = link_to project_tests_path(project), class: 'list-group-item' do
+      = icon_w :flask, Test.model_name.plural.titlecase
+      = badge(project.tests.count)
     = link_to project_issues_path(project), class: 'list-group-item' do
       = icon_w :paw, Issue.model_name.plural.titlecase
       = badge(project.issues.count)
