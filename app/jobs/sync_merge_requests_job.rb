@@ -55,7 +55,7 @@ class SyncMergeRequestsJob < ApplicationJob
     logger.warn("Pruned #{unaccepted_orphans} orphaned unaccepted merge requests")
 
     accepted_orphans = orphans.with_state(:accepted).select{|mr|
-      mr.target_branch.nil? || (!mr.target_branch.protected? && mr.issue.nil?)
+      mr.target_branch.nil? || mr.issue.nil?
     }.each(&:destroy).count
 
     logger.warn("Pruned #{accepted_orphans} orphaned accepted merge requests")
