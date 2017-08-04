@@ -13,7 +13,7 @@ module Stageable
   end
 
   def next_stage
-    return unless self.stage
+    return unless self.stage.present?
 
     stages = self.class.stage.values
     idx = stages.index(self.stage)

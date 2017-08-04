@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   end
 
   resources :projects, shallow: true do
-    resources :apps
+    resources :apps do
+      member do
+        post 'promote'
+      end
+    end
     resources :branches
     resources :merge_requests do
       member do

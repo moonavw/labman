@@ -1,0 +1,7 @@
+| target = '#app-#{@app.id}';
+
+- unless @error.present?
+  | $(target).replaceWith('#{ j( render @app ) }');
+
+  - @app.promoted_to.each do |app|
+    | $('#app-#{app.id}').replaceWith('#{ j( render app ) }');

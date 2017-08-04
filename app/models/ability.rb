@@ -51,6 +51,9 @@ class Ability
       can [:run, :destroy], [Build, Test], branch: {protected: false, project: {team: {member_ids: user.id}}}
       can [:run, :destroy], [Build, Test], branch: {protected: true, project: {team: {master_ids: user.id}}}
 
+      can :promote, App, stage: App.stage.values.first, project: {team: {member_ids: user.id}}
+      can :promote, App, project: {team: {master_ids: user.id}}
+
       can :approve, MergeRequest, project: {team: {master_ids: user.id}}
 
       can [:run, :bump, :publish], Release, project: {team: {master_ids: user.id}}

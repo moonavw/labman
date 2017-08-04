@@ -34,20 +34,24 @@ class App
   end
 
   def can_promote?
-    pipeline && next_stage
+    pipeline.present? && next_stage.present? && (promoting_targets - promoted_to).any?
   end
 
   def promote
     return unless can_promote?
 
+    self.promoted_to = promoting_targets
+
+    PromoteAppJob.perform_later(self.id.to_s) unless queued?(PromoteAppJob)
+  end
+
+  def promoting_targets
     release_build_config_keys = project.config[:RELEASE][:BUILD][:CONFIG].keys
 
-    self.promoted_to = pipeline.apps.with_stage(next_stage).with_state(:opened).reject {|t|
+    pipeline.apps.with_stage(next_stage).with_state(:opened).reject {|t|
       release_build_config_keys.any? {|k|
         t.config[k] == config[k]
       }
     }
-
-    PromoteAppJob.perform_later(self.id.to_s) unless queued?(PromoteAppJob)
   end
 end

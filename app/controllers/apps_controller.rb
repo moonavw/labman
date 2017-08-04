@@ -13,6 +13,12 @@ class AppsController < ApplicationController
     respond_with @app
   end
 
+  def promote
+    authorize! :promote, @app
+    @app.promote
+    respond_with @app
+  end
+
   private
   def set_project
     @project = Project.find(params[:project_id])

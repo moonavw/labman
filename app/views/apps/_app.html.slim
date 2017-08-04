@@ -1,4 +1,4 @@
-= panel bs_context(app.state) do
+= panel bs_context(app.state), id: "app-#{app.id.to_s}" do
   .panel-heading
     h3.panel-title
       = link_to icon_w(:cloud, app.name), app.url, target: '_blank'
@@ -10,6 +10,8 @@
 
       - if app.state.opened?
         li= link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
+      - if app.can_promote?
+        li= link_to 'Promote', promote_app_path(app), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to promote?', disable_with: 'promoting...'}
 
     pre.collapse id="app-config-#{app.id}"
       = app.readable_config
