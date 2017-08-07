@@ -17,6 +17,8 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- team members could pick an app to deploy the branch build for demo etc, and locked the app from other branch builds
 	- the app will be unlocked automatically when the related JIRA issue done (resolved/closed/done/ready for test/deployed...) or the branch deleted (e.g. remove source branch when merge request accepted)
 	- when have a RC build, it would automatically arrive next stage by promotion
+	- team members could promote app in development stage to staging stage if any app in staging stage not promoted from it yet
+	- team masters could promote app in staging stage to production stage if any app in production stage not promoted from it yet
 - Branches
 	- all branches from gitlab repository
 	- show all outgoing/incoming merges for branch
@@ -191,7 +193,15 @@ external volume for database is required to avoid data loss, that need to be cre
 
 ```docker volume create dbstore```
 
-then simply run:
+OR with volume mounting to local file system on non-windows (mongo has issue with volume mounting to windows file system)
+
+```docker volume create dbstore --opt type=none --opt device=<db_path> --opt o=bind```
+
+then run with specified publish port for app:
+
+```APP_PORT=9080 docker-compose up -d```
+
+OR run with default publish port 8000 for app:
 
 ```docker-compose up -d```
 

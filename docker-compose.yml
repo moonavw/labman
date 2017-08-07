@@ -1,15 +1,10 @@
-# NOTE: mongo has issue with volume mounting to windows file system
-# docker volume create dbstore --opt type=none --opt device=<db_path> --opt o=bind
-# docker exec -e "ADMIN_EMAIL=<email>" -e "ADMIN_PASSWORD=<password>" $(docker-compose ps -q app) ./bin/rails db:seed
-# docker-compose exec app ./bin/rails db:seed
-
 version: "3"
 
 services:
   app:
     build: .
     ports:
-      - 3000
+      - "${APP_PORT:-8000}:3000"
     environment:
       MONGO_URL: mongo:27017
       REDIS_URL: redis://redis:6379
