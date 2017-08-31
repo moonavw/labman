@@ -28,6 +28,7 @@ class PublishReleaseJob < ApplicationJob
 
       logger.info("Published #{release.named} on #{release.published_on}")
     rescue Gitlab::Error::BadRequest => e
+      release.update!(published_on: nil)
       logger.error("Failed Publishing #{release.named}")
       logger.error(e)
     end
