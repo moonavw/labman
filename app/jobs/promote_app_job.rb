@@ -46,5 +46,8 @@ class PromoteAppJob < ApplicationJob
     end while promotion['status'] != 'completed'
 
     logger.info("Promoted #{app.named}")
+
+    target_ids = app.promoted_to.map(&:id)
+    SyncAppVersionJob.perform_later(*target_ids.map(&:to_s))
   end
 end
