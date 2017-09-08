@@ -104,7 +104,7 @@ class RunBuildJob < ApplicationJob
 
     # update locals instead of SyncAppVersionJob.perform_later(build.app.id.to_s)
     resp = build_server.api_client.job.get_build_details(job_name, job_build_number)
-    build.app.version_name = resp['displayName'].chomp
+    build.app.version_name = resp['displayName'].chomp.sub('v', '')
     build.app.save!
 
     # for rc build

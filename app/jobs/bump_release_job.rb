@@ -65,8 +65,8 @@ class BumpReleaseJob < ApplicationJob
 
     # update locals instead of SyncReleasesJob.perform_now(prj.id.to_s) ; release.reload
     resp = build_server.api_client.job.get_build_details(job_name, job_build_number)
-    version_name = resp['displayName'].chomp
-    release.update!(tag_name: "v#{version_name}", check: :updated)
+    tag_name = resp['displayName'].chomp
+    release.update!(tag_name: tag_name, check: :updated)
 
     logger.info("Bumped #{release.named} -> #{release.tag_name}")
 
