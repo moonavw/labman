@@ -34,7 +34,7 @@ class App
   end
 
   def can_promote?
-    pipeline.present? && next_stage.present? && (promoting_targets - promoted_to).any?
+    pipeline.present? && next_stage.present? && promoting_targets.any?
   end
 
   def promote
