@@ -61,7 +61,8 @@ gem 'mongoid'
 gem 'kaminari-mongoid'
 gem 'enumerize'
 
-gem 'devise'
+# https://github.com/plataformatec/devise/commit/1009096172f2cbc86bcd54d053c89a09be67fb9f
+gem 'devise', github: 'plataformatec/devise'
 gem 'cancancan', '~> 1.17'
 gem 'sidekiq'
 gem 'sidekiq-cron'
