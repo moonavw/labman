@@ -58,12 +58,13 @@ class SyncReleasesJob < ApplicationJob
             release.check = :updated
 
             if release.state.done?
-              logger.info("Close #{release.named} at #{release.tag_name}, Unprotect and delete #{release.branch.named}, #{outdated_tags.map(&:name)}")
+              logger.info("Close #{release.named} at #{release.tag_name}, Unprotect and delete #{release.branch.named}")
               code_manager.api_client.unprotect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
               code_manager.api_client.delete_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
               release.branch.destroy
 
               outdated_tags.each {|tag|
+                logger.info("Remove outdated tag #{tag['name']}")
                 code_manager.api_client.delete_tag(prj.config[:GITLAB_PROJECT], tag['name'])
               }
             end
