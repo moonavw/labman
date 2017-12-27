@@ -40,9 +40,9 @@ class SyncReleasesJob < ApplicationJob
       # move to in progress if possible
       release.work_in_progress
 
-      latest_tag = tags.select {|tag|
+      latest_tag, *outdated_tags = tags.select {|tag|
         tag['name'].start_with?("v#{release.name}.")
-      }.first
+      }
 
       if latest_tag.present?
         release.tag_name = latest_tag['name']
@@ -58,10 +58,14 @@ class SyncReleasesJob < ApplicationJob
             release.check = :updated
 
             if release.state.done?
-              logger.info("Close #{release.named} at #{release.tag_name}, Unprotect and delete #{release.branch.named}")
+              logger.info("Close #{release.named} at #{release.tag_name}, Unprotect and delete #{release.branch.named}, #{outdated_tags.map(&:name)}")
               code_manager.api_client.unprotect_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
               code_manager.api_client.delete_branch(prj.config[:GITLAB_PROJECT], release.branch.name)
               release.branch.destroy
+
+              outdated_tags.each {|tag|
+                code_manager.api_client.delete_tag(prj.config[:GITLAB_PROJECT], tag['name'])
+              }
             end
           else
             release.check = :outdated
