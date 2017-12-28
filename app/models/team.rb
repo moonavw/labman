@@ -18,9 +18,17 @@ class Team
 
   validates_uniqueness_of :name
 
-  private
+
   def add_member(user)
     self.members << user unless self.members.include?(user)
+  end
+
+  def remove_member(user)
+    self.members.delete(user) if self.members.include?(user)
+  end
+
+  def add_master(user)
+    self.masters << user unless self.masters.include?(user)
   end
 
   def remove_master(user)

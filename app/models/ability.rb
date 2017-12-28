@@ -44,6 +44,8 @@ class Ability
       # can :history, :all # for HistoryIndex
 
       can :read, Team, member_ids: user.id
+      can :master, Team, master_ids: user.id
+
       can :read, Project, team: {member_ids: user.id}
       can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {member_ids: user.id}}
       can :read, [Build, Test], branch: {project: {team: {member_ids: user.id}}}

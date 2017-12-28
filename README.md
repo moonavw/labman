@@ -10,6 +10,7 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- anonymous has readonly access to non-private team's items 
 	- members in the team has operation access to the non-protected items: e.g. feature branch build & test
 	- masters in the team has operation access to the protected items: e.g. RC branch bump, build & test
+	- masters in the team has operation access to set/unset master in members list on team page
 - Apps
 	- all apps and pipelines from Heroku
 	- show all app config and version
@@ -44,6 +45,7 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 	- when bumped, it auto build release and deploy to specified app in pipeline, also promote to next stage in pipeline. And transit issue status to "Ready for test/Deployed..."
 	- auto configure the app config for each release build
 	- team masters could publish the release as the RC ready to release
+	- when a Release closed, the RC branch and outdated tags will be deleted from gitlab, only keep the last tag
 
 ## Constants
 there are some constants defined in code as convention

@@ -22,9 +22,5 @@
     = link_to "#team-members-#{team.id}", class: 'list-group-item', data: {toggle: 'collapse'} do
       = Team.human_attribute_name(:members)
       = badge(team.members.count)
-  ul.list-group.collapse id="team-members-#{team.id}"
-    - team.members.each do |user|
-      li.list-group-item
-        = user.name
-        - if team.masters.include?(user)
-          = badge 'master'
+  .list-group.collapse id="team-members-#{team.id}"
+    = render partial: 'teams/member', collection: team.members, as: :user, locals: { team: team }

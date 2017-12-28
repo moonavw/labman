@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :teams, shallow: true do
+    member do
+      post 'master'
+    end
     resources :projects
   end
 

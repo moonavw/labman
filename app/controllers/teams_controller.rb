@@ -11,6 +11,17 @@ class TeamsController < ApplicationController
     respond_with @team
   end
 
+  def master
+    @user = @team.members.find(params[:user_id])
+    authorize! :master, @team
+    if @team.masters.include?(@user)
+      @team.remove_master(@user)
+    else
+      @team.add_master(@user)
+    end
+    respond_with @team
+  end
+
   private
   def set_team
     @team = Team.find(params[:id])

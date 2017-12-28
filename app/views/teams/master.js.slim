@@ -1,0 +1,4 @@
+| target = '#team-members-#{@team.id} #member-#{@user.id}';
+
+- unless @error.present?
+  | $(target).replaceWith('#{ j( render 'teams/member', user: @user, team: @team ) }');
