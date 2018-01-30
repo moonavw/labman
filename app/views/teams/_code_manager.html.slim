@@ -1,0 +1,5 @@
+dl.dl-horizontal#code_manager
+  dt= CodeManager.model_name.human
+  dd= team.code_manager.try(:name)
+  - if team.code_manager.can_sync?
+    dd= link_to icon_w(:refresh), sync_team_path(team, type: :code_manager), method: :post, remote: true, class: 'btn btn-warning', data: {confirm: 'Are you sure to sync?', disable_with: 'processing...'}

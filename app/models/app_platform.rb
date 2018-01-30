@@ -8,6 +8,7 @@ class AppPlatform
   include Nameable
   include Configurable
   include Schedulable
+  include Queueable
 
 
   belongs_to :team
@@ -17,5 +18,13 @@ class AppPlatform
 
   def api_client
     @client ||= PlatformAPI.connect_oauth(config[:oauth_token])
+  end
+
+  def can_sync?
+    !queued?(SyncAppPlatformJob)
+  end
+
+  def sync
+    SyncAppPlatformJob.perform_later(self.id.to_s) if can_sync?
   end
 end

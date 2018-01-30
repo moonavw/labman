@@ -1,19 +1,14 @@
-.panel.panel-default
+.panel.panel-default id="team-#{team.id}"
   .panel-heading
     h3.panel-title
       = icon_w :users, team.name
       - if team.private?
         .pull-right= icon_w(:lock)
   .panel-body
-    dl.dl-horizontal
-      dt= CodeManager.model_name.human
-      dd= team.code_manager.try(:name)
-      dt= AppPlatform.model_name.human
-      dd= team.app_platform.try(:name)
-      dt= IssueTracker.model_name.human
-      dd= team.issue_tracker.try(:name)
-      dt= BuildServer.model_name.human
-      dd= team.build_server.try(:name)
+    = render 'teams/code_manager', team: team
+    = render 'teams/app_platform', team: team
+    = render 'teams/issue_tracker', team: team
+    = render 'teams/build_server', team: team
 
   .list-group
     = link_to team_projects_path(team), class: 'list-group-item' do

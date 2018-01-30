@@ -22,6 +22,22 @@ class TeamsController < ApplicationController
     respond_with @team
   end
 
+  def sync
+    @sync_type = params[:type]
+    authorize! :master, @team
+    case @sync_type
+      when 'code_manager'
+        @team.code_manager.sync
+      when 'app_platform'
+        @team.app_platform.sync
+      when 'issue_tracker'
+        @team.issue_tracker.sync
+      else
+        # nothing
+    end
+    respond_with @team
+  end
+
   private
   def set_team
     @team = Team.find(params[:id])

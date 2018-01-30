@@ -1,0 +1,4 @@
+| target = '#team-#{@team.id} ##{@sync_type}';
+
+- unless @error.present?
+  | $(target).replaceWith('#{ j( render "teams/#{@sync_type}", team: @team ) }');

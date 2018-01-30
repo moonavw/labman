@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :teams, shallow: true do
     member do
       post 'master'
+      post 'sync'
     end
     resources :projects
   end

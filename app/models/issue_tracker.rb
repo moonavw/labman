@@ -8,6 +8,7 @@ class IssueTracker
   include Nameable
   include Configurable
   include Schedulable
+  include Queueable
 
 
   belongs_to :team
@@ -21,5 +22,13 @@ class IssueTracker
 
   def api_client_issue
     api_client.Issue
+  end
+
+  def can_sync?
+    !queued?(SyncIssueTrackerJob)
+  end
+
+  def sync
+    SyncIssueTrackerJob.perform_later(self.id.to_s) if can_sync?
   end
 end
