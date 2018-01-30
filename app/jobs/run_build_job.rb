@@ -51,6 +51,10 @@ class RunBuildJob < ApplicationJob
     end
 
     job_params.merge!(build.final_config.symbolize_keys)
+    # get next version from releases
+    next_release = Release.without_state(:done).where(tag_name: nil).first
+    job_params.merge!({NEXT_VERSION: "#{next_release.name}.0"}) if next_release.present?
+
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
     previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)
