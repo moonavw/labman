@@ -22,7 +22,7 @@ class BumpReleaseJob < ApplicationJob
     else
       job_name = prj.config[:JENKINS_PROJECT][:RC]
       job_params = {
-          SEMVER: 'minor'
+          BUMP_VERSION: "#{release.name}.0"
       }
     end
 
