@@ -39,4 +39,12 @@ module Runnable
     update(state: :pending, result: nil) if can_rerun?
     run
   end
+
+  def can_stop?
+    state.running?
+  end
+
+  def stop
+    update(state: :aborted) if can_stop?
+  end
 end

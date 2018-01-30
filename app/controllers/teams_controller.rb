@@ -32,6 +32,8 @@ class TeamsController < ApplicationController
         @team.app_platform.sync
       when 'issue_tracker'
         @team.issue_tracker.sync
+      when 'build_server'
+        @team.build_server.sync
       else
         # nothing
     end

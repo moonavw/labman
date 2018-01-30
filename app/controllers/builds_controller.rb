@@ -35,6 +35,12 @@ class BuildsController < ApplicationController
     respond_with @build
   end
 
+  def stop
+    authorize! :run, @build
+    @build.stop
+    respond_with @build
+  end
+
   def destroy
     authorize! :destroy, @build
     @build.destroy

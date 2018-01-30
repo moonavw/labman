@@ -44,9 +44,23 @@ class Build
     RunBuildJob.perform_later(self.id.to_s) unless queued?(RunBuildJob)
   end
 
+  def stop
+    return unless super
+
+    StopBuildJob.perform_later(self.id.to_s) unless queued?(StopBuildJob)
+  end
+
   def final_config
     (project.config[:BUILD][:CONFIG]||{}).map {|k, v|
       [k, instance_eval(v)]
     }.to_h.merge(config||{})
+  end
+
+  def job_name_prefix
+    project.config[:JENKINS_PROJECT][:BUILD]
+  end
+
+  def job_name
+    "#{job_name_prefix}-#{branch.flat_name}"
   end
 end
