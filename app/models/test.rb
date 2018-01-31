@@ -17,15 +17,35 @@ class Test
            to: :branch
 
 
+  before_destroy :cleanup
+
   def run
     return unless can_run?
 
     RunTestJob.perform_later(self.id.to_s) unless queued?(RunTestJob)
   end
 
+  def stop
+    return unless super
+
+    StopJobOnBuildServerJob.perform_later(project.id.to_s, job_name)
+  end
+
   def final_config
     (project.config[:TEST][:CONFIG]||{}).map {|k, v|
       [k, instance_eval(v)]
     }.to_h.merge(config||{})
+  end
+
+  def job_name_prefix
+    project.config[:JENKINS_PROJECT][:TEST]
+  end
+
+  def job_name
+    "#{job_name_prefix}-#{branch.flat_name}"
+  end
+
+  def cleanup
+    DeleteJobFromBuildServerJob.perform_later(project.id.to_s, job_name)
   end
 end

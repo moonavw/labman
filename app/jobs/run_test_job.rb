@@ -14,8 +14,8 @@ class RunTestJob < ApplicationJob
     prj = test.branch.project
     build_server = prj.build_server
 
-    job_name_prefix = prj.config[:JENKINS_PROJECT][:TEST]
-    job_name = "#{job_name_prefix}-#{test.branch.flat_name}"
+    job_name_prefix = test.job_name_prefix
+    job_name = test.job_name
     test.url = "http://#{build_server.config[:server_ip]}:#{build_server.config[:server_port]}/job/#{job_name}"
 
     unless build_server.api_client.job.exists?(job_name)
@@ -46,7 +46,7 @@ class RunTestJob < ApplicationJob
     job_params.merge!(test.final_config.symbolize_keys)
     logger.info("Queueing job: #{job_name}, with params: #{job_params}")
 
-    previous_job_build_number = build_server.api_client.job.get_current_build_number(job_name)
+    previous_build_number = build_server.api_client.job.get_current_build_number(job_name)
 
     resp = build_server.api_client.job.build(job_name, job_params)
 
@@ -55,31 +55,15 @@ class RunTestJob < ApplicationJob
       return
     end
 
-    logger.info("Queued job: #{job_name}, wait a few sec to check status")
+    logger.info("Queued job: #{job_name}, checking build number")
 
     begin
       sleep 5
-      job_build_number = build_server.api_client.job.get_current_build_number(job_name)
-    end while job_build_number == previous_job_build_number
+      current_build_number = build_server.api_client.job.get_current_build_number(job_name)
+    end while current_build_number == previous_build_number
 
-    begin
-      sleep 5
-      status = build_server.api_client.job.status(job_name)
-      logger.info("Job #{job_name} status: #{status}")
-
-      case status
-        when 'success', 'failure'
-          test.result = status.to_sym
-          test.state = :completed
-        when 'running', 'aborted'
-          test.state = status.to_sym
-        else
-          logger.error('Unknown status')
-          test.state = :pending
-      end
-      test.save!
-    end while test.state.running?
-
-    logger.info("Finished Run #{test.named} -> #{test.status}")
+    test.state = :running
+    test.save!
+    logger.info("Stared job: #{job_name}, build number: #{current_build_number}")
   end
 end

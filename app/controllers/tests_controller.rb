@@ -33,6 +33,12 @@ class TestsController < ApplicationController
     respond_with @test
   end
 
+  def stop
+    authorize! :run, @test
+    @test.stop
+    respond_with @test
+  end
+
   def destroy
     authorize! :destroy, @test
     @test.destroy

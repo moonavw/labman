@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :tests do
       member do
         post 'rerun'
+        post 'stop'
       end
     end
     resources :issues

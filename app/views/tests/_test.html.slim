@@ -2,8 +2,11 @@
   .panel-heading
     h3.panel-title
       = link_to icon_w(:flask, test.name), test.url, target: '_blank'
-      - unless test.state.running?
-        .pull-right= link_to icon_w(:trash_o), test, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to delete?', disable_with: 'deleting...'}
+      .pull-right
+        - if test.state.running?
+          = link_to icon_w(:close), stop_test_path(test), method: :post, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to stop?', disable_with: 'stopping...'}
+        - else
+          = link_to icon_w(:trash_o), test, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to delete?', disable_with: 'deleting...'}
   .panel-body
     ul.list-inline
       li

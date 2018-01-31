@@ -9,6 +9,9 @@ class SyncBuildServerJob < ApplicationJob
     Project.where(:id.in => project_ids).each {|prj|
       build_ids = prj.builds.map(&:id).map(&:to_s)
       SyncBuildStatusJob.perform_now(*build_ids)
+
+      test_ids = prj.tests.map(&:id).map(&:to_s)
+      SyncTestStatusJob.perform_now(*test_ids)
     }
   end
 end

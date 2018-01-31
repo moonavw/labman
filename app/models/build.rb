@@ -19,7 +19,7 @@ class Build
            to: :branch
 
   after_create :lock_app
-  before_destroy :unlock_app
+  before_destroy :cleanup
 
   def lock_app
     app.lock
@@ -47,7 +47,7 @@ class Build
   def stop
     return unless super
 
-    StopBuildJob.perform_later(self.id.to_s) unless queued?(StopBuildJob)
+    StopJobOnBuildServerJob.perform_later(project.id.to_s, job_name)
   end
 
   def final_config
@@ -62,5 +62,10 @@ class Build
 
   def job_name
     "#{job_name_prefix}-#{branch.flat_name}"
+  end
+
+  def cleanup
+    unlock_app
+    DeleteJobFromBuildServerJob.perform_later(project.id.to_s, job_name)
   end
 end
