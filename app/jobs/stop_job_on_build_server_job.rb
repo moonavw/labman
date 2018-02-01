@@ -7,7 +7,7 @@ class StopJobOnBuildServerJob < ApplicationJob
     build_server = prj.build_server
 
     job_names.each {|job_name|
-      build_server.api_client.job.stop_build(job_name)
+      build_server.api_client.job.stop_build(job_name) if build_server.api_client.job.exists?(job_name)
       logger.info("Stopped job: #{job_name} on #{build_server.named}")
     }
   end

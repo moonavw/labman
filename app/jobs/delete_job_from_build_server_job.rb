@@ -7,7 +7,7 @@ class DeleteJobFromBuildServerJob < ApplicationJob
     build_server = prj.build_server
 
     job_names.each {|job_name|
-      build_server.api_client.job.delete(job_name)
+      build_server.api_client.job.delete(job_name) if build_server.api_client.job.exists?(job_name)
       logger.info("Deleted job: #{job_name} on #{build_server.named}")
     }
   end

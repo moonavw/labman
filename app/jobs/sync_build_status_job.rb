@@ -16,6 +16,8 @@ class SyncBuildStatusJob < ApplicationJob
 
     job_name = build.job_name
 
+    return unless build_server.api_client.job.exists?(job_name)
+
     status = build_server.api_client.job.status(job_name)
     logger.info("Job #{job_name} status: #{status}")
 
