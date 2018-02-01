@@ -29,12 +29,14 @@ Rails.application.routes.draw do
     end
     resources :builds do
       member do
+        post 'run'
         post 'rerun'
         post 'stop'
       end
     end
     resources :tests do
       member do
+        post 'run'
         post 'rerun'
         post 'stop'
       end

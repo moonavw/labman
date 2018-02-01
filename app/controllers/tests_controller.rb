@@ -27,6 +27,12 @@ class TestsController < ApplicationController
     respond_with @test
   end
 
+  def run
+    authorize! :run, @test
+    @test.run
+    respond_with @test
+  end
+
   def rerun
     authorize! :run, @test
     @test.rerun

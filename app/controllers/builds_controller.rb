@@ -29,6 +29,12 @@ class BuildsController < ApplicationController
     respond_with @build
   end
 
+  def run
+    authorize! :run, @build
+    @build.run
+    respond_with @build
+  end
+
   def rerun
     authorize! :run, @build
     @build.rerun
