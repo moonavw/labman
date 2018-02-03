@@ -2,7 +2,7 @@ class SyncTestStatusJob < ApplicationJob
   queue_as :default
 
   def perform(*test_ids)
-    Test.where(:id.in => test_ids).each {|test|
+    Test.without_state(:completed, :aborted).where(:id.in => test_ids).each {|test|
       sync_test_status(test)
     }
   end

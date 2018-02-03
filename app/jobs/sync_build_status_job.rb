@@ -2,7 +2,7 @@ class SyncBuildStatusJob < ApplicationJob
   queue_as :default
 
   def perform(*build_ids)
-    Build.where(:id.in => build_ids).each {|build|
+    Build.without_state(:completed, :aborted).where(:id.in => build_ids).each {|build|
       sync_build_status(build)
     }
   end
