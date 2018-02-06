@@ -28,7 +28,7 @@ module Runnable
   end
 
   def can_rerun?
-    state.completed? || state.aborted?
+    state.aborted? || status == :failure
   end
 
   def run
