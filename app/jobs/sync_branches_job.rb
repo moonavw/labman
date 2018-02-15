@@ -13,7 +13,7 @@ class SyncBranchesJob < ApplicationJob
 
     code_manager = prj.code_manager
 
-    resp = code_manager.api_client.branches(prj.config[:GITLAB_PROJECT])
+    resp = code_manager.api_client.branches(prj.config[:GITLAB_PROJECT], { per_page: 100 })
     branches = resp.map {|d|
       b = d.to_hash
       branch = prj.branches.find_or_initialize_by(name: b['name'])
