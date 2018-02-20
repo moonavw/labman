@@ -1,5 +1,0 @@
-dl.dl-horizontal#app_platform
-  dt= AppPlatform.model_name.human
-  dd= team.app_platform.try(:name)
-  - if team.app_platform.can_sync?
-    dd= link_to icon_w(:refresh), sync_team_path(team, type: :app_platform), method: :post, remote: true, class: 'btn btn-warning', data: {confirm: 'Are you sure to sync?', disable_with: 'processing...'}

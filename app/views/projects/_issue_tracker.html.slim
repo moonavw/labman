@@ -1,0 +1,6 @@
+dl.dl-horizontal#issue_tracker
+  dt= IssueTracker.model_name.human
+  dd
+    = project.issue_tracker.try(:name)
+    - if project.issue_tracker.can_sync?
+      = link_to icon_w(:refresh), sync_project_path(project, type: :issue_tracker), method: :post, remote: true, data: {confirm: 'Are you sure to sync?', disable_with: 'processing...'}

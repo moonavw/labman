@@ -4,8 +4,8 @@ class SyncIssueTrackerJob < ApplicationJob
   def perform(issue_tracker_id)
     issue_tracker = IssueTracker.find(issue_tracker_id)
 
-    project_ids = issue_tracker.team.projects.map(&:id).map(&:to_s)
+    project_id = issue_tracker.project.id.to_s
 
-    SyncIssuesJob.perform_now(*project_ids)
+    SyncIssuesJob.perform_now(project_id)
   end
 end

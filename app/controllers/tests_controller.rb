@@ -16,7 +16,7 @@ class TestsController < ApplicationController
 
   def create
     @test = Test.new(test_params)
-    authorize! :run, @test
+    authorize! :create, @test
     @test.run if @test.save
 
     respond_with @test
@@ -28,19 +28,19 @@ class TestsController < ApplicationController
   end
 
   def run
-    authorize! :run, @test
+    authorize! :create, @test
     @test.run
     respond_with @test
   end
 
   def rerun
-    authorize! :run, @test
+    authorize! :update, @test
     @test.rerun
     respond_with @test
   end
 
   def stop
-    authorize! :run, @test
+    authorize! :update, @test
     @test.stop
     respond_with @test
   end

@@ -1,0 +1,6 @@
+dl.dl-horizontal#app_platform
+  dt= AppPlatform.model_name.human
+  dd
+    = project.app_platform.try(:name)
+    - if project.app_platform.can_sync?
+      = link_to icon_w(:refresh), sync_project_path(project, type: :app_platform), method: :post, remote: true, data: {confirm: 'Are you sure to sync?', disable_with: 'processing...'}

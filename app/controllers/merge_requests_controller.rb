@@ -13,7 +13,7 @@ class MergeRequestsController < ApplicationController
   end
 
   def approve
-    authorize! :approve, @merge_request
+    authorize! :update, @merge_request
     @merge_request.approve
     respond_with @merge_request
   end

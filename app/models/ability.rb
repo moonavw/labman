@@ -30,10 +30,9 @@ class Ability
     # https://github.com/CanCanCommunity/cancancan/wiki/Defining-Abilities
 
     # Allow read access non-private
-    can :read, Team, private: false
-    can :read, Project, team: {private: false}
-    can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {private: false}}
-    can :read, [Build, Test], branch: {project: {team: {private: false}}}
+    can :read, Project, private: false
+    can :read, [App, Branch, Issue, Release, MergeRequest], project: {private: false}
+    can :read, [Build, Test], branch: {project: {private: false}}
 
     if user.present?
       # Always performed
@@ -43,22 +42,21 @@ class Ability
       # can :export, :all
       # can :history, :all # for HistoryIndex
 
-      can :read, Team, member_ids: user.id
-      can :master, Team, master_ids: user.id
+      can :read, Project, member_ids: user.id
+      can :master, Project, master_ids: user.id
 
-      can :read, Project, team: {member_ids: user.id}
-      can :read, [App, Branch, Issue, Release, MergeRequest], project: {team: {member_ids: user.id}}
-      can :read, [Build, Test], branch: {project: {team: {member_ids: user.id}}}
+      can :read, [App, Branch, Issue, Release, MergeRequest], project: {member_ids: user.id}
+      can :read, [Build, Test], branch: {project: {member_ids: user.id}}
 
-      can [:run, :destroy], [Build, Test], branch: {protected: false, project: {team: {member_ids: user.id}}}
-      can [:run, :destroy], [Build, Test], branch: {protected: true, project: {team: {master_ids: user.id}}}
+      can [:create, :update, :destroy], [Build, Test], branch: {protected: false, project: {member_ids: user.id}}
+      can [:create, :update, :destroy], [Build, Test], branch: {protected: true, project: {master_ids: user.id}}
 
-      can :promote, App, stage: App.stage.values.first, project: {team: {member_ids: user.id}}
-      can :promote, App, project: {team: {master_ids: user.id}}
+      can :update, App, stage: App.stage.values.first, project: {member_ids: user.id}
+      can :update, App, project: {master_ids: user.id}
 
-      can :approve, MergeRequest, project: {team: {master_ids: user.id}}
+      can :update, MergeRequest, project: {master_ids: user.id}
 
-      can [:run, :bump, :publish], Release, project: {team: {master_ids: user.id}}
+      can [:create, :update], Release, project: {master_ids: user.id}
 
       if user.admin?
         can :manage, :all

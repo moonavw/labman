@@ -1,7 +1,15 @@
-.panel.panel-default
+.panel.panel-default id="project-#{project.id}"
   .panel-heading
-    h3.panel-title= icon_w :suitcase, project.name
+    h3.panel-title
+      = icon_w :suitcase, project.name
+      - if project.private?
+        .pull-right= icon_w(:lock)
   .panel-body
+    = render 'projects/code_manager', project: project
+    = render 'projects/app_platform', project: project
+    = render 'projects/issue_tracker', project: project
+    = render 'projects/build_server', project: project
+
     a.btn.btn-primary data-toggle="collapse" href="#project-config-#{project.id}"
       = Project.human_attribute_name(:config)
 
@@ -29,3 +37,8 @@
     = link_to project_releases_path(project), class: 'list-group-item' do
       = icon_w :flag, Release.model_name.plural.titlecase
       = badge(project.releases.count)
+    = link_to "#project-members-#{project.id}", class: 'list-group-item', data: {toggle: 'collapse'} do
+      = icon_w :users, Project.human_attribute_name(:members)
+      = badge(project.members.count)
+  .list-group.collapse id="project-members-#{project.id}"
+    = render partial: 'projects/member', collection: project.members, as: :user, locals: {project: project}

@@ -41,15 +41,15 @@ class SyncReleasesJob < ApplicationJob
       # move to in progress if possible
       release.work_in_progress
 
-      latest_tag, *_ = tags.select {|tag|
+      last_tag, *_ = tags.select {|tag|
         tag['name'].start_with?("v#{release.name}.")
       }
 
-      if latest_tag.present?
-        release.tag_name = latest_tag['name']
+      if last_tag.present?
+        release.tag_name = last_tag['name']
 
         if release.branch.present?
-          if release.branch.commit == latest_tag['commit']['id']
+          if release.branch.commit == last_tag['commit']['id']
             release.check = :updated
           else
             release.check = :outdated

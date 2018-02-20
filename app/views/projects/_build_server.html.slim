@@ -1,0 +1,6 @@
+dl.dl-horizontal#build_server
+  dt= BuildServer.model_name.human
+  dd
+    = project.build_server.try(:name)
+    - if project.build_server.can_sync?
+      = link_to icon_w(:refresh), sync_project_path(project, type: :build_server), method: :post, remote: true, data: {confirm: 'Are you sure to sync?', disable_with: 'processing...'}

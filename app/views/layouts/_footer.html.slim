@@ -1,13 +1,7 @@
 = nav_bar fixed: :bottom, brand: icon_w(:copyright, title: t('.copyright'), data: {toggle: 'tooltip', placement: 'top'}), brand_link: 'https://github.com/moonavw/labman', responsive: true do
   = menu_group do
-    - chosen_team = @team || @project.try(:team)
-    - if chosen_team.present?
-      = menu_item icon_w(:users, chosen_team.name), team_path(chosen_team)
-      - chosen_team.projects.each do |project|
-        = menu_item icon_w(:suitcase, project.name), project_path(project)
-    - else
-      - Team.all.each do |team|
-        = menu_item icon_w(:users, team.name), team_path(team)
+    - if @project.present?
+      = menu_item @project.name, project_path(@project)
   = menu_group pull: :right do
     - if can?(:access, :rails_admin)
       = menu_item icon_w(:database), rails_admin_path, target: '_blank'

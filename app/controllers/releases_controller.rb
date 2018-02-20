@@ -9,13 +9,13 @@ class ReleasesController < ApplicationController
 
   def new
     @release = @project.releases.new
-    authorize! :publish, @release
+    authorize! :create, @release
     respond_with @release
   end
 
   def create
     @release = @project.releases.new(release_params)
-    authorize! :publish, @release
+    authorize! :create, @release
     @release.save
 
     respond_with @release
@@ -27,31 +27,31 @@ class ReleasesController < ApplicationController
   end
 
   def bump
-    authorize! :bump, @release
+    authorize! :update, @release
     @release.bump
     respond_with @release
   end
 
   def publish
-    authorize! :publish, @release
+    authorize! :update, @release
     @release.publish
     respond_with @release
   end
 
   def rebuild
-    authorize! :run, @release
+    authorize! :update, @release
     @release.rebuild
     respond_with @release
   end
 
   def close
-    authorize! :publish, @release
+    authorize! :update, @release
     @release.close
     respond_with @release
   end
 
   def destroy
-    authorize! :update, @release
+    authorize! :destroy, @release
     @release.archive
     respond_with @release
   end

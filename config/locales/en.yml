@@ -39,6 +39,9 @@ en:
       test:
         name: "the name for version. e.g. feature-name, epic-name, phase-name."
         readable_config: "config for test, in YAML format, e.g. key: value"
+      release:
+        name: "the name for release. format: <major>.<minor>  e.g. 1.0, 2.1, 3.2"
+        due_date: "ETA for this release"
   layouts:
     header:
       sign_out: "Sign out"
@@ -47,4 +50,4 @@ en:
       copyright: "Labman 2017"
   home:
     index:
-      welcome: "The Integrated CI Dashboard, choose your team to Start"
+      welcome: "The Integrated CI Dashboard, choose your project to Start"

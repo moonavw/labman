@@ -1,0 +1,4 @@
+| target = '#project-#{@project.id} ##{@sync_type}';
+
+- unless @error.present?
+  | $(target).replaceWith('#{ j( render "projects/#{@sync_type}", project: @project ) }');

@@ -14,7 +14,7 @@ class AppsController < ApplicationController
   end
 
   def promote
-    authorize! :promote, @app
+    authorize! :update, @app
     @app.promote
     respond_with @app
   end

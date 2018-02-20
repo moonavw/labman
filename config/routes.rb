@@ -7,15 +7,13 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
 
-  resources :teams, shallow: true do
+
+  resources :projects, shallow: true do
     member do
       post 'master'
       post 'sync'
     end
-    resources :projects
-  end
 
-  resources :projects, shallow: true do
     resources :apps do
       member do
         post 'promote'

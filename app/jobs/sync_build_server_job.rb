@@ -4,14 +4,12 @@ class SyncBuildServerJob < ApplicationJob
   def perform(build_server_id)
     build_server = BuildServer.find(build_server_id)
 
-    project_ids = build_server.team.projects.map(&:id).map(&:to_s)
+    prj = build_server.project
 
-    Project.where(:id.in => project_ids).each {|prj|
-      build_ids = prj.builds.map(&:id).map(&:to_s)
-      SyncBuildStatusJob.perform_now(*build_ids)
+    build_ids = prj.builds.map(&:id).map(&:to_s)
+    SyncBuildStatusJob.perform_now(*build_ids)
 
-      test_ids = prj.tests.map(&:id).map(&:to_s)
-      SyncTestStatusJob.perform_now(*test_ids)
-    }
+    test_ids = prj.tests.map(&:id).map(&:to_s)
+    SyncTestStatusJob.perform_now(*test_ids)
   end
 end

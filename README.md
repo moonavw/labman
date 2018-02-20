@@ -2,33 +2,32 @@
 Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to provide all info in one place, and the action buttons for CI workflow.
 
 ## Features
-- Team & Projects
-	- each team has the Gitlab, Jenkins, Heroku and JIRA behind, need config for their connections
-	- all projects in the team share the same from above
+- Projects
+	- each project has the Gitlab, Jenkins, Heroku and JIRA behind, need config for their connections
 - User & Access
-	- user could be in multiple teams
-	- anonymous has readonly access to non-private team's items 
-	- members in the team has operation access to the non-protected items: e.g. feature branch build & test
-	- masters in the team has operation access to the protected items: e.g. RC branch bump, build & test
-	- masters in the team has operation access to set/unset master in members list on team page
+	- user could be in multiple projects
+	- anonymous has readonly access to non-private project 
+	- members in the project has operation access to the non-protected items: e.g. feature branch build & test
+	- masters in the project has operation access to the protected items: e.g. RC branch bump, build & test
+	- masters in the project has operation access to set/unset master in members list on project page
 - Apps
 	- all apps and pipelines from Heroku
 	- show all app config and version
 	- show all related builds and promotions
-	- team members could pick an app to deploy the branch build for demo etc, and locked the app from other branch builds
+	- project members could pick an app to deploy the branch build for demo etc, and locked the app from other branch builds
 	- the app will be unlocked automatically when the related JIRA issue done (resolved/closed/done/ready for test/deployed...) or the branch deleted (e.g. remove source branch when merge request accepted)
 	- when have a RC build, it would automatically arrive next stage by promotion
-	- team members could promote app in development stage to staging stage if any app in staging stage not promoted from it yet
-	- team masters could promote app in staging stage to production stage if any app in production stage not promoted from it yet
+	- project members could promote app in development stage to staging stage if any app in staging stage not promoted from it yet
+	- project masters could promote app in staging stage to production stage if any app in production stage not promoted from it yet
 - Branches
 	- all branches from gitlab repository
 	- show all outgoing/incoming merges for branch
 	- show the app of the branch deployed to
-	- team members could build the branch to deploy to app
-	- team members could test the branch with local app, or with app of build if branch has build
+	- project members could build the branch to deploy to app
+	- project members could test the branch with local app, or with app of build if branch has build
 - Merge Requests
 	- show all merge requests for current working releases with status
-	- team masters could approve the merge request if it reviewed (pass code review and build check), then CI will accept the merge request automatically
+	- project masters could approve the merge request if it reviewed (pass code review and build check), then CI will accept the merge request automatically
 	- transit the related JIRA issue status to complete/resolve/done and set fix version when merge request accepted
 - Builds
 	- show all builds with status
@@ -41,10 +40,10 @@ Integrated CI dashboard, it connects to Gitlab, Jenkins, Heroku, and JIRA, to pr
 - Releases
 	- show all releases (milestones defined in gitlab) with status, due date, last version tag
 	- show related JIRA issues, RC branch, RC build for release
-	- team masters could bump release: create RC or patch RC
+	- project masters could bump release: create RC or patch RC
 	- when bumped, it auto build release and deploy to specified app in pipeline, also promote to next stage in pipeline. And transit issue status to "Ready for test/Deployed..."
 	- auto configure the app config for each release build
-	- team masters could publish the release as the RC ready to release
+	- project masters could publish the release as the RC ready to release
 	- when a Release closed, the RC branch and outdated tags will be deleted from gitlab, only keep the last tag
 
 ## Constants

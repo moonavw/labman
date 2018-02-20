@@ -11,7 +11,7 @@ class IssueTracker
   include Queueable
 
 
-  belongs_to :team
+  belongs_to :project
 
   validates_uniqueness_of :name
 

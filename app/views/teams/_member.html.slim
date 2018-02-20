@@ -1,4 +1,0 @@
-= link_to master_team_path(team, user_id: user), method: :post, remote: true, id: "member-#{user.id}", class: 'list-group-item', data: {confirm: 'Are you sure to set/unset master?', disable_with: 'processing...'} do
-  = user.name
-  - if team.masters.include?(user)
-    = badge 'master'
