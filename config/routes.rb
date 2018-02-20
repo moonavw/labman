@@ -47,6 +47,7 @@ Rails.application.routes.draw do
         post 'bump'
         post 'publish'
         post 'rebuild'
+        post 'close'
       end
     end
   end

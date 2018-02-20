@@ -2,6 +2,8 @@
   .panel-heading
     h3.panel-title
       = icon_w :flag, release.name
+      - if release.can_close?
+        .pull-right= link_to icon_w(:calendar_check_o), close_release_path(release), method: :post, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to close?', disable_with: 'closing...'}
       - if release.can_archive?
         .pull-right= link_to icon_w(:archive), release, method: :delete, remote: true, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure to archive?', disable_with: 'archiving...'}
   .panel-body

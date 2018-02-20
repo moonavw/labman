@@ -1,0 +1,5 @@
+| target = '#release-#{@release.id}';
+
+- unless @error.present?
+  | $(target).remove();
+  | $('#release-state-#{@release.state}').append('#{ j(render @release) }');

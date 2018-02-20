@@ -71,6 +71,7 @@ gem 'figaro'
 
 
 gem 'gitlab'
+gem 'json', '~> 2.1'
 gem 'jenkins_api_client'
 gem 'jira-ruby', '~> 1.3'
 gem 'platform-api'

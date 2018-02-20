@@ -13,6 +13,7 @@ class Release
   include Archivable
   include Queueable
 
+  field :uid, type: String
   field :due_date, type: Date
 
   belongs_to :project
@@ -22,7 +23,11 @@ class Release
   default_scope -> {desc(:due_date)}
 
   validates_uniqueness_of :name, scope: :project
+  validates_format_of :name, with: /\A\d+\.\d+\z/
 
+  validates_presence_of :due_date
+
+  after_create :on_created
 
   def work_in_progress
     super if issues.without_state(:to_do).any? || branch
@@ -57,6 +62,16 @@ class Release
     BumpReleaseJob.perform_later(self.id.to_s) unless queued?(BumpReleaseJob)
   end
 
+  def can_close?
+    super && tag_name.present? && !can_bump? && !can_publish?
+  end
+
+  def close
+    return unless super
+
+    CloseReleaseJob.perform_later(self.id.to_s) unless queued?(CloseReleaseJob)
+  end
+
   def can_rebuild?
     return false unless branch.present?
     return false unless tag_name.present?
@@ -87,5 +102,9 @@ class Release
 
   def can_archive?
     state.done? && super
+  end
+
+  def on_created
+    CreateReleaseJob.perform_later(self.id.to_s) unless queued?(CreateReleaseJob)
   end
 end

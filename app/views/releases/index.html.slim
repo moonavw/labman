@@ -1,6 +1,8 @@
+= link_to 'New Release', new_project_release_path(@project), class: 'btn btn-primary'
+
 .row
   - Release.state.options.each do |text, value|
-    .col-md-4
+    .col-md-4 id="release-state-#{value}"
       .page-header
         h3= text.titlecase
       = render @releases.with_state(value)
