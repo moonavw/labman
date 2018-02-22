@@ -1,5 +1,5 @@
-= bootstrap_form_for test, url: project_tests_path(project) do |f|
+= bootstrap_form_for test, url: (project_tests_path(project) unless test.persisted?) do |f|
   = f.text_field :name
   = f.text_area :readable_config
-  = f.collection_select :branch, project.branches.reject {|b| b.test && b.test.persisted?}, :id, :name, selected: test.branch_id, prompt: true
+  = f.collection_select :branch, project.branches.reject {|b| b.test && b.test.persisted?}, :id, :name, {selected: test.branch_id, prompt: true}, {disabled: test.persisted?}
   = f.submit

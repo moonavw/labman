@@ -29,7 +29,7 @@ class SyncTestStatusJob < ApplicationJob
         test.state = status.to_sym
       else
         logger.error('Unknown status')
-        test.state = :pending
+        test.state = :aborted
     end
     test.save!
 

@@ -27,15 +27,13 @@ class TestsController < ApplicationController
     respond_with @test
   end
 
-  def run
-    authorize! :create, @test
-    @test.run
+  def edit
     respond_with @test
   end
 
-  def rerun
+  def update
     authorize! :update, @test
-    @test.rerun
+    @test.rerun if @test.update(test_params)
     respond_with @test
   end
 

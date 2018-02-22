@@ -1,5 +1,0 @@
-| target = '#test-#{@test.id}';
-
-- unless @error.present?
-  | $(target).remove();
-  | $('#test-state-#{@test.state}').append('#{ j( render @test ) }');

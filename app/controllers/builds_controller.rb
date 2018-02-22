@@ -29,15 +29,13 @@ class BuildsController < ApplicationController
     respond_with @build
   end
 
-  def run
-    authorize! :create, @build
-    @build.run
+  def edit
     respond_with @build
   end
 
-  def rerun
+  def update
     authorize! :update, @build
-    @build.rerun
+    @build.rerun if @build.update(build_params)
     respond_with @build
   end
 

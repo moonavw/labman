@@ -29,7 +29,7 @@ class SyncBuildStatusJob < ApplicationJob
         build.state = status.to_sym
       else
         logger.error('Unknown status')
-        build.state = :pending
+        build.state = :aborted
     end
     build.save!
 

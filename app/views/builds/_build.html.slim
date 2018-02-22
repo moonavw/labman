@@ -12,10 +12,8 @@
       li
         a.btn.btn-primary data-toggle="collapse" href="#build-config-#{build.id}"
           = Build.human_attribute_name(:config)
-      - if build.can_run?
-        li= link_to 'Run', run_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to run?', disable_with: 'running...'}
       - if build.can_rerun?
-        li= link_to 'Rerun', rerun_build_path(build), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to rerun?', disable_with: 'rerunning...'}
+        li= link_to 'Rerun', edit_build_path(build), class: 'btn btn-primary'
 
     pre.collapse id="build-config-#{build.id}"
       = build.readable_config
