@@ -18,16 +18,8 @@ class Build
   delegate :project, :protected?,
            to: :branch
 
-  after_create :lock_app
   before_destroy :cleanup
 
-  def lock_app
-    app.lock
-  end
-
-  def unlock_app
-    app.unlock if app.locked_build == self
-  end
 
   def issue_name
     issue.try(:name)
@@ -65,7 +57,6 @@ class Build
   end
 
   def cleanup
-    unlock_app
     DeleteJobFromBuildServerJob.perform_later(project.id.to_s, job_name)
   end
 end

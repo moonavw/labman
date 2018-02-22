@@ -4,7 +4,6 @@ class App
 
   include Nameable
   include Stageable
-  include Resourceable
   include Configurable
   include Queueable
 
@@ -25,12 +24,13 @@ class App
 
   validates_uniqueness_of :name, scope: :project
 
-  def locked_build
-    build if state.locked?
+
+  def status
+    has_build? ? :locked : :opened
   end
 
-  def lock
-    super && update(promoted_from: nil)
+  def stated
+    "#{self.class.model_name} #{status.to_s.titlecase}"
   end
 
   def can_promote?
@@ -48,7 +48,7 @@ class App
   def promoting_targets
     release_build_config_keys = project.config[:RELEASE][:BUILD][:CONFIG].keys
 
-    pipeline.apps.with_stage(next_stage).with_state(:opened).reject {|t|
+    pipeline.apps.with_stage(next_stage).reject(&:has_build?).reject {|t|
       release_build_config_keys.any? {|k|
         t.config[k] == config[k]
       }

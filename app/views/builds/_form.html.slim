@@ -2,6 +2,6 @@
   = f.text_field :name
   = f.text_area :readable_config
   = f.collection_select :branch, project.branches.reject {|b| b.build && b.build.persisted?}, :id, :name, {selected: build.branch_id, prompt: true}, {disabled: build.persisted?}
-  = f.collection_select :app, project.apps.with_state(:opened), :id, :name, selected: build.app_id, prompt: true
+  = f.collection_select :app, project.apps.reject(&:has_build?)|[build.app].compact, :id, :name, selected: build.app_id, prompt: true
   = f.text_field :issue_name, autocomplete: 'off', data: {provide: 'typeahead', source: project.issues.without_state(:done).reject {|b| b.build && b.build.persisted?}.map(&:name)}
   = f.submit

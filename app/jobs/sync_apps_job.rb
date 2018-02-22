@@ -22,8 +22,6 @@ class SyncAppsJob < ApplicationJob
       app.url = a['web_url']
       app.config = app_platform.api_client.config_var.info_for_app(app.name)
 
-      app.state = :opened unless app.locked_build.present?
-
       if app.save
         logger.info("Synced #{app.named}")
       else

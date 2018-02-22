@@ -1,4 +1,4 @@
-= panel bs_context(app.state), id: "app-#{app.id.to_s}" do
+= panel bs_context(app.status), id: "app-#{app.id.to_s}" do
   .panel-heading
     h3.panel-title
       = link_to icon_w(:cloud, app.name), app.url, target: '_blank'
@@ -8,7 +8,7 @@
         a.btn.btn-primary data-toggle="collapse" href="#app-config-#{app.id}"
           = App.human_attribute_name(:config)
 
-      - if app.state.opened?
+      - unless app.has_build?
         li= link_to 'New Build', new_project_build_path(app.project, app_id: app), class: 'btn btn-primary'
       - if app.can_promote?
         li= link_to 'Promote', promote_app_path(app), method: :post, remote: true, class: 'btn btn-primary', data: {confirm: 'Are you sure to promote?', disable_with: 'promoting...'}
@@ -20,7 +20,7 @@
       span.label-group title="#{App.human_attribute_name(:version_name)}" data-toggle="tooltip" data-placement="top"
         = tag_label icon_w(:tag), :default
         = tag_label app.version_name, :info
-    - build = app.locked_build
+    - build = app.build
     - if build.present?
       = render 'builds/label', build: build
       = render 'branches/label', branch: build.branch
