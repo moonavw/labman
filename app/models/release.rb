@@ -3,6 +3,7 @@ class Release
   BRANCH_PREFIX = 'release/v'
   BUILD_NAME = 'rc'
   PUBLISH_TAG = 'next'
+  LIVE_TAG = 'latest'
 
   include Mongoid::Document
   include Mongoid::Timestamps
