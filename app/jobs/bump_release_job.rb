@@ -66,7 +66,7 @@ class BumpReleaseJob < ApplicationJob
     unless release.branch.protected?
       logger.info("Protect #{release.branch_name}")
       prj.code_manager.api_client.protect_branch(prj.config[:GITLAB_PROJECT], release.branch_name)
-      release.update!(protected: true)
+      release.branch.update!(protected: true)
     end
 
     # update locals instead of SyncReleasesJob.perform_now(prj.id.to_s) ; release.reload
