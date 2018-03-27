@@ -72,11 +72,10 @@ class CloseReleaseJob < ApplicationJob
       release_branch = code_manager.api_client.branch(prj.config[:GITLAB_PROJECT], release.branch_name).to_hash
 
       if release_branch['commit']['id'] == release_tag['commit']['id']
-        ## FIXME: wait for gitlab 10.5, https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/16591
-        # if release_branch['protected']
-        #   logger.info("Unprotect branch #{release.branch_name}")
-        #   code_manager.api_client.unprotect_branch(prj.config[:GITLAB_PROJECT], release.branch_name)
-        # end
+        if release_branch['protected']
+          logger.info("Unprotect branch #{release.branch_name}")
+          code_manager.api_client.unprotect_branch(prj.config[:GITLAB_PROJECT], release.branch_name)
+        end
         logger.info("Delete branch #{release.branch_name}")
         code_manager.api_client.delete_branch(prj.config[:GITLAB_PROJECT], release.branch_name)
       end
