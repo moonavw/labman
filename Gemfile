@@ -7,9 +7,10 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.1'
+gem 'rails', '~> 5.2.0'
+gem 'bootsnap'
 # Use Puma as the app server
-gem 'puma', '~> 3.7'
+gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -22,7 +23,7 @@ gem 'coffee-rails', '~> 4.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -57,7 +58,7 @@ gem 'safe_yaml'
 
 gem 'slim-rails'
 
-gem 'mongoid'
+gem 'mongoid', '~> 6.4'
 gem 'kaminari-mongoid'
 gem 'enumerize'
 
@@ -71,9 +72,8 @@ gem 'figaro'
 
 
 gem 'gitlab'
-gem 'json', '~> 2.1'
-gem 'jenkins_api_client'
-gem 'jira-ruby', '~> 1.3'
+gem 'jenkins_api_client' #, github: 'arangamani/jenkins_api_client'
+gem 'jira-ruby'
 gem 'platform-api'
 
 gem 'rest-client'
