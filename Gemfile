@@ -66,6 +66,7 @@ gem 'devise'
 gem 'cancancan', '~> 1.17'
 gem 'sidekiq'
 gem 'sidekiq-cron'
+gem 'rufus-scheduler', '~> 3.4.0'
 gem 'rails_admin'
 
 gem 'figaro'
