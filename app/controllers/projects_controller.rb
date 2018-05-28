@@ -28,12 +28,16 @@ class ProjectsController < ApplicationController
     case @sync_type
       when 'code_manager'
         @project.code_manager.sync
+        @project.code_manager.schedule
       when 'app_platform'
         @project.app_platform.sync
+        @project.app_platform.schedule
       when 'issue_tracker'
         @project.issue_tracker.sync
+        @project.issue_tracker.schedule
       when 'build_server'
         @project.build_server.sync
+        @project.build_server.schedule
       else
         # nothing
     end

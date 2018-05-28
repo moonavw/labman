@@ -12,7 +12,7 @@ module Schedulable
 
     Sidekiq::Cron::Job.destroy(job_name)
     job = Sidekiq::Cron::Job.new(name: job_name, cron: self.interval, class: job_klass.name, args: [self.id.to_s])
-    return job.save, job.errors
+    [job.save, job.errors]
   end
 
   def reschedule

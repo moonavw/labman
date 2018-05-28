@@ -73,6 +73,7 @@ server_ip: <your-jenkins-server-ip>
 server_port: <your-jenkins-server-port>
 username: <your-jenkins-user>
 password: <your-jenkins-pwd>
+ssl: true|false
 ```
 
 ### App Platform
